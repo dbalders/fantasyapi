@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  if user
+    .bs-docs-header
+
+  .container
+    if user
+      if teamData
+        h3 yahoo teamData
+        div.long-text #{teamData}
+      if playerData
+        h3 yahoo playerData
+        div.long-text #{playerData}
+    else
+      .lead Please sign-in to view user.games information.
