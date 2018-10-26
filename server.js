@@ -43,9 +43,7 @@ app.get('/', function(req, res) {
         teamData = JSON.stringify(req.session.teamData, null, 2);
 
     if (req.session.playerData)
-        // teamData = JSON.stringify(req.session.teamData, null, 2);
         playerData = JSON.stringify(req.session.playerData);
-        console.log(playerData)
 
     res.render('home', {
         title: 'Home',
@@ -93,8 +91,6 @@ app.get('/auth/yahoo/callback', function(req, res) {
             var players = [];
             var playersDone = false;
             var accessToken = body.access_token;
-            // TODO : Handle this refreshToken!
-            //var refreshToken = body.refresh_token;
 
             req.session.token = accessToken;
 
@@ -105,93 +101,56 @@ app.get('/auth/yahoo/callback', function(req, res) {
                 if (err)
                   console.log(err);
                 else
-                    async.forEachOf(data.teams, function (value, key, callback) {
+                    async.forEachOf(data.teams, function (value, teamKey, callback) {
                         var currentTeam = {
-                            'team_key': data.teams[key].team_key,
-                            'team_id': Number(data.teams[key].team_id),
-                            'name': data.teams[key].name
+                            'team_key': data.teams[teamKey].team_key,
+                            'team_id': Number(data.teams[teamKey].team_id),
+                            'name': data.teams[teamKey].name
                         }
+
+                        console.log(data.teams[teamKey]);
 
                         teams.push(currentTeam);
 
                         callback();
                     }, function (err) {
                         if (err) console.error(err.message);
-                        // configs is now a map of JSON data
-                        // doSomethingWith(configs);
-                        console.log(teams);
-                        console.log('fully done')
+
+                        async.forEachOf(teams, function (value, key, callback) {
+                            yf.team.roster(teams[key].team_key,
+                              function cb(err, playersData) {
+                                var teamKey = teams[key].team_key;
+                                if (err)
+                                  console.log(err);
+                                else
+                                    async.forEachOf(playersData.roster, function (value, playerKey, callback) {
+                                        playerObject = {
+                                            'team_key': teamKey,
+                                            'player_key':playersData.roster[playerKey].player_key,
+                                            'player_id': playersData.roster[playerKey].player_id,
+                                            'first': playersData.roster[playerKey].name.first,
+                                            'last': playersData.roster[playerKey].name.last,
+                                            'full': playersData.roster[playerKey].name.full
+                                        };
+                                        players.push(playerObject);
+                                        callback();
+                                    }, function(err) {
+                                        if (err) console.error(err.message);
+                                        callback();
+                                    })
+                              }
+                            )
+                            // callback();
+                        }, function (err) {
+                            if (err) console.error(err.message);
+
+                            req.session.teamData = teams;
+                            req.session.playerData = players; 
+                            return res.redirect('/');
+                        });
                     });
-                    // for (i = 0; i < data.teams.length; i++) {
-                    //     var currentTeam = {
-                    //         'team_key': data.teams[i].team_key,
-                    //         'team_id': Number(data.teams[i].team_id),
-                    //         'name': data.teams[i].name
-                    //     }
-
-                    //     teams.push(currentTeam);
-                    // }
-
-                    
-
-
-                    // for (j = 0; j < teams.length; j++) {
-                    //     var teamKey = teams[j].team_key;
-                    //     // while (playersDone === false) {
-                    //         console.log('in while');
-                    //         yf.team.roster(teams[j].team_key,
-                    //           function cb(err, playersData) {
-                    //             console.log('in playerData');
-                    //             if (err)
-                    //               console.log(err);
-                    //             else
-                    //                 for (k = 0; k < playersData.roster.length; k++) {
-                    //                     playerObject = {
-                    //                         'team_key': teamKey,
-                    //                         'player_key':playersData.roster[k].player_key,
-                    //                         'player_id': playersData.roster[k].player_id,
-                    //                         'first': playersData.roster[k].name.first,
-                    //                         'last': playersData.roster[k].name.last,
-                    //                         'full': playersData.roster[k].name.full
-                    //                     };
-                    //                     players.push(playerObject);
-                    //                     console.log('k' + k);
-                    //                     console.log(playersData.roster.length)
-                    //                     if (k === (playersData.roster.length - 1)) {
-                    //                         console.log('players done is true')
-                    //                         playersDone = true;
-                    //                     }
-                    //                     console.log(playersDone);
-                    //                 }
-                    //                 req.session.playerData = players;
-
-                    //           }
-                    //         )
-                    //     // }
-
-                        
-                    //     console.log('j' + j)
-                    // }
-
-                    // console.log(players);
-
-                    // playerData = players;
-                console.log('returning')
-                console.log(teams)
-                console.log(players);
-                return res.redirect('/');
               }
-            )
-
-            req.session.teamData = teams;
-            console.log(req.session.teamData);
-            req.session.playerData = players;
-
-            console.log('is done');
-
-            var allPlayers = false;
-            var playerCount = 25;
-            var playerList = 0;         
+            )          
         }
     });
 });
