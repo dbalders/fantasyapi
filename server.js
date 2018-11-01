@@ -1,12 +1,3 @@
-/**
- * Create conf.js like below
- *
- * module.exports = {
- *   'APP_CLIENT_ID': 'CLIENT_ID_GIVEN_BY_YAHOO',
- *   'APP_CLIENT_SECRET': 'CLIENT_SECRET_GIVEN_BY_YAHOO'
- * }
- */
-
 var path = require('path');
 var qs = require('querystring');
 var express = require('express');
@@ -23,6 +14,7 @@ var redirectUri = process.env.APP_REDIRECT_URI || 'http://myapp.com/auth/yahoo/c
 
 var yf = new YahooFantasy(clientId, clientSecret);
 
+//setup the express app
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -36,16 +28,19 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//load the home page data
 app.get('/', function(req, res) {
     var teamData;
     var playerData;
 
+    //get the data from the session that is returned from yahoo
     if (req.session.teamData)
         teamData = JSON.stringify(req.session.teamData, null, 2);
 
     if (req.session.playerData)
         playerData = JSON.stringify(req.session.playerData);
 
+    //render the home page
     res.render('home', {
         title: 'Home',
         user: req.session.token,
@@ -59,6 +54,7 @@ app.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
+//go to yahoo auth and get back the client data
 app.get('/auth/yahoo', function(req, res) {
     var authorizationUrl = 'https://api.login.yahoo.com/oauth2/request_auth';
     var queryParams = qs.stringify({
@@ -70,6 +66,7 @@ app.get('/auth/yahoo', function(req, res) {
     res.redirect(authorizationUrl + '?' + queryParams);
 });
 
+//this is the callback from yahoo. grab the headers and query all the data
 app.get('/auth/yahoo/callback', function(req, res) {
     var accessTokenUrl = 'https://api.login.yahoo.com/oauth2/get_token';
     var options = {
@@ -99,13 +96,19 @@ app.get('/auth/yahoo/callback', function(req, res) {
 
             yf.setUserToken(accessToken);
 
+            //get the current nba league that the user is in
             //This currently only works for one league, expand later to multiple leagues
             async.series([
                 function(callback) {
-                    console.log('in first')
+                    if (err)
+                          console.log(err);
+                    else
+                    //first get the nba leagues user is in 
+                    //First call only provides yahoo overall league ID
                     yf.games.user({seasons: currentYear, game_codes: 'nba'}, function cb(err, data) {
-                        var leagueId = data[0].game_key;
+                        leagueId = data[0].game_key;
 
+                        //Now that we have overall ID, get user specific league ID
                         yf.user.game_leagues(leagueId, function cb(err, data) {
                             leagueId = data.games[0].leagues[0][0].league_key
                             callback(null, 1)
@@ -113,12 +116,13 @@ app.get('/auth/yahoo/callback', function(req, res) {
                     })
                 },
                 function(callback) {
-                    console.log('in second')
-                    yf.league.teams('385.l.40083',
+                    //Use the league ID to get a list of all the teams and their players
+                    yf.league.teams(leagueId,
                       function cb(err, data) {
                         if (err)
                           console.log(err);
                         else
+                            //For each team, grab their team key, id, and name and store it
                             async.forEachOf(data.teams, function (value, teamKey, callback) {
                                 var currentTeam = {
                                     'team_key': data.teams[teamKey].team_key,
@@ -131,6 +135,7 @@ app.get('/auth/yahoo/callback', function(req, res) {
                             }, function (err) {
                                 if (err) console.error(err.message);
 
+                                //With now having each team key, go through each to get their full roster
                                 async.forEachOf(teams, function (value, key, callback) {
                                     yf.team.roster(teams[key].team_key,
                                       function cb(err, playersData) {
@@ -138,6 +143,7 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                         if (err)
                                           console.log(err);
                                         else
+                                            //After having their roster, store each player into a single player array
                                             async.forEachOf(playersData.roster, function (value, playerKey, callback) {
                                                 playerObject = {
                                                     'team_key': teamKey,
@@ -158,6 +164,7 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                 }, function (err) {
                                     if (err) console.error(err.message);
 
+                                    //Set the teams and players into the session variables and send to home page
                                     req.session.teamData = teams;
                                     req.session.playerData = players; 
                                     return res.redirect('/');
@@ -172,14 +179,18 @@ app.get('/auth/yahoo/callback', function(req, res) {
     });
 });
 
+//Get the rankings from BBM for players
 app.get('/rankings', function(req, res) {
     var playerRankings = [];
 
+    //scrape the site and store the data from the table
     scraper.get('https://basketballmonster.com/playerrankings.aspx')
         .then(function(tableData) {
             tableData = tableData[0];
             async.forEachOf(tableData, function (value, i, callback) {
 
+                //Push the important aspects from each row into a new array
+                //Each object has `_16` because BBM has headers every round (16 rounds shown)
                 playerRankings.push([{
                     'rank': tableData[i].Rank_16,
                     'value': tableData[i].Value_16,
@@ -187,6 +198,7 @@ app.get('/rankings', function(req, res) {
                 }])
             })
             
+            //Stringify the results and render the page with the data
             playerRankings = JSON.stringify(playerRankings);
 
             res.render('rankings', {
