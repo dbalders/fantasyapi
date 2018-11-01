@@ -91,66 +91,145 @@ app.get('/auth/yahoo/callback', function(req, res) {
             var players = [];
             var playersDone = false;
             var accessToken = body.access_token;
+            var currentYear = (new Date()).getFullYear();
+            var leagueId;
 
             req.session.token = accessToken;
 
             yf.setUserToken(accessToken);
 
-            yf.league.teams('385.l.40083',
-              function cb(err, data) {
-                if (err)
-                  console.log(err);
-                else
-                    async.forEachOf(data.teams, function (value, teamKey, callback) {
-                        var currentTeam = {
-                            'team_key': data.teams[teamKey].team_key,
-                            'team_id': Number(data.teams[teamKey].team_id),
-                            'name': data.teams[teamKey].name
+            //This currently only works for one league, expand later to multiple leagues
+            async.series([
+                function(callback) {
+                    console.log('in first')
+                    yf.games.user({seasons: currentYear, game_codes: 'nba'}, function cb(err, data) {
+                        var leagueId = data[0].game_key;
+
+                        yf.user.game_leagues(leagueId, function cb(err, data) {
+                            leagueId = data.games[0].leagues[0][0].league_key
+                            callback(null, 1)
+                        })
+                    })
+                },
+                function(callback) {
+                    console.log('in second')
+                    yf.league.teams('385.l.40083',
+                      function cb(err, data) {
+                        if (err)
+                          console.log(err);
+                        else
+                            async.forEachOf(data.teams, function (value, teamKey, callback) {
+                                var currentTeam = {
+                                    'team_key': data.teams[teamKey].team_key,
+                                    'team_id': Number(data.teams[teamKey].team_id),
+                                    'name': data.teams[teamKey].name
+                                }
+                                teams.push(currentTeam);
+
+                                callback();
+                            }, function (err) {
+                                if (err) console.error(err.message);
+
+                                async.forEachOf(teams, function (value, key, callback) {
+                                    yf.team.roster(teams[key].team_key,
+                                      function cb(err, playersData) {
+                                        var teamKey = teams[key].team_key;
+                                        if (err)
+                                          console.log(err);
+                                        else
+                                            async.forEachOf(playersData.roster, function (value, playerKey, callback) {
+                                                playerObject = {
+                                                    'team_key': teamKey,
+                                                    'player_key':playersData.roster[playerKey].player_key,
+                                                    'player_id': playersData.roster[playerKey].player_id,
+                                                    'first': playersData.roster[playerKey].name.first,
+                                                    'last': playersData.roster[playerKey].name.last,
+                                                    'full': playersData.roster[playerKey].name.full
+                                                };
+                                                players.push(playerObject);
+                                                callback();
+                                            }, function(err) {
+                                                if (err) console.error(err.message);
+                                                callback();
+                                            })
+                                        // callback(null, 2);
+                                        }
+                                    )
+                                }, function (err) {
+                                    if (err) console.error(err.message);
+
+                                    req.session.teamData = teams;
+                                    req.session.playerData = players; 
+                                    return res.redirect('/');
+                                });
+                            });
                         }
+                    )
+                    callback(null, 2);
+                }
+            ]);
 
-                        console.log(data.teams[teamKey]);
+            //This currently only works for one league, expand later to multiple leagues
+            // yf.games.user({seasons: currentYear, game_codes: 'nba'}, function cb(err, data) {
+            //     var leagueId = data[0].game_key;
 
-                        teams.push(currentTeam);
+            //     yf.user.game_leagues(leagueId, function cb(err, data) {
+            //         leagueId = data.games[0].leagues[0][0].league_key
+            //     })
+            // })
 
-                        callback();
-                    }, function (err) {
-                        if (err) console.error(err.message);
+            //need to make this not manual somehow. Make a list and have them choose? idk
+            // yf.league.teams('385.l.40083',
+            //   function cb(err, data) {
+            //     if (err)
+            //       console.log(err);
+            //     else
+            //         async.forEachOf(data.teams, function (value, teamKey, callback) {
+            //             var currentTeam = {
+            //                 'team_key': data.teams[teamKey].team_key,
+            //                 'team_id': Number(data.teams[teamKey].team_id),
+            //                 'name': data.teams[teamKey].name
+            //             }
+            //             teams.push(currentTeam);
 
-                        async.forEachOf(teams, function (value, key, callback) {
-                            yf.team.roster(teams[key].team_key,
-                              function cb(err, playersData) {
-                                var teamKey = teams[key].team_key;
-                                if (err)
-                                  console.log(err);
-                                else
-                                    async.forEachOf(playersData.roster, function (value, playerKey, callback) {
-                                        playerObject = {
-                                            'team_key': teamKey,
-                                            'player_key':playersData.roster[playerKey].player_key,
-                                            'player_id': playersData.roster[playerKey].player_id,
-                                            'first': playersData.roster[playerKey].name.first,
-                                            'last': playersData.roster[playerKey].name.last,
-                                            'full': playersData.roster[playerKey].name.full
-                                        };
-                                        players.push(playerObject);
-                                        callback();
-                                    }, function(err) {
-                                        if (err) console.error(err.message);
-                                        callback();
-                                    })
-                              }
-                            )
-                            // callback();
-                        }, function (err) {
-                            if (err) console.error(err.message);
+            //             callback();
+            //         }, function (err) {
+            //             if (err) console.error(err.message);
 
-                            req.session.teamData = teams;
-                            req.session.playerData = players; 
-                            return res.redirect('/');
-                        });
-                    });
-              }
-            )          
+            //             async.forEachOf(teams, function (value, key, callback) {
+            //                 yf.team.roster(teams[key].team_key,
+            //                   function cb(err, playersData) {
+            //                     var teamKey = teams[key].team_key;
+            //                     if (err)
+            //                       console.log(err);
+            //                     else
+            //                         async.forEachOf(playersData.roster, function (value, playerKey, callback) {
+            //                             playerObject = {
+            //                                 'team_key': teamKey,
+            //                                 'player_key':playersData.roster[playerKey].player_key,
+            //                                 'player_id': playersData.roster[playerKey].player_id,
+            //                                 'first': playersData.roster[playerKey].name.first,
+            //                                 'last': playersData.roster[playerKey].name.last,
+            //                                 'full': playersData.roster[playerKey].name.full
+            //                             };
+            //                             players.push(playerObject);
+            //                             callback();
+            //                         }, function(err) {
+            //                             if (err) console.error(err.message);
+            //                             callback();
+            //                         })
+            //                   }
+            //                 )
+            //             }, function (err) {
+            //                 if (err) console.error(err.message);
+
+            //                 req.session.teamData = teams;
+            //                 req.session.playerData = players; 
+            //                 return res.redirect('/');
+            //             });
+            //         });
+            //   }
+            // )          
         }
     });
 });
