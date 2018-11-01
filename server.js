@@ -15,6 +15,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var YahooFantasy = require('yahoo-fantasy');
 var async = require("async");
+var scraper = require('table-scraper');
 
 var clientId = process.env.APP_CLIENT_ID || require('./conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('./conf.js').APP_CLIENT_SECRET;
@@ -152,7 +153,6 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                                 if (err) console.error(err.message);
                                                 callback();
                                             })
-                                        // callback(null, 2);
                                         }
                                     )
                                 }, function (err) {
@@ -168,70 +168,32 @@ app.get('/auth/yahoo/callback', function(req, res) {
                     callback(null, 2);
                 }
             ]);
-
-            //This currently only works for one league, expand later to multiple leagues
-            // yf.games.user({seasons: currentYear, game_codes: 'nba'}, function cb(err, data) {
-            //     var leagueId = data[0].game_key;
-
-            //     yf.user.game_leagues(leagueId, function cb(err, data) {
-            //         leagueId = data.games[0].leagues[0][0].league_key
-            //     })
-            // })
-
-            //need to make this not manual somehow. Make a list and have them choose? idk
-            // yf.league.teams('385.l.40083',
-            //   function cb(err, data) {
-            //     if (err)
-            //       console.log(err);
-            //     else
-            //         async.forEachOf(data.teams, function (value, teamKey, callback) {
-            //             var currentTeam = {
-            //                 'team_key': data.teams[teamKey].team_key,
-            //                 'team_id': Number(data.teams[teamKey].team_id),
-            //                 'name': data.teams[teamKey].name
-            //             }
-            //             teams.push(currentTeam);
-
-            //             callback();
-            //         }, function (err) {
-            //             if (err) console.error(err.message);
-
-            //             async.forEachOf(teams, function (value, key, callback) {
-            //                 yf.team.roster(teams[key].team_key,
-            //                   function cb(err, playersData) {
-            //                     var teamKey = teams[key].team_key;
-            //                     if (err)
-            //                       console.log(err);
-            //                     else
-            //                         async.forEachOf(playersData.roster, function (value, playerKey, callback) {
-            //                             playerObject = {
-            //                                 'team_key': teamKey,
-            //                                 'player_key':playersData.roster[playerKey].player_key,
-            //                                 'player_id': playersData.roster[playerKey].player_id,
-            //                                 'first': playersData.roster[playerKey].name.first,
-            //                                 'last': playersData.roster[playerKey].name.last,
-            //                                 'full': playersData.roster[playerKey].name.full
-            //                             };
-            //                             players.push(playerObject);
-            //                             callback();
-            //                         }, function(err) {
-            //                             if (err) console.error(err.message);
-            //                             callback();
-            //                         })
-            //                   }
-            //                 )
-            //             }, function (err) {
-            //                 if (err) console.error(err.message);
-
-            //                 req.session.teamData = teams;
-            //                 req.session.playerData = players; 
-            //                 return res.redirect('/');
-            //             });
-            //         });
-            //   }
-            // )          
         }
     });
+});
+
+app.get('/rankings', function(req, res) {
+    var playerRankings = [];
+
+    scraper.get('https://basketballmonster.com/playerrankings.aspx')
+        .then(function(tableData) {
+            tableData = tableData[0];
+            async.forEachOf(tableData, function (value, i, callback) {
+
+                playerRankings.push([{
+                    'rank': tableData[i].Rank_16,
+                    'value': tableData[i].Value_16,
+                    'name': tableData[i].Name_16
+                }])
+            })
+            
+            playerRankings = JSON.stringify(playerRankings);
+
+            res.render('rankings', {
+                title: 'Rankings',
+                playerRankings
+            });
+        });
 });
 
 app.listen(app.get('port'), function() {
