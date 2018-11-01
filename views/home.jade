@@ -6,6 +6,9 @@ block content
 
   .container
     if user
+      if playerRankings
+        h3 BBM Rankings
+        div.long-text #{playerRankings}
       if teamData
         h3 yahoo teamData
         div.long-text #{teamData}

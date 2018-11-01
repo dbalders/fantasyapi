@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res) {
     var teamData;
     var playerData;
+    var playerRankings;
 
     //get the data from the session that is returned from yahoo
     if (req.session.teamData)
@@ -40,12 +41,16 @@ app.get('/', function(req, res) {
     if (req.session.playerData)
         playerData = JSON.stringify(req.session.playerData);
 
+    if (req.session.playerRankings)
+        playerRankings = JSON.stringify(req.session.playerRankings);
+
     //render the home page
     res.render('home', {
         title: 'Home',
         user: req.session.token,
         teamData: teamData,
-        playerData: playerData
+        playerData: playerData,
+        playerRankings: playerRankings
     });
 });
 
@@ -91,6 +96,7 @@ app.get('/auth/yahoo/callback', function(req, res) {
             var accessToken = body.access_token;
             var currentYear = (new Date()).getFullYear();
             var leagueId;
+            var playerRankings = [];
 
             req.session.token = accessToken;
 
@@ -163,11 +169,30 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                     )
                                 }, function (err) {
                                     if (err) console.error(err.message);
+                                    //scrape the site and store the data from the table
+                                    scraper.get('https://basketballmonster.com/playerrankings.aspx')
+                                        .then(function(tableData) {
+                                            tableData = tableData[0];
+                                            async.forEachOf(tableData, function (value, i, callback) {
 
-                                    //Set the teams and players into the session variables and send to home page
-                                    req.session.teamData = teams;
-                                    req.session.playerData = players; 
-                                    return res.redirect('/');
+                                                //Push the important aspects from each row into a new array
+                                                //Each object has `_16` because BBM has headers every round (16 rounds shown)
+                                                playerRankings.push([{
+                                                    'rank': tableData[i].Rank_16,
+                                                    'value': tableData[i].Value_16,
+                                                    'name': tableData[i].Name_16
+                                                }])
+                                                callback();
+                                            }, function (err) {
+                                                //Set the session variables and reload the home page
+                                                req.session.teamData = teams;
+                                                req.session.playerData = players; 
+                                                req.session.playerRankings = playerRankings;
+                                                console.log(req.session.playerRankings)
+                                                return res.redirect('/');
+
+                                            })
+                                        });
                                 });
                             });
                         }
@@ -200,6 +225,8 @@ app.get('/rankings', function(req, res) {
             
             //Stringify the results and render the page with the data
             playerRankings = JSON.stringify(playerRankings);
+
+            console.log(req.session.teamData);
 
             res.render('rankings', {
                 title: 'Rankings',
