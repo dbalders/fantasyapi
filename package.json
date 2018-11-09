@@ -15,7 +15,9 @@
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "jade": "^1.11.0",
+    "npm": "^6.4.1",
     "request": "^2.75.0",
+    "string-similarity": "^2.0.0",
     "table-scraper": "^0.1.0",
     "yahoo-fantasy": "^3.0.4",
     "yahoo-fantasy-without-auth": "^1.0.2"

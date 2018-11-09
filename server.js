@@ -7,6 +7,7 @@ var request = require('request');
 var YahooFantasy = require('yahoo-fantasy');
 var async = require("async");
 var scraper = require('table-scraper');
+var stringSimilarity = require('string-similarity');
 
 var clientId = process.env.APP_CLIENT_ID || require('./conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('./conf.js').APP_CLIENT_SECRET;
@@ -33,8 +34,11 @@ app.get('/', function(req, res) {
     var teamData;
     var playerData;
     var playerRankings;
+    var pickupTargets;
 
     //get the data from the session that is returned from yahoo
+    if (req.session.pickupTargets)
+        pickupTargets = req.session.pickupTargets;
     if (req.session.teamData)
         teamData = JSON.stringify(req.session.teamData, null, 2);
 
@@ -50,7 +54,8 @@ app.get('/', function(req, res) {
         user: req.session.token,
         teamData: teamData,
         playerData: playerData,
-        playerRankings: playerRankings
+        playerRankings: playerRankings,
+        pickupTargets: pickupTargets
     });
 });
 
@@ -92,11 +97,13 @@ app.get('/auth/yahoo/callback', function(req, res) {
         else {
             var teams = [];
             var players = [];
+            var playerNames = [];
             var playersDone = false;
             var accessToken = body.access_token;
             var currentYear = (new Date()).getFullYear();
             var leagueId;
             var playerRankings = [];
+            var pickupTargets = [];
 
             req.session.token = accessToken;
 
@@ -160,6 +167,7 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                                     'full': playersData.roster[playerKey].name.full
                                                 };
                                                 players.push(playerObject);
+                                                playerNames.push(playersData.roster[playerKey].name.full);
                                                 callback();
                                             }, function(err) {
                                                 if (err) console.error(err.message);
@@ -177,18 +185,26 @@ app.get('/auth/yahoo/callback', function(req, res) {
 
                                                 //Push the important aspects from each row into a new array
                                                 //Each object has `_16` because BBM has headers every round (16 rounds shown)
-                                                playerRankings.push([{
+                                                var rankedPlayer = {
                                                     'rank': tableData[i].Rank_16,
                                                     'value': tableData[i].Value_16,
                                                     'name': tableData[i].Name_16
-                                                }])
+                                                }
+                                                playerRankings.push(rankedPlayer);
+
+                                                var similarPlayer = stringSimilarity.findBestMatch(tableData[i].Name_16, playerNames);
+                                                var similarPlayerRating = similarPlayer.bestMatch.rating;
+
+                                                if (similarPlayerRating < 0.7) {
+                                                    pickupTargets.push(rankedPlayer);
+                                                }
                                                 callback();
                                             }, function (err) {
                                                 //Set the session variables and reload the home page
                                                 req.session.teamData = teams;
                                                 req.session.playerData = players; 
                                                 req.session.playerRankings = playerRankings;
-                                                console.log(req.session.playerRankings)
+                                                req.session.pickupTargets = pickupTargets;
                                                 return res.redirect('/');
 
                                             })
@@ -225,9 +241,6 @@ app.get('/rankings', function(req, res) {
             
             //Stringify the results and render the page with the data
             playerRankings = JSON.stringify(playerRankings);
-
-            console.log(req.session.teamData);
-
             res.render('rankings', {
                 title: 'Rankings',
                 playerRankings

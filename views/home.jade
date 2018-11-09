@@ -6,6 +6,11 @@ block content
 
   .container
     if user
+      if pickupTargets
+        h3 Pickup Targets
+        for player in pickupTargets
+          div.card
+            div.long-text= player.name + " (rank: " + player.rank + ")"
       if playerRankings
         h3 BBM Rankings
         div.long-text #{playerRankings}
