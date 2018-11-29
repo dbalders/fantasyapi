@@ -11,7 +11,7 @@ var stringSimilarity = require('string-similarity');
 
 var clientId = process.env.APP_CLIENT_ID || require('./conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('./conf.js').APP_CLIENT_SECRET;
-var redirectUri = process.env.APP_REDIRECT_URI || 'http://davidbalderston.com/auth/yahoo/callback';
+var redirectUri = process.env.APP_REDIRECT_URI || 'http://myapp.com/auth/yahoo/callback';
 
 var yf = new YahooFantasy(clientId, clientSecret);
 
@@ -35,10 +35,16 @@ app.get('/', function(req, res) {
     var playerData;
     var playerRankings;
     var pickupTargets;
+    var playerRankingsTwoWeeks;
+    var pickupTargetsTwoWeeks;
 
     //get the data from the session that is returned from yahoo
     if (req.session.pickupTargets)
         pickupTargets = req.session.pickupTargets;
+
+    if (req.session.pickupTargetsTwoWeeks)
+        pickupTargetsTwoWeeks = req.session.pickupTargetsTwoWeeks;
+
     if (req.session.teamData)
         teamData = JSON.stringify(req.session.teamData, null, 2);
 
@@ -48,6 +54,9 @@ app.get('/', function(req, res) {
     if (req.session.playerRankings)
         playerRankings = JSON.stringify(req.session.playerRankings);
 
+    if (req.session.playerRankingsTwoWeeks)
+        playerRankingsTwoWeeks = JSON.stringify(req.session.playerRankingsTwoWeeks);
+
     //render the home page
     res.render('home', {
         title: 'Fantasy Pickups',
@@ -55,7 +64,9 @@ app.get('/', function(req, res) {
         teamData: teamData,
         playerData: playerData,
         playerRankings: playerRankings,
-        pickupTargets: pickupTargets
+        pickupTargets: pickupTargets,
+        playerRankingsTwoWeeks: playerRankingsTwoWeeks,
+        pickupTargetsTwoWeeks: pickupTargetsTwoWeeks
     });
 });
 
@@ -103,7 +114,9 @@ app.get('/auth/yahoo/callback', function(req, res) {
             var currentYear = (new Date()).getFullYear();
             var leagueId;
             var playerRankings = [];
+            var playerRankingsTwoWeeks = [];
             var pickupTargets = [];
+            var pickupTargetsTwoWeeks = [];
 
             req.session.token = accessToken;
 
@@ -114,139 +127,184 @@ app.get('/auth/yahoo/callback', function(req, res) {
             async.series([
                 function(callback) {
                     if (err)
-                          console.log(err);
+                        console.log(err);
                     else
-                    //first get the nba leagues user is in 
-                    //First call only provides yahoo overall league ID
-                    yf.games.user({seasons: currentYear, game_codes: 'nba'}, function cb(err, data) {
-                        leagueId = data[0].game_key;
+                        //first get the nba leagues user is in 
+                        //First call only provides yahoo overall league ID
+                        yf.games.user({ seasons: currentYear, game_codes: 'nba' }, function cb(err, data) {
+                            leagueId = data[0].game_key;
 
-                        //Now that we have overall ID, get user specific league ID
-                        yf.user.game_leagues(leagueId, function cb(err, data) {
-                            leagueId = data.games[0].leagues[0][0].league_key
-                            callback(null, 1)
+                            //Now that we have overall ID, get user specific league ID
+                            yf.user.game_leagues(leagueId, function cb(err, data) {
+                                leagueId = data.games[0].leagues[0][0].league_key
+                                callback(null, 1)
+                            })
                         })
-                    })
                 },
                 function(callback) {
                     //Use the league ID to get a list of all the teams and their players
                     yf.league.teams(leagueId,
-                      function cb(err, data) {
-                        if (err)
-                          console.log(err);
-                        else
-                            //For each team, grab their team key, id, and name and store it
-                            async.forEachOf(data.teams, function (value, teamKey, callback) {
-                                var currentTeam = {
-                                    'team_key': data.teams[teamKey].team_key,
-                                    'team_id': Number(data.teams[teamKey].team_id),
-                                    'name': data.teams[teamKey].name
-                                }
-                                teams.push(currentTeam);
+                        function cb(err, data) {
+                            if (err)
+                                console.log(err);
+                            else
+                                //For each team, grab their team key, id, and name and store it
+                                async.forEachOf(data.teams, function(value, teamKey, callback) {
+                                    var currentTeam = {
+                                        'team_key': data.teams[teamKey].team_key,
+                                        'team_id': Number(data.teams[teamKey].team_id),
+                                        'name': data.teams[teamKey].name
+                                    }
+                                    teams.push(currentTeam);
 
-                                callback();
-                            }, function (err) {
-                                if (err) console.error(err.message);
-
-                                //With now having each team key, go through each to get their full roster
-                                async.forEachOf(teams, function (value, key, callback) {
-                                    yf.team.roster(teams[key].team_key,
-                                      function cb(err, playersData) {
-                                        var teamKey = teams[key].team_key;
-                                        if (err)
-                                          console.log(err);
-                                        else
-                                            //After having their roster, store each player into a single player array
-                                            async.forEachOf(playersData.roster, function (value, playerKey, callback) {
-                                                playerObject = {
-                                                    'team_key': teamKey,
-                                                    'player_key':playersData.roster[playerKey].player_key,
-                                                    'player_id': playersData.roster[playerKey].player_id,
-                                                    'first': playersData.roster[playerKey].name.first,
-                                                    'last': playersData.roster[playerKey].name.last,
-                                                    'full': playersData.roster[playerKey].name.full
-                                                };
-                                                players.push(playerObject);
-                                                playerNames.push(playersData.roster[playerKey].name.full);
-                                                callback();
-                                            }, function(err) {
-                                                if (err) console.error(err.message);
-                                                callback();
-                                            })
-                                        }
-                                    )
-                                }, function (err) {
+                                    callback();
+                                }, function(err) {
                                     if (err) console.error(err.message);
-                                    //scrape the site and store the data from the table
-                                    scraper.get('https://basketballmonster.com/playerrankings.aspx')
-                                        .then(function(tableData) {
-                                            tableData = tableData[0];
-                                            async.forEachOf(tableData, function (value, i, callback) {
 
-                                                //Push the important aspects from each row into a new array
-                                                //Each object has `_16` because BBM has headers every round (16 rounds shown)
-                                                var rankedPlayer = {
-                                                    'rank': tableData[i].Rank_16,
-                                                    'value': tableData[i].Value_16,
-                                                    'name': tableData[i].Name_16
-                                                }
-                                                playerRankings.push(rankedPlayer);
-
-                                                var similarPlayer = stringSimilarity.findBestMatch(tableData[i].Name_16, playerNames);
-                                                var similarPlayerRating = similarPlayer.bestMatch.rating;
-
-                                                if (similarPlayerRating < 0.7) {
-                                                    pickupTargets.push(rankedPlayer);
-                                                }
-                                                callback();
-                                            }, function (err) {
-                                                //Set the session variables and reload the home page
-                                                req.session.teamData = teams;
-                                                req.session.playerData = players; 
-                                                req.session.playerRankings = playerRankings;
-                                                req.session.pickupTargets = pickupTargets;
-                                                return res.redirect('/');
-
-                                            })
-                                        });
+                                    //With now having each team key, go through each to get their full roster
+                                    async.forEachOf(teams, function(value, key, callback) {
+                                        yf.team.roster(teams[key].team_key,
+                                            function cb(err, playersData) {
+                                                var teamKey = teams[key].team_key;
+                                                if (err)
+                                                    console.log(err);
+                                                else
+                                                    //After having their roster, store each player into a single player array
+                                                    async.forEachOf(playersData.roster, function(value, playerKey, callback) {
+                                                        playerObject = {
+                                                            'team_key': teamKey,
+                                                            'player_key': playersData.roster[playerKey].player_key,
+                                                            'player_id': playersData.roster[playerKey].player_id,
+                                                            'first': playersData.roster[playerKey].name.first,
+                                                            'last': playersData.roster[playerKey].name.last,
+                                                            'full': playersData.roster[playerKey].name.full
+                                                        };
+                                                        players.push(playerObject);
+                                                        playerNames.push(playersData.roster[playerKey].name.full);
+                                                        callback();
+                                                    }, function(err) {
+                                                        if (err) console.error(err.message);
+                                                        callback();
+                                                    })
+                                            }
+                                        )
+                                    }, function(err) {
+                                        if (err) console.error(err.message);
+                                        getRankings();
+                                        return
+                                    });
                                 });
-                            });
                         }
                     )
                     callback(null, 2);
                 }
             ]);
         }
+
+        function getRankings() {
+            console.log('rankings');
+            //Get rankings for season
+            scraper.get('https://basketballmonster.com/playerrankings.aspx')
+                .then(function(tableData) {
+                    tableData = tableData[0];
+                    async.forEachOf(tableData, function(value, i, callback) {
+
+                        //Push the important aspects from each row into a new array
+                        //Each object has `_16` because BBM has headers every round (16 rounds shown)
+                        var rankedPlayer = {
+                            'rank': tableData[i].Rank_16,
+                            'value': tableData[i].Value_16,
+                            'name': tableData[i].Name_16
+                        }
+                        playerRankings.push(rankedPlayer);
+
+                        var similarPlayer = stringSimilarity.findBestMatch(tableData[i].Name_16, playerNames);
+                        var similarPlayerRating = similarPlayer.bestMatch.rating;
+
+                        if (similarPlayerRating < 0.7) {
+                            pickupTargets.push(rankedPlayer);
+                        }
+                        callback();
+                    }, function(err) {
+                        //Finding rankings for last 2 weeks
+                        var todayFullDate = new Date();
+                        var todayDate = ("0" + (todayFullDate.getMonth() + 1)).slice(-2);
+                        var twoWeeksFullDate = new Date(+new Date - 12096e5)
+                        var twoWeeksDate = ("0" + (twoWeeksFullDate.getMonth() + 1)).slice(-2);
+                        todayDate = todayDate + ("0" + todayFullDate.getDate()).slice(-2);
+                        todayDate = todayDate + twoWeeksFullDate.getUTCFullYear();
+                        twoWeeksDate = twoWeeksDate + ("0" + twoWeeksFullDate.getDate()).slice(-2);;
+                        twoWeeksDate = twoWeeksDate + twoWeeksFullDate.getUTCFullYear();
+
+                        scraper.get('https://basketballmonster.com/playerrankings.aspx?start=' + twoWeeksDate + '&end=' + todayDate)
+                            .then(function(tableData) {
+                                tableData = tableData[0];
+                                async.forEachOf(tableData, function(value, i, callback) {
+
+                                    //Push the important aspects from each row into a new array
+                                    //Each object has `_16` because BBM has headers every round (16 rounds shown)
+                                    var rankedPlayerTwoWeeks = {
+                                        'rank': tableData[i].Rank_16,
+                                        'value': tableData[i].Value_16,
+                                        'name': tableData[i].Name_16
+                                    }
+
+                                    playerRankingsTwoWeeks.push(rankedPlayerTwoWeeks);
+
+                                    var similarPlayer = stringSimilarity.findBestMatch(tableData[i].Name_16, playerNames);
+                                    var similarPlayerRating = similarPlayer.bestMatch.rating;
+
+                                    if (similarPlayerRating < 0.7) {
+                                        pickupTargetsTwoWeeks.push(rankedPlayerTwoWeeks);
+                                    }
+                                    callback();
+                                }, function(err) {
+                                        //Set the session variables and reload the home page
+                                        req.session.teamData = teams;
+                                        req.session.playerData = players;
+                                        req.session.playerRankings = playerRankings;
+                                        req.session.pickupTargets = pickupTargets;
+                                        req.session.playerRankingsTwoWeeks = playerRankingsTwoWeeks;
+                                        req.session.pickupTargetsTwoWeeks = pickupTargetsTwoWeeks;
+                                        return res.redirect('/');
+
+                                    })
+                            });
+                    })
+                });
+        }
     });
 });
 
+
+
 //Get the rankings from BBM for players
-app.get('/rankings', function(req, res) {
-    var playerRankings = [];
+// app.get('/rankings', function(req, res) {
+//     var playerRankings = [];
 
-    //scrape the site and store the data from the table
-    scraper.get('https://basketballmonster.com/playerrankings.aspx')
-        .then(function(tableData) {
-            tableData = tableData[0];
-            async.forEachOf(tableData, function (value, i, callback) {
+//     //scrape the site and store the data from the table
+//     scraper.get('https://basketballmonster.com/playerrankings.aspx')
+//         .then(function(tableData) {
+//             tableData = tableData[0];
+//             async.forEachOf(tableData, function (value, i, callback) {
 
-                //Push the important aspects from each row into a new array
-                //Each object has `_16` because BBM has headers every round (16 rounds shown)
-                playerRankings.push([{
-                    'rank': tableData[i].Rank_16,
-                    'value': tableData[i].Value_16,
-                    'name': tableData[i].Name_16
-                }])
-            })
-            
-            //Stringify the results and render the page with the data
-            playerRankings = JSON.stringify(playerRankings);
-            res.render('rankings', {
-                title: 'Rankings',
-                playerRankings
-            });
-        });
-});
+//                 //Push the important aspects from each row into a new array
+//                 //Each object has `_16` because BBM has headers every round (16 rounds shown)
+//                 playerRankings.push([{
+//                     'rank': tableData[i].Rank_16,
+//                     'value': tableData[i].Value_16,
+//                     'name': tableData[i].Name_16
+//                 }])
+//             })
+
+//             //Stringify the results and render the page with the data
+//             playerRankings = JSON.stringify(playerRankings);
+//             res.render('rankings', {
+//                 title: 'Rankings',
+//                 playerRankings
+//             });
+//         });
+// });
 
 app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));

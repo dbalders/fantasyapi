@@ -7,13 +7,21 @@ block content
   .container
     if user
       if pickupTargets
-        h3 Pickup Targets
+        h3 Pickup Targets Season
         for player in pickupTargets
           div.card
             div.long-text= player.name + " (rank: " + player.rank + ")"
+      if pickupTargetsTwoWeeks
+        h3 Pickup Targets Last 2 Weeks
+        for player in pickupTargetsTwoWeeks
+          div.card
+            div.long-text= player.name + " (rank: " + player.rank + ")"
       if playerRankings
-        h3 BBM Rankings
+        h3 BBM Season Rankings
         div.long-text #{playerRankings}
+      if playerRankingsTwoWeeks
+        h3 BBM Last 2 Weeks Rankings
+        div.long-text #{playerRankingsTwoWeeks}
       if teamData
         h3 yahoo teamData
         div.long-text #{teamData}
