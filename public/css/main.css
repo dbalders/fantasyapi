@@ -97,3 +97,11 @@ body {
 .long-text {
   word-wrap: break-word;
 }
+
+.targets {
+  display: flex;
+}
+
+.targets div {
+  margin: 0 auto;
+}

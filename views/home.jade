@@ -6,16 +6,19 @@ block content
 
   .container
     if user
-      if pickupTargets
-        h3 Pickup Targets Season
-        for player in pickupTargets
-          div.card
-            div.long-text= player.name + " (rank: " + player.rank + ")"
-      if pickupTargetsTwoWeeks
-        h3 Pickup Targets Last 2 Weeks
-        for player in pickupTargetsTwoWeeks
-          div.card
-            div.long-text= player.name + " (rank: " + player.rank + ")"
+      div.targets
+        if pickupTargets
+          div
+            h3 Pickup Targets Season
+            for player in pickupTargets
+              div.card
+                div.long-text= player.name + " (rank: " + player.rank + ")"
+        if pickupTargetsTwoWeeks
+          div
+            h3 Pickup Targets Last 2 Weeks
+            for player in pickupTargetsTwoWeeks
+              div.card
+                div.long-text= player.name + " (rank: " + player.rank + ")"
       if playerRankings
         h3 BBM Season Rankings
         div.long-text #{playerRankings}
