@@ -37,6 +37,8 @@ app.get('/', function(req, res) {
     var pickupTargets;
     var playerRankingsTwoWeeks;
     var pickupTargetsTwoWeeks;
+    var todayDate;
+    var twoWeeksDate;
 
     //get the data from the session that is returned from yahoo
     if (req.session.pickupTargets)
@@ -57,6 +59,12 @@ app.get('/', function(req, res) {
     if (req.session.playerRankingsTwoWeeks)
         playerRankingsTwoWeeks = JSON.stringify(req.session.playerRankingsTwoWeeks);
 
+    if (req.session.todayDate)
+        todayDate = req.session.todayDate;
+
+    if (req.session.twoWeeksDate)
+        twoWeeksDate = req.session.twoWeeksDate;
+    
     //render the home page
     res.render('home', {
         title: 'Fantasy Pickups',
@@ -66,7 +74,9 @@ app.get('/', function(req, res) {
         playerRankings: playerRankings,
         pickupTargets: pickupTargets,
         playerRankingsTwoWeeks: playerRankingsTwoWeeks,
-        pickupTargetsTwoWeeks: pickupTargetsTwoWeeks
+        pickupTargetsTwoWeeks: pickupTargetsTwoWeeks,
+        todayDate: todayDate,
+        twoWeeksDate: twoWeeksDate
     });
 });
 
@@ -266,6 +276,8 @@ app.get('/auth/yahoo/callback', function(req, res) {
                                         req.session.pickupTargets = pickupTargets;
                                         req.session.playerRankingsTwoWeeks = playerRankingsTwoWeeks;
                                         req.session.pickupTargetsTwoWeeks = pickupTargetsTwoWeeks;
+                                        req.session.todayDate = todayDate;
+                                        req.session.twoWeeksDate = twoWeeksDate;
                                         return res.redirect('/');
 
                                     })
