@@ -76,10 +76,22 @@ exports.getYahooData = function(req, res, options) {
                                 }, function(err) {
                                     if (err) console.error(err.message);
 
-                                    Teams.create({
-                                        leagueId: leagueId,
-                                        teams: teams
-                                    });
+                                    Teams.findOneAndUpdate({
+                                            leagueId: leagueId
+                                        },
+
+                                        {
+                                            leagueId: leagueId,
+                                            teams: teams
+                                        }, {
+                                            upsert: true
+                                        },
+                                        function(err, doc) {
+                                            // if (err) return 
+                                            if (doc !== null) {
+                                                doc.teams = teams;
+                                            }
+                                        });
 
                                     //With now having each team key, go through each to get their full roster
                                     async.forEachOf(teams, function(value, key, callback) {
@@ -179,23 +191,13 @@ exports.getRankings = function() {
 }
 
 function getPickups(leagueId, playerNames) {
-    var pickupTargets = [];
     var rankingsSeason = [];
     var rankingsTwoWeeks = [];
-
-    PickupTargetsSeason.remove({}, function(err, task) {
-        if (err)
-            res.send(err);
-    });
-
-    PickupTargetsTwoWeeks.remove({}, function(err, task) {
-        if (err)
-            res.send(err);
-    });
 
     RankingsSeason.find({}, function(err, players) {
         if (err)
             res.send(err);
+        var pickupTargets = [];
         async.forEachOf(players, function(value, i, callback) {
 
             var similarPlayer = stringSimilarity.findBestMatch(players[i].fullName, playerNames);
@@ -207,17 +209,36 @@ function getPickups(leagueId, playerNames) {
 
             callback();
         }, function(err) {
-            PickupTargetsSeason.create({
-            	leagueId: leagueId,
-            	players: pickupTargets
-            })
-        	return
+        	if (err)
+            	res.send(err);
+
+            PickupTargetsSeason.findOneAndUpdate({
+                    leagueId: leagueId
+                },
+
+                {
+                    leagueId: leagueId,
+                    players: pickupTargets
+                }, {
+                    upsert: true
+                },
+                function(err, doc) {
+                	if (err)
+            			res.send(err);
+
+                    if (doc !== null) {
+                        doc.players = pickupTargets;
+                    }
+                });
+            return
         })
     });
 
     RankingsTwoWeeks.find({}, function(err, players) {
         if (err)
             res.send(err);
+        var pickupTargets = [];
+        console.log(players)
         async.forEachOf(players, function(value, i, callback) {
 
             var similarPlayer = stringSimilarity.findBestMatch(players[i].fullName, playerNames);
@@ -229,35 +250,28 @@ function getPickups(leagueId, playerNames) {
 
             callback();
         }, function(err) {
-            PickupTargetsTwoWeeks.create({
-            	leagueId: leagueId,
-            	players: pickupTargets
-            })
-        	return
+        	if (err)
+            	res.send(err);
+
+            PickupTargetsTwoWeeks.findOneAndUpdate({
+                    leagueId: leagueId
+                },
+
+                {
+                    leagueId: leagueId,
+                    players: pickupTargets
+                }, {
+                    upsert: true
+                },
+                function(err, doc) {
+                	if (err)
+            			res.send(err);
+
+                    if (doc !== null) {
+                        doc.players = pickupTargets;
+                    }
+                });
+            return
         })
     });
-
-
-
-    // for (i = 0; i < rankingsSeason.length; i++) {
-    //     var similarPlayer = stringSimilarity.findBestMatch(rankingsSeason[i].fullName, playerNames);
-    //     var similarPlayerRating = similarPlayer.bestMatch.rating;
-
-    //     if (similarPlayerRating < 0.7) {
-    //         RankingsTwoWeeks.create({
-    //             'leagueId': leagueId,
-    //             'value': tableData[i].Value_16,
-    //             'fullName': tableData[i].Name_16
-    //         });
-    //     }
-    // }
-
-    // for (i = 0; i < rankingsTwoWeeks.length; i++) {
-    //     var similarPlayer = stringSimilarity.findBestMatch(rankingsTwoWeeks[i].fullName, playerNames);
-    //     var similarPlayerRating = similarPlayer.bestMatch.rating;
-
-    //     if (similarPlayerRating < 0.7) {
-    //         pickupTargetsSeason.push(rankedPlayer);
-    //     }
-    // }
 }

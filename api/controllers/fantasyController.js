@@ -72,7 +72,7 @@ exports.erase_current_data = function(req, res) {
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    RankingsSeason.remove({}, function(err, task) {
+    RankingsTwoWeeks.remove({}, function(err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
@@ -88,6 +88,10 @@ exports.erase_current_data = function(req, res) {
     });
 
     PickupTargetsTwoWeeks.remove({}, function(err, task) {
+        if (err)
+            res.send(err);
+    });
+    Teams.remove({}, function(err, task) {
         if (err)
             res.send(err);
     });
