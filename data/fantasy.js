@@ -35,7 +35,6 @@ exports.getYahooData = function(req, res, options) {
             req.session.token = accessToken;
 
             yf.setUserToken(accessToken);
-            res.redirect('/');
 
             //get the current nba league that the user is in
             //This currently only works for one league, expand later to multiple leagues
@@ -51,7 +50,8 @@ exports.getYahooData = function(req, res, options) {
 
                             //Now that we have overall ID, get user specific league ID
                             yf.user.game_leagues(leagueId, function cb(err, data) {
-                                leagueId = data.games[0].leagues[0][0].league_key
+                                leagueId = data.games[0].leagues[0][0].league_key;
+                                res.cookie('leagueId', leagueId);
                                 callback(null, 1)
                             })
                         })
@@ -72,14 +72,19 @@ exports.getYahooData = function(req, res, options) {
                                     }
                                     teams.push(currentTeam);
 
+                                    if (data.teams[teamKey].is_owned_by_current_login !== undefined) {
+                                        res.cookie('teamId', data.teams[teamKey].is_owned_by_current_login)
+                                        res.redirect('/');
+                                    }
+                                    
+
                                     callback();
                                 }, function(err) {
                                     if (err) console.error(err.message);
-
+ 
                                     Teams.findOneAndUpdate({
                                             leagueId: leagueId
                                         },
-
                                         {
                                             leagueId: leagueId,
                                             teams: teams
@@ -124,10 +129,22 @@ exports.getYahooData = function(req, res, options) {
                                     }, function(err) {
                                         if (err) console.error(err.message);
                                         //Put all the players into the database
-                                        Players.create({
+                                        Players.findOneAndUpdate({
+                                            leagueId: leagueId
+                                        },
+                                        {
                                             leagueId: leagueId,
                                             players: players
+                                        }, {
+                                            upsert: true
+                                        },
+                                        function(err, doc) {
+                                            // if (err) return 
+                                            if (doc !== null) {
+                                                doc.players = players;
+                                            }
                                         });
+                                        
                                         getPickups(leagueId, playerNames);
                                         return
                                     });
@@ -215,7 +232,6 @@ function getPickups(leagueId, playerNames) {
             PickupTargetsSeason.findOneAndUpdate({
                     leagueId: leagueId
                 },
-
                 {
                     leagueId: leagueId,
                     players: pickupTargets
@@ -238,7 +254,6 @@ function getPickups(leagueId, playerNames) {
         if (err)
             res.send(err);
         var pickupTargets = [];
-        console.log(players)
         async.forEachOf(players, function(value, i, callback) {
 
             var similarPlayer = stringSimilarity.findBestMatch(players[i].fullName, playerNames);
@@ -256,7 +271,6 @@ function getPickups(leagueId, playerNames) {
             PickupTargetsTwoWeeks.findOneAndUpdate({
                     leagueId: leagueId
                 },
-
                 {
                     leagueId: leagueId,
                     players: pickupTargets

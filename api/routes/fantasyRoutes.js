@@ -17,6 +17,11 @@ module.exports = function(app) {
 		// .post(fantasy.get_all_bets)
 		// .delete(fantasy.delete_all_bets);
 
+	app.route('/api/teams/:leagueId/:teamKey')
+		.get(fantasy.list_teams_players)
+		// .post(fantasy.get_all_bets)
+		// .delete(fantasy.delete_all_bets);
+
 	app.route('/api/rankings/season/')
 		.get(fantasy.list_season_rankings)
 		// .post(fantasy.get_all_bets)
