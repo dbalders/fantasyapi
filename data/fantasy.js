@@ -76,16 +76,15 @@ exports.getYahooData = function(req, res, options) {
                                         res.cookie('teamId', data.teams[teamKey].is_owned_by_current_login)
                                         res.redirect('/');
                                     }
-                                    
+
 
                                     callback();
                                 }, function(err) {
                                     if (err) console.error(err.message);
- 
+
                                     Teams.findOneAndUpdate({
                                             leagueId: leagueId
-                                        },
-                                        {
+                                        }, {
                                             leagueId: leagueId,
                                             teams: teams
                                         }, {
@@ -130,21 +129,20 @@ exports.getYahooData = function(req, res, options) {
                                         if (err) console.error(err.message);
                                         //Put all the players into the database
                                         Players.findOneAndUpdate({
-                                            leagueId: leagueId
-                                        },
-                                        {
-                                            leagueId: leagueId,
-                                            players: players
-                                        }, {
-                                            upsert: true
-                                        },
-                                        function(err, doc) {
-                                            // if (err) return 
-                                            if (doc !== null) {
-                                                doc.players = players;
-                                            }
-                                        });
-                                        
+                                                leagueId: leagueId
+                                            }, {
+                                                leagueId: leagueId,
+                                                players: players
+                                            }, {
+                                                upsert: true
+                                            },
+                                            function(err, doc) {
+                                                // if (err) return 
+                                                if (doc !== null) {
+                                                    doc.players = players;
+                                                }
+                                            });
+
                                         getPickups(leagueId, playerNames);
                                         return
                                     });
@@ -172,7 +170,16 @@ exports.getRankings = function() {
                 RankingsSeason.create({
                     'rank': tableData[i].Rank_16,
                     'value': tableData[i].Value_16,
-                    'fullName': tableData[i].Name_16
+                    'fullName': tableData[i].Name_16,
+                    'pV': tableData[i].pV_16,
+                    '3V': tableData[i]['3/g_16'],
+                    'rV': tableData[i].rV_16,
+                    'aV': tableData[i].aV_16,
+                    'sV': tableData[i].sV_16,
+                    'bV': tableData[i].bV_16,
+                    'fg%V': tableData[i]['fg%V_16'],
+                    'ft%V': tableData[i]['ft%V_16'],
+                    'toV': tableData[i].toV_16
                 });
 
                 callback();
@@ -195,7 +202,16 @@ exports.getRankings = function() {
                             RankingsTwoWeeks.create({
                                 'rank': tableData[i].Rank_16,
                                 'value': tableData[i].Value_16,
-                                'fullName': tableData[i].Name_16
+                                'fullName': tableData[i].Name_16,
+                                'pV': tableData[i].pV_16,
+                                '3V': tableData[i]['3/g_16'],
+                                'rV': tableData[i].rV_16,
+                                'aV': tableData[i].aV_16,
+                                'sV': tableData[i].sV_16,
+                                'bV': tableData[i].bV_16,
+                                'fg%V': tableData[i]['fg%V_16'],
+                                'ft%V': tableData[i]['ft%V_16'],
+                                'toV': tableData[i].toV_16
                             });
 
                             callback();
@@ -226,21 +242,20 @@ function getPickups(leagueId, playerNames) {
 
             callback();
         }, function(err) {
-        	if (err)
-            	res.send(err);
+            if (err)
+                res.send(err);
 
             PickupTargetsSeason.findOneAndUpdate({
                     leagueId: leagueId
-                },
-                {
+                }, {
                     leagueId: leagueId,
                     players: pickupTargets
                 }, {
                     upsert: true
                 },
                 function(err, doc) {
-                	if (err)
-            			res.send(err);
+                    if (err)
+                        res.send(err);
 
                     if (doc !== null) {
                         doc.players = pickupTargets;
@@ -265,21 +280,20 @@ function getPickups(leagueId, playerNames) {
 
             callback();
         }, function(err) {
-        	if (err)
-            	res.send(err);
+            if (err)
+                res.send(err);
 
             PickupTargetsTwoWeeks.findOneAndUpdate({
                     leagueId: leagueId
-                },
-                {
+                }, {
                     leagueId: leagueId,
                     players: pickupTargets
                 }, {
                     upsert: true
                 },
                 function(err, doc) {
-                	if (err)
-            			res.send(err);
+                    if (err)
+                        res.send(err);
 
                     if (doc !== null) {
                         doc.players = pickupTargets;

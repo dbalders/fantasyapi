@@ -47,6 +47,33 @@ var RankingsSeasonSchema = new Schema({
     },
     value: {
         type: Number
+    },
+    pV: {
+        type: Number
+    },
+    rV: {
+        type: Number
+    },
+    aV: {
+        type: Number
+    },
+    sV: {
+        type: Number
+    },
+    bV: {
+        type: Number
+    },
+    'fg%V': {
+        type: Number
+    },
+    'ft%V': {
+        type: Number
+    },
+    toV: {
+        type: Number
+    },
+    '3V': {
+        type: Number
     }
 });
 
@@ -58,6 +85,33 @@ var RankingsTwoWeeksSchema = new Schema({
         type: Number
     },
     value: {
+        type: Number
+    },
+    pV: {
+        type: Number
+    },
+    rV: {
+        type: Number
+    },
+    aV: {
+        type: Number
+    },
+    sV: {
+        type: Number
+    },
+    bV: {
+        type: Number
+    },
+    'fg%V': {
+        type: Number
+    },
+    'ft%V': {
+        type: Number
+    },
+    toV: {
+        type: Number
+    },
+    '3V': {
         type: Number
     }
 });
