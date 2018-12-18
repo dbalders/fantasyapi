@@ -105,6 +105,7 @@ exports.getYahooData = function(req, res, options) {
                                                 if (err)
                                                     console.log(err);
                                                 else
+                                                    var teamPlayers = [];
                                                     //After having their roster, store each player into a single player array
                                                     async.forEachOf(playersData.roster, function(value, playerKey, callback) {
                                                         playerObject = {
@@ -116,11 +117,13 @@ exports.getYahooData = function(req, res, options) {
                                                             'full': playersData.roster[playerKey].name.full
                                                         };
                                                         players.push(playerObject);
+                                                        teamPlayers.push(playerObject);
                                                         //push also to specific player name for string similarity later
                                                         playerNames.push(playersData.roster[playerKey].name.full);
                                                         callback();
                                                     }, function(err) {
                                                         if (err) console.error(err.message);
+                                                        console.log('team' + teamKey)
                                                         callback();
                                                     })
                                             }
@@ -238,6 +241,8 @@ function getPickups(leagueId, playerNames) {
 
             if (similarPlayerRating < 0.7) {
                 pickupTargets.push(players[i]);
+            } else {
+                // console.log(players[i])
             }
 
             callback();
