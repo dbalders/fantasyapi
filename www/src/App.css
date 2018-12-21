@@ -1,0 +1,41 @@
+.flex {
+    display: flex;
+    -webkit-display: flex;
+}
+
+.flex-one {
+    flex: 1;
+    -webkit-flex: 1;
+}
+
+.flex-vertical {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+}
+
+.hide {
+    display: none;
+}
+
+.navbar {
+    height: 75px;
+    background-color: #333;
+    width: 100%;
+}
+
+#sign-in {
+    margin: auto 15px auto auto;
+    border: 0;
+    background-color: #477DCA;
+    font-weight: bold;
+    padding:15px;
+    border-radius: 15px;
+    text-decoration: none;
+}
+
+#sign-in a {
+    text-decoration: none;
+    color: white;
+}

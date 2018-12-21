@@ -34,3 +34,6 @@ node_modules
 
 # conf.js
 conf.js
+package-lock.json
+*.lock
+/www/build
