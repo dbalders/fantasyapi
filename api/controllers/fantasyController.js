@@ -45,7 +45,6 @@ exports.list_teams = function(req, res) {
 
 exports.list_teams_players = function(req, res) {
     var teamKey = req.params.leagueId + '.t.' + req.params.teamKey;
-    console.log(teamKey);
     Players.find({ leagueId: req.params.leagueId }, function(err, players) {
         if (err)
             res.send(err);

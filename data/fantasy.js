@@ -74,7 +74,6 @@ exports.getYahooData = function(req, res, options) {
 
                                     if (data.teams[teamKey].is_owned_by_current_login !== undefined) {
                                         res.cookie('teamId', data.teams[teamKey].is_owned_by_current_login)
-                                        res.redirect('/');
                                     }
 
 
@@ -147,6 +146,7 @@ exports.getYahooData = function(req, res, options) {
                                             });
 
                                         getPickups(leagueId, playerNames);
+                                        res.redirect('/');
                                         return
                                     });
                                 });
