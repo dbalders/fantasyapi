@@ -97,3 +97,12 @@ code {
 .team-avg-header {
 	margin: auto;
 }
+
+.ReactTable {
+	min-height: 56px;
+}
+
+.ReactTable .rt-noData {
+	top: 75%;
+	padding: 0;
+}
