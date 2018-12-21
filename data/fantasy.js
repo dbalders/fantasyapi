@@ -73,7 +73,7 @@ exports.getYahooData = function(req, res, options) {
                                     teams.push(currentTeam);
 
                                     if (data.teams[teamKey].is_owned_by_current_login !== undefined) {
-                                        res.cookie('teamId', data.teams[teamKey].is_owned_by_current_login)
+                                        res.cookie('teamId', data.teams[teamKey].team_id)
                                     }
 
 
