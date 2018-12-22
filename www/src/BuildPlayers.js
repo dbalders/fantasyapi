@@ -494,7 +494,7 @@ export class BuildPlayers extends Component {
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
-                    // defaultSortDesc={true}
+                    defaultSortDesc={true}
                     defaultSorted={[{
                         id: 'rank',
                         desc: false
@@ -519,7 +519,7 @@ export class BuildPlayers extends Component {
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
-                    // defaultSortDesc={true}
+                    defaultSortDesc={true}
                     defaultSorted={[{
                         id: 'rank',
                         desc: false
@@ -543,6 +543,7 @@ export class BuildPlayers extends Component {
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
+                    defaultSortDesc={true}
                     defaultSorted={[{
                         id: 'rank',
                         desc: false
@@ -556,6 +557,7 @@ export class BuildPlayers extends Component {
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
+                    defaultSortDesc={true}
                     defaultSorted={[{
                         id: 'rank',
                         desc: false
