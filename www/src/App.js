@@ -1,44 +1,37 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BuildPlayers } from './BuildPlayers';
+import Cookies from 'js-cookie';
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            navText: ''
+        }
+    }
 
     componentDidMount() {
-    //     this.callApi()
-    //         .then(results => {
-    //             //Put the game data into a variable to put in  the state
-    //             let playerData = results.data;
-    //             //Go over each item and add the 6 voting categories for voting css
-    //             playerData.map((playerData, i) => {
-    //                 gameData.voted = [false, false, false, false, false, false];
-    //             });
-    //             this.setState({ playerData: playerData }).bind(this)
-    //         })
-    //         .catch(err => console.log(err));
-    // }
-
-    // callApi = async () => {
-    //     const response = await fetch('/api/bets');
-    //     const body = await response.json();
-
-    //     if (response.status !== 200) throw Error(body.message);
-
-    //     return body;
-    };
+        var teamId = Cookies.get('teamId');
+        if (teamId !== undefined) {
+            this.setState({ navText: 'Refresh Yahoo Data' });
+        } else {
+            this.setState({ navText: 'Sign in with Yahoo' });
+        }
+    }
 
     render() {
         return (
             <div className="site-container flex-vertical">
                 <div className="navbar flex">
                     <div id="sign-in">
-                        <a href="/auth/yahoo">Sign in with Yahoo</a>
+                        <a href="/auth/yahoo">{this.state.navText}</a>
                     </div>
                 </div>
                 <BuildPlayers/>
             </div>
         );
     }
-}
+};
 
 export default App;
