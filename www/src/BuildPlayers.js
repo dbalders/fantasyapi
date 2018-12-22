@@ -16,7 +16,9 @@ export class BuildPlayers extends Component {
             teamStatsSeason: [],
             teamStatsTwoWeeks: [],
             teamStatsSeasonAvg: [],
-            teamStatsTwoWeeksAvg: []
+            teamStatsTwoWeeksAvg: [],
+            playerPickupsSeason: [],
+            playerPickupsTwoWeeks: []
         }
     }
 
@@ -88,9 +90,13 @@ export class BuildPlayers extends Component {
         var teamStatsTwoWeeks = [];
         var teamStatsSeasonAvg = [];
         var teamStatsTwoWeeksAvg = [];
+        var teamPickupsSeason = [];
+        var teamPickupsTwoWeeks = [];
         var teamPlayers = this.state.teamPlayers;
         var playerRankingsSeason = this.state.playerRankingsSeason;
         var playerRankingsTwoWeeks = this.state.playerRankingsTwoWeeks;
+        var playerPickupsSeason = this.state.playerTargetsSeason;
+        var playerPickupsTwoWeeks = this.state.playerTargetsTwoWeeks;
 
         //for each player if string similarity > .7 in player rankings, then return
         for (var i = 0; i < teamPlayers.length; i++) {
@@ -113,21 +119,41 @@ export class BuildPlayers extends Component {
                 }
             }
 
-            for (var k = 0; k < playerRankingsTwoWeeks.length; k++) {
-                var similarPlayerTwoWeeks = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsTwoWeeks[k].fullName);
+            for (var j = 0; j < playerRankingsTwoWeeks.length; j++) {
+                var similarPlayerTwoWeeks = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsTwoWeeks[j].fullName);
                 if (similarPlayerTwoWeeks > 0.7) {
-                    teamStatsTwoWeeks.push(playerRankingsTwoWeeks[k]);
+                    teamStatsTwoWeeks.push(playerRankingsTwoWeeks[j]);
                     teamStatsTwoWeeksAvg = {
-                        pV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.pV + playerRankingsTwoWeeks[k].pV) : playerRankingsTwoWeeks[k].pV,
-                        '3V': (teamStatsTwoWeeksAvg['3V']) ? (teamStatsTwoWeeksAvg['3V'] + playerRankingsTwoWeeks[k]['3V']) : playerRankingsTwoWeeks[k]['3V'],
-                        aV: (teamStatsTwoWeeksAvg.aV) ? (teamStatsTwoWeeksAvg.aV + playerRankingsTwoWeeks[k].aV) : playerRankingsTwoWeeks[k].aV,
-                        rV: (teamStatsTwoWeeksAvg.rV) ? (teamStatsTwoWeeksAvg.rV + playerRankingsTwoWeeks[k].rV) : playerRankingsTwoWeeks[k].rV,
-                        sV: (teamStatsTwoWeeksAvg.sV) ? (teamStatsTwoWeeksAvg.sV + playerRankingsTwoWeeks[k].sV) : playerRankingsTwoWeeks[k].sV,
-                        bV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.bV + playerRankingsTwoWeeks[k].bV) : playerRankingsTwoWeeks[k].bV,
-                        'fg%V': (teamStatsTwoWeeksAvg['fg%V']) ? (teamStatsTwoWeeksAvg['fg%V'] + playerRankingsTwoWeeks[k]['fg%V']) : playerRankingsTwoWeeks[k]['fg%V'],
-                        'ft%V': (teamStatsTwoWeeksAvg['ft%V']) ? (teamStatsTwoWeeksAvg['ft%V'] + playerRankingsTwoWeeks[k]['ft%V']) : playerRankingsTwoWeeks[k]['ft%V'],
-                        toV: (teamStatsTwoWeeksAvg.toV) ? (teamStatsTwoWeeksAvg.toV + playerRankingsTwoWeeks[k].toV) : playerRankingsTwoWeeks[k].toV
+                        pV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.pV + playerRankingsTwoWeeks[j].pV) : playerRankingsTwoWeeks[j].pV,
+                        '3V': (teamStatsTwoWeeksAvg['3V']) ? (teamStatsTwoWeeksAvg['3V'] + playerRankingsTwoWeeks[j]['3V']) : playerRankingsTwoWeeks[j]['3V'],
+                        aV: (teamStatsTwoWeeksAvg.aV) ? (teamStatsTwoWeeksAvg.aV + playerRankingsTwoWeeks[j].aV) : playerRankingsTwoWeeks[j].aV,
+                        rV: (teamStatsTwoWeeksAvg.rV) ? (teamStatsTwoWeeksAvg.rV + playerRankingsTwoWeeks[j].rV) : playerRankingsTwoWeeks[j].rV,
+                        sV: (teamStatsTwoWeeksAvg.sV) ? (teamStatsTwoWeeksAvg.sV + playerRankingsTwoWeeks[j].sV) : playerRankingsTwoWeeks[j].sV,
+                        bV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.bV + playerRankingsTwoWeeks[j].bV) : playerRankingsTwoWeeks[j].bV,
+                        'fg%V': (teamStatsTwoWeeksAvg['fg%V']) ? (teamStatsTwoWeeksAvg['fg%V'] + playerRankingsTwoWeeks[j]['fg%V']) : playerRankingsTwoWeeks[j]['fg%V'],
+                        'ft%V': (teamStatsTwoWeeksAvg['ft%V']) ? (teamStatsTwoWeeksAvg['ft%V'] + playerRankingsTwoWeeks[j]['ft%V']) : playerRankingsTwoWeeks[j]['ft%V'],
+                        toV: (teamStatsTwoWeeksAvg.toV) ? (teamStatsTwoWeeksAvg.toV + playerRankingsTwoWeeks[j].toV) : playerRankingsTwoWeeks[j].toV
                     }
+                    break
+                }
+            }
+        }
+
+        for (var i = 0; i < playerPickupsSeason.length; i++) {
+            for (var j = 0; j < playerRankingsSeason.length; j++) {
+                var similarTargetsSeason = stringSimilarity.compareTwoStrings(playerPickupsSeason[i].fullName, playerRankingsSeason[j].fullName);
+                if (similarTargetsSeason > 0.7) {
+                    teamPickupsSeason.push(playerRankingsSeason[j]);
+                    break
+                }
+            }
+        }
+
+        for (var i = 0; i < playerPickupsTwoWeeks.length; i++) {
+            for (var j = 0; j < playerRankingsTwoWeeks.length; j++) {
+                var similarTargetsTwoWeeks = stringSimilarity.compareTwoStrings(playerPickupsTwoWeeks[i].fullName, playerRankingsTwoWeeks[j].fullName);
+                if (similarTargetsTwoWeeks > 0.7) {
+                    teamPickupsTwoWeeks.push(playerRankingsTwoWeeks[j]);
                     break
                 }
             }
@@ -135,30 +161,32 @@ export class BuildPlayers extends Component {
 
         this.setState({ teamStatsSeason: teamStatsSeason });
         this.setState({ teamStatsTwoWeeks: teamStatsTwoWeeks });
+        this.setState({ playerPickupsSeason: playerPickupsSeason });
+        this.setState({ playerPickupsTwoWeeks: playerPickupsTwoWeeks });
 
         teamStatsSeasonAvg = {
-            pV: Number(teamStatsSeasonAvg.pV/teamStatsSeason.length).toFixed(2),
-            '3V': Number(teamStatsSeasonAvg['3V']/teamStatsSeason.length).toFixed(2),
-            aV: Number(teamStatsSeasonAvg.aV/teamStatsSeason.length).toFixed(2),
-            rV: Number(teamStatsSeasonAvg.rV/teamStatsSeason.length).toFixed(2),
-            sV: Number(teamStatsSeasonAvg.sV/teamStatsSeason.length).toFixed(2),
-            bV: Number(teamStatsSeasonAvg.bV/teamStatsSeason.length).toFixed(2),
-            'fg%V': Number(teamStatsSeasonAvg['fg%V']/teamStatsSeason.length).toFixed(2),
-            'ft%V': Number(teamStatsSeasonAvg['ft%V']/teamStatsSeason.length).toFixed(2),
-            toV: Number(teamStatsSeasonAvg.toV/teamStatsSeason.length).toFixed(2)
+            pV: Number(teamStatsSeasonAvg.pV / teamStatsSeason.length).toFixed(2),
+            '3V': Number(teamStatsSeasonAvg['3V'] / teamStatsSeason.length).toFixed(2),
+            aV: Number(teamStatsSeasonAvg.aV / teamStatsSeason.length).toFixed(2),
+            rV: Number(teamStatsSeasonAvg.rV / teamStatsSeason.length).toFixed(2),
+            sV: Number(teamStatsSeasonAvg.sV / teamStatsSeason.length).toFixed(2),
+            bV: Number(teamStatsSeasonAvg.bV / teamStatsSeason.length).toFixed(2),
+            'fg%V': Number(teamStatsSeasonAvg['fg%V'] / teamStatsSeason.length).toFixed(2),
+            'ft%V': Number(teamStatsSeasonAvg['ft%V'] / teamStatsSeason.length).toFixed(2),
+            toV: Number(teamStatsSeasonAvg.toV / teamStatsSeason.length).toFixed(2)
         }
-        
+
 
         teamStatsTwoWeeksAvg = {
-            pV: Number(teamStatsTwoWeeksAvg.pV/teamStatsTwoWeeks.length).toFixed(2),
-            '3V': Number(teamStatsTwoWeeksAvg['3V']/teamStatsTwoWeeks.length).toFixed(2),
-            aV: Number(teamStatsTwoWeeksAvg.aV/teamStatsTwoWeeks.length).toFixed(2),
-            rV: Number(teamStatsTwoWeeksAvg.rV/teamStatsTwoWeeks.length).toFixed(2),
-            sV: Number(teamStatsTwoWeeksAvg.sV/teamStatsTwoWeeks.length).toFixed(2),
-            bV: Number(teamStatsTwoWeeksAvg.bV/teamStatsTwoWeeks.length).toFixed(2),
-            'fg%V': Number(teamStatsTwoWeeksAvg['fg%V']/teamStatsTwoWeeks.length).toFixed(2),
-            'ft%V': Number(teamStatsTwoWeeksAvg['ft%V']/teamStatsTwoWeeks.length).toFixed(2),
-            toV: Number(teamStatsTwoWeeksAvg.toV/teamStatsTwoWeeks.length).toFixed(2)
+            pV: Number(teamStatsTwoWeeksAvg.pV / teamStatsTwoWeeks.length).toFixed(2),
+            '3V': Number(teamStatsTwoWeeksAvg['3V'] / teamStatsTwoWeeks.length).toFixed(2),
+            aV: Number(teamStatsTwoWeeksAvg.aV / teamStatsTwoWeeks.length).toFixed(2),
+            rV: Number(teamStatsTwoWeeksAvg.rV / teamStatsTwoWeeks.length).toFixed(2),
+            sV: Number(teamStatsTwoWeeksAvg.sV / teamStatsTwoWeeks.length).toFixed(2),
+            bV: Number(teamStatsTwoWeeksAvg.bV / teamStatsTwoWeeks.length).toFixed(2),
+            'fg%V': Number(teamStatsTwoWeeksAvg['fg%V'] / teamStatsTwoWeeks.length).toFixed(2),
+            'ft%V': Number(teamStatsTwoWeeksAvg['ft%V'] / teamStatsTwoWeeks.length).toFixed(2),
+            toV: Number(teamStatsTwoWeeksAvg.toV / teamStatsTwoWeeks.length).toFixed(2)
         }
 
         //Put the [] around the arrays so the table below can know its a single row
@@ -167,71 +195,294 @@ export class BuildPlayers extends Component {
     }
 
     render() {
+        const brightGreen = '#3ffc3f';
+        const mediumGreen = '#85fc85';
+        const lightGreen = '#b9ffb9';
+        const lightRed = '#ffdfdf';
+        const mediumRed = '#ffb8b8';
+        const brightRed = '#ff8282';
         const columnNames = [{
             Header: 'Rank',
-            accessor: 'rank' // String-based value accessors!
+            accessor: 'rank'
         }, {
             Header: 'Value',
-            accessor: 'value' // String-based value accessors!
+            accessor: 'value'
         }, {
             Header: 'Name',
-            accessor: 'fullName' // String-based value accessors!
+            accessor: 'fullName',
+            width: 200
         }, {
             Header: 'Points',
-            accessor: 'pV' // String-based value accessors!
+            accessor: 'pV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.pV > 2 ? brightGreen :
+                        rowInfo.row.pV > 1 ? mediumGreen : 
+                        rowInfo.row.pV > .5 ? lightGreen : 
+                        rowInfo.row.pV < 0 && rowInfo.row.pV > -1 ? lightRed :
+                        rowInfo.row.pV < -1 && rowInfo.row.pV > -2 ? mediumRed : 
+                        rowInfo.row.pV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: '3s',
-            accessor: '3V' // String-based value accessors!
+            accessor: '3V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['3V'] > 2 ? brightGreen :
+                        rowInfo.row['3V'] > 1 ? mediumGreen : 
+                        rowInfo.row['3V'] > .5 ? lightGreen : 
+                        rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -1 ? lightRed :
+                        rowInfo.row['3V'] < -1 && rowInfo.row['3V'] > -2 ? mediumRed : 
+                        rowInfo.row['3V'] < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Rebounds',
-            accessor: 'rV' // String-based value accessors!
+            accessor: 'rV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.rV > 2 ? brightGreen :
+                        rowInfo.row.rV > 1 ? mediumGreen : 
+                        rowInfo.row.rV > .5 ? lightGreen : 
+                        rowInfo.row.rV < 0 && rowInfo.row.rV > -1 ? lightRed :
+                        rowInfo.row.rV < -1 && rowInfo.row.rV > -2 ? mediumRed : 
+                        rowInfo.row.rV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Assists',
-            accessor: 'aV' // String-based value accessors!
+            accessor: 'aV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.aV > 2 ? brightGreen :
+                        rowInfo.row.aV > 1 ? mediumGreen : 
+                        rowInfo.row.aV > .5 ? lightGreen : 
+                        rowInfo.row.aV < 0 && rowInfo.row.aV > -1 ? lightRed :
+                        rowInfo.row.aV < -1 && rowInfo.row.aV > -2 ? mediumRed : 
+                        rowInfo.row.aV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Steals',
-            accessor: 'sV' // String-based value accessors!
+            accessor: 'sV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.sV > 2 ? brightGreen :
+                        rowInfo.row.sV > 1 ? mediumGreen : 
+                        rowInfo.row.sV > .5 ? lightGreen : 
+                        rowInfo.row.sV < 0 && rowInfo.row.sV > -1 ? lightRed :
+                        rowInfo.row.sV < -1 && rowInfo.row.sV > -2 ? mediumRed : 
+                        rowInfo.row.sV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Blocks',
-            accessor: 'bV' // String-based value accessors!
+            accessor: 'bV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.bV > 2 ? brightGreen :
+                        rowInfo.row.bV > 1 ? mediumGreen : 
+                        rowInfo.row.bV > .5 ? lightGreen : 
+                        rowInfo.row.bV < 0 && rowInfo.row.bV > -1 ? lightRed :
+                        rowInfo.row.bV < -1 && rowInfo.row.bV > -2 ? mediumRed : 
+                        rowInfo.row.bV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'FG%',
-            accessor: 'fg%V' // String-based value accessors!
+            accessor: 'fg%V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['fg%V'] > 2 ? brightGreen :
+                        rowInfo.row['fg%V'] > 1 ? mediumGreen : 
+                        rowInfo.row['fg%V'] > .5 ? lightGreen : 
+                        rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -1 ? lightRed :
+                        rowInfo.row['fg%V'] < -1 && rowInfo.row['fg%V'] > -2 ? mediumRed : 
+                        rowInfo.row['fg%V'] < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'FT%',
-            accessor: 'ft%V' // String-based value accessors!
+            accessor: 'ft%V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['ft%V'] > 2 ? brightGreen :
+                        rowInfo.row['ft%V'] > 1 ? mediumGreen : 
+                        rowInfo.row['ft%V'] > .5 ? lightGreen : 
+                        rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -1 ? lightRed :
+                        rowInfo.row['ft%V'] < -1 && rowInfo.row['ft%V'] > -2 ? mediumRed : 
+                        rowInfo.row['ft%V'] < -2 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Turnovers',
-            accessor: 'toV' // String-based value accessors!
+            accessor: 'toV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.toV > 2 ? brightGreen :
+                        rowInfo.row.toV > 1 ? mediumGreen : 
+                        rowInfo.row.toV > .5 ? lightGreen : 
+                        rowInfo.row.toV < 0 && rowInfo.row.toV > -1 ? lightRed :
+                        rowInfo.row.toV < -1 && rowInfo.row.toV > -2 ? mediumRed : 
+                        rowInfo.row.toV < -2 ? brightRed : null,
+                    },
+                };
+            },
         }];
 
         const columnNamesAvg = [{
             Header: 'Points',
-            accessor: 'pV' // String-based value accessors!
+            accessor: 'pV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.pV > 1 ? brightGreen :
+                        rowInfo.row.pV > .5 ? mediumGreen : 
+                        rowInfo.row.pV > .25 ? lightGreen : 
+                        rowInfo.row.pV < 0 && rowInfo.row.pV > -0.25 ? lightRed :
+                        rowInfo.row.pV < -0.25 && rowInfo.row.pV > -1 ? mediumRed : 
+                        rowInfo.row.pV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: '3s',
-            accessor: '3V' // String-based value accessors!
+            accessor: '3V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['3V'] > 1 ? brightGreen :
+                        rowInfo.row['3V'] > .5 ? mediumGreen : 
+                        rowInfo.row['3V'] > .25 ? lightGreen : 
+                        rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -0.25 ? lightRed :
+                        rowInfo.row['3V'] < -0.25 && rowInfo.row['3V'] > -1 ? mediumRed : 
+                        rowInfo.row['3V'] < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Rebounds',
-            accessor: 'rV' // String-based value accessors!
+            accessor: 'rV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.rV > 1 ? brightGreen :
+                        rowInfo.row.rV > .5 ? mediumGreen : 
+                        rowInfo.row.rV > .25 ? lightGreen : 
+                        rowInfo.row.rV < 0 && rowInfo.row.rV > -0.25 ? lightRed :
+                        rowInfo.row.rV < -0.25 && rowInfo.row.rV > -1 ? mediumRed : 
+                        rowInfo.row.rV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Assists',
-            accessor: 'aV' // String-based value accessors!
+            accessor: 'aV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.aV > 1 ? brightGreen :
+                        rowInfo.row.aV > .5 ? mediumGreen : 
+                        rowInfo.row.aV > .25 ? lightGreen : 
+                        rowInfo.row.aV < 0 && rowInfo.row.aV > -0.25 ? lightRed :
+                        rowInfo.row.aV < -0.25 && rowInfo.row.aV > -1 ? mediumRed : 
+                        rowInfo.row.aV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Steals',
-            accessor: 'sV' // String-based value accessors!
+            accessor: 'sV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.sV > 1 ? brightGreen :
+                        rowInfo.row.sV > .5 ? mediumGreen : 
+                        rowInfo.row.sV > .25 ? lightGreen : 
+                        rowInfo.row.sV < 0 && rowInfo.row.sV > -0.25 ? lightRed :
+                        rowInfo.row.sV < -0.25 && rowInfo.row.sV > -1 ? mediumRed : 
+                        rowInfo.row.sV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Blocks',
-            accessor: 'bV' // String-based value accessors!
+            accessor: 'bV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.bV > 1 ? brightGreen :
+                        rowInfo.row.bV > .5 ? mediumGreen : 
+                        rowInfo.row.bV > .25 ? lightGreen : 
+                        rowInfo.row.bV < 0 && rowInfo.row.bV > -0.25 ? lightRed :
+                        rowInfo.row.bV < -0.25 && rowInfo.row.bV > -1 ? mediumRed : 
+                        rowInfo.row.bV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'FG%',
-            accessor: 'fg%V' // String-based value accessors!
+            accessor: 'fg%V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['fg%V'] > 1 ? brightGreen :
+                        rowInfo.row['fg%V'] > .5 ? mediumGreen : 
+                        rowInfo.row['fg%V'] > .25 ? lightGreen : 
+                        rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -0.25 ? lightRed :
+                        rowInfo.row['fg%V'] < -0.25 && rowInfo.row['fg%V'] > -1 ? mediumRed : 
+                        rowInfo.row['fg%V'] < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'FT%',
-            accessor: 'ft%V' // String-based value accessors!
+            accessor: 'ft%V',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row['ft%V'] > 1 ? brightGreen :
+                        rowInfo.row['ft%V'] > .5 ? mediumGreen : 
+                        rowInfo.row['ft%V'] > .25 ? lightGreen : 
+                        rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -0.25 ? lightRed :
+                        rowInfo.row['ft%V'] < -0.25 && rowInfo.row['ft%V'] > -1 ? mediumRed : 
+                        rowInfo.row['ft%V'] < -1 ? brightRed : null,
+                    },
+                };
+            },
         }, {
             Header: 'Turnovers',
-            accessor: 'toV' // String-based value accessors!
+            accessor: 'toV',
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row.toV > 1 ? brightGreen :
+                        rowInfo.row.toV > .5 ? mediumGreen : 
+                        rowInfo.row.toV > .25 ? lightGreen : 
+                        rowInfo.row.toV < 0 && rowInfo.row.toV > -0.25 ? lightRed :
+                        rowInfo.row.toV < -0.25 && rowInfo.row.toV > -1 ? mediumRed : 
+                        rowInfo.row.toV < -1 ? brightRed : null,
+                    },
+                };
+            },
         }];
 
         return (
@@ -285,26 +536,32 @@ export class BuildPlayers extends Component {
                     minRows={0}
                   />
                 </div>
-            <div className="players-container flex">
-                <div className="pickup-targets">
-                    {
-                        this.state.playerTargetsSeason.map((playerData, i) => {
-                            return (
-                                <p key={playerData._id}>{playerData.fullName} {playerData.rank}</p>
-                            )
-                        })
-                    }
+                <h3 className="team-table-header">Season Pickup Targets</h3>
+                <div className="team-table">
+                  <ReactTable
+                    data={this.state.playerPickupsSeason}
+                    columns={columnNames}
+                    showPagination={false}
+                    minRows={0}
+                    defaultSorted={[{
+                        id: 'rank',
+                        desc: false
+                    }]}
+                  />
                 </div>
-                <div className="pickup-targets">
-                    {
-                        this.state.playerTargetsTwoWeeks.map((playerData, i) => {
-                            return (
-                                <p key={playerData._id}>{playerData.fullName} {playerData.rank}</p>
-                            )
-                        })
-                    }
+                <h3 className="team-table-header">Last 2 Weeks Pickup Targets</h3>
+                <div className="team-table">
+                  <ReactTable
+                    data={this.state.playerPickupsTwoWeeks}
+                    columns={columnNames}
+                    showPagination={false}
+                    minRows={0}
+                    defaultSorted={[{
+                        id: 'rank',
+                        desc: false
+                    }]}
+                  />
                 </div>
-            </div>
             </div>
         )
     }
