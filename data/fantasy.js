@@ -29,8 +29,15 @@ exports.getYahooData = function(req, res, options) {
             var playerNames = [];
             var playersDone = false;
             var accessToken = body.access_token;
-            var currentYear = (new Date()).getFullYear();
             var leagueId;
+
+            //Get either current year or last year for when season rolls into the new year
+            var currentYear = (new Date());
+            if (currentYear.getMonth() > 6) {
+                currentYear = currentYear.getFullYear();
+            } else {
+                currentYear = currentYear.getFullYear() -1;
+            }
 
             req.session.token = accessToken;
 
@@ -193,7 +200,7 @@ exports.getRankings = function() {
                 var twoWeeksFullDate = new Date(+new Date - 12096e5)
                 var twoWeeksDate = ("0" + (twoWeeksFullDate.getMonth() + 1)).slice(-2);
                 todayDate = todayDate + ("0" + todayFullDate.getDate()).slice(-2);
-                todayDate = todayDate + twoWeeksFullDate.getUTCFullYear();
+                todayDate = todayDate + todayFullDate.getUTCFullYear();
                 twoWeeksDate = twoWeeksDate + ("0" + twoWeeksFullDate.getDate()).slice(-2);;
                 twoWeeksDate = twoWeeksDate + twoWeeksFullDate.getUTCFullYear();
 
