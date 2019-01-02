@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import ReactTable from 'react-table';
-import Select from 'react-select';
 import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
 import { CompareTeams } from './CompareTeams';

@@ -93,6 +93,9 @@ app.get('/', function(req, res) {
 
 app.get('/logout', function(req, res) {
     delete req.session.token;
+    res.clearCookie("leagueId");
+    res.clearCookie("teamId");
+    console.log('here')
     res.redirect('/');
 });
 

@@ -35,6 +35,9 @@ class App extends Component {
                         <div className="sign-in">
                             <a href="/auth/yahoo">{this.state.navText}</a>
                         </div>
+                        <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>
+                            <a href="/logout">Logout</a>
+                        </div>
                     </div>
         }
 
