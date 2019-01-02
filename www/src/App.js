@@ -32,7 +32,7 @@ class App extends Component {
         } else {
             homePage = <BuildPlayers/>;
             navBar = <div className="navbar flex">
-                        <div class="sign-in">
+                        <div className="sign-in">
                             <a href="/auth/yahoo">{this.state.navText}</a>
                         </div>
                     </div>

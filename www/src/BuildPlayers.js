@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import ReactTable from 'react-table';
+import Select from 'react-select';
 import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
+import { CompareTeams } from './CompareTeams';
 
 export class BuildPlayers extends Component {
     constructor(props) {
@@ -18,7 +20,10 @@ export class BuildPlayers extends Component {
             teamStatsSeasonAvg: [],
             teamStatsTwoWeeksAvg: [],
             playerPickupsSeason: [],
-            playerPickupsTwoWeeks: []
+            playerPickupsTwoWeeks: [],
+            teams: [],
+            teamSelected: null,
+            leagueId: null
         }
     }
 
@@ -27,6 +32,8 @@ export class BuildPlayers extends Component {
         var teamId = Cookies.get('teamId');
 
         if (leagueId) {
+            this.setState({ leagueId: leagueId });
+
             //Targets from last 2 weeks ranking
             this.callApi('/api/targets/twoweeks/' + leagueId)
                 .then(results => {
@@ -54,6 +61,13 @@ export class BuildPlayers extends Component {
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsTwoWeeks: playerData });
+                })
+                .catch(err => console.log(err));
+
+            this.callApi('/api/teams/' + leagueId)
+                .then(results => {
+                    var teams = results[0].teams;
+                    this.setState({ teams: teams });
                 })
                 .catch(err => console.log(err));
 
@@ -195,6 +209,7 @@ export class BuildPlayers extends Component {
     }
 
     render() {
+        const { teamSelected } = this.state;
         const brightGreen = '#3ffc3f';
         const mediumGreen = '#85fc85';
         const lightGreen = '#b9ffb9';
@@ -485,32 +500,44 @@ export class BuildPlayers extends Component {
             },
         }];
 
+        //Send to the compare teams component once we have the leagueId
+        var compareTeamsHTML = "";
+        if (this.state.leagueId) {
+            compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
+            playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsTwoWeeks={this.state.playerRankingsTwoWeeks} 
+            columnNamesAvg={columnNamesAvg} />
+        }
+
         return (
             <div className="table-container flex-vertical">
-                <h3 className="team-table-header">Season Rankings</h3>
-                <div className="team-table">
-                  <ReactTable
-                    data={this.state.teamStatsSeason}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'rank',
-                        desc: false
-                    }]}
-                  />
+                <div className="table-group">
+                    <h3 className="team-table-header">Season Rankings</h3>
+                    <div className="team-table">
+                      <ReactTable
+                        data={this.state.teamStatsSeason}
+                        columns={columnNames}
+                        showPagination={false}
+                        minRows={0}
+                        defaultSortDesc={true}
+                        defaultSorted={[{
+                            id: 'rank',
+                            desc: false
+                        }]}
+                      />
+                    </div>
+
+                    {/* <h4 className="team-avg-header">Avg Season Rankings</h4> */}
+                    <div className="team-avg-table">
+                      <ReactTable
+                        data={this.state.teamStatsSeasonAvg}
+                        columns={columnNamesAvg}
+                        showPagination={false}
+                        minRows={0}
+                      />
+                    </div>
                 </div>
 
-                <h4 className="team-avg-header">Avg Season Rankings</h4>
-                <div className="team-avg-table">
-                  <ReactTable
-                    data={this.state.teamStatsSeasonAvg}
-                    columns={columnNamesAvg}
-                    showPagination={false}
-                    minRows={0}
-                  />
-                </div>
+                {compareTeamsHTML}
 
                 <h3 className="team-table-header">Last 2 Weeks Rankings</h3>
                 <div className="team-table">
@@ -527,7 +554,7 @@ export class BuildPlayers extends Component {
                   />
                 </div>
 
-                <h4 className="team-avg-header">Avg Last 2 Weeks Rankings</h4>
+                {/*<h4 className="team-avg-header">Avg Last 2 Weeks Rankings</h4> */}
                 <div className="team-avg-table">
                   <ReactTable
                     data={this.state.teamStatsTwoWeeksAvg}
