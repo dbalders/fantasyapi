@@ -36,7 +36,7 @@ exports.getYahooData = function(req, res, options) {
             if (currentYear.getMonth() > 6) {
                 currentYear = currentYear.getFullYear();
             } else {
-                currentYear = currentYear.getFullYear() -1;
+                currentYear = currentYear.getFullYear() - 1;
             }
 
             req.session.token = accessToken;
@@ -55,6 +55,8 @@ exports.getYahooData = function(req, res, options) {
                         yf.games.user({ seasons: currentYear, game_codes: 'nba' }, function cb(err, data) {
                             leagueId = data[0].game_key;
 
+                            console.log(leagueId);
+
                             //Now that we have overall ID, get user specific league ID
                             yf.user.game_leagues(leagueId, function cb(err, data) {
                                 leagueId = data.games[0].leagues[0][0].league_key;
@@ -64,6 +66,7 @@ exports.getYahooData = function(req, res, options) {
                         })
                 },
                 function(callback) {
+                    console.log(leagueId)
                     //Use the league ID to get a list of all the teams and their players
                     yf.league.teams(leagueId,
                         function cb(err, data) {
@@ -112,26 +115,26 @@ exports.getYahooData = function(req, res, options) {
                                                     console.log(err);
                                                 else
                                                     var teamPlayers = [];
-                                                    //After having their roster, store each player into a single player array
-                                                    async.forEachOf(playersData.roster, function(value, playerKey, callback) {
-                                                        playerObject = {
-                                                            'team_key': teamKey,
-                                                            'player_key': playersData.roster[playerKey].player_key,
-                                                            'player_id': playersData.roster[playerKey].player_id,
-                                                            'first': playersData.roster[playerKey].name.first,
-                                                            'last': playersData.roster[playerKey].name.last,
-                                                            'full': playersData.roster[playerKey].name.full
-                                                        };
-                                                        players.push(playerObject);
-                                                        teamPlayers.push(playerObject);
-                                                        //push also to specific player name for string similarity later
-                                                        playerNames.push(playersData.roster[playerKey].name.full);
-                                                        callback();
-                                                    }, function(err) {
-                                                        if (err) console.error(err.message);
-                                                        console.log('team' + teamKey)
-                                                        callback();
-                                                    })
+                                                //After having their roster, store each player into a single player array
+                                                async.forEachOf(playersData.roster, function(value, playerKey, callback) {
+                                                    playerObject = {
+                                                        'team_key': teamKey,
+                                                        'player_key': playersData.roster[playerKey].player_key,
+                                                        'player_id': playersData.roster[playerKey].player_id,
+                                                        'first': playersData.roster[playerKey].name.first,
+                                                        'last': playersData.roster[playerKey].name.last,
+                                                        'full': playersData.roster[playerKey].name.full
+                                                    };
+                                                    players.push(playerObject);
+                                                    teamPlayers.push(playerObject);
+                                                    //push also to specific player name for string similarity later
+                                                    playerNames.push(playersData.roster[playerKey].name.full);
+                                                    callback();
+                                                }, function(err) {
+                                                    if (err) console.error(err.message);
+                                                    console.log('team' + teamKey)
+                                                    callback();
+                                                })
                                             }
                                         )
                                     }, function(err) {
