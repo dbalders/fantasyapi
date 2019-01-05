@@ -126,3 +126,8 @@ exports.get_rankings = function(req, res) {
     fantasy.getRankings();
     res.json("Rankings Completed");
 }
+
+exports.get_espn_data = function(req, res) {
+    fantasy.getEspnData(req.params.espnId, res);
+    // res.json(req.params.espnId);
+}

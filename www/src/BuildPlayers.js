@@ -510,7 +510,7 @@ export class BuildPlayers extends Component {
         return (
             <div className="table-container flex-vertical">
                 <div className="table-group">
-                    <h3 className="team-table-header">Season Rankings</h3>
+                    <h3 className="team-table-header">Teams Season Rankings</h3>
                     <div className="team-table">
                       <ReactTable
                         data={this.state.teamStatsSeason}
@@ -538,7 +538,7 @@ export class BuildPlayers extends Component {
 
                 {compareTeamsHTML}
 
-                <h3 className="team-table-header">Last 2 Weeks Rankings</h3>
+                <h3 className="team-table-header">Teams Last 2 Weeks Rankings</h3>
                 <div className="team-table">
                   <ReactTable
                     data={this.state.teamStatsTwoWeeks}
@@ -562,7 +562,7 @@ export class BuildPlayers extends Component {
                     minRows={0}
                   />
                 </div>
-                <h3 className="team-table-header">Season Pickup Targets</h3>
+                <h3 className="team-table-header">Season Potential Pickup Targets</h3>
                 <div className="team-table">
                   <ReactTable
                     data={this.state.playerPickupsSeason}
@@ -576,7 +576,7 @@ export class BuildPlayers extends Component {
                     }]}
                   />
                 </div>
-                <h3 className="team-table-header">Last 2 Weeks Pickup Targets</h3>
+                <h3 className="team-table-header">Last 2 Weeks Potential Pickup Targets</h3>
                 <div className="team-table">
                   <ReactTable
                     data={this.state.playerPickupsTwoWeeks}

@@ -47,6 +47,11 @@ module.exports = function(app) {
     // .post(fantasy.get_all_bets)
     // .delete(fantasy.delete_all_bets);
 
+    app.route('/api/espn/league/:espnId')
+        .get(fantasy.get_espn_data)
+    // .post(fantasy.get_all_bets)
+    // .delete(fantasy.delete_all_bets);
+
     app.route('/api/erase')
         .get(fantasy.erase_current_data)
     // .post(fantasy.get_all_bets)
