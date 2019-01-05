@@ -56,12 +56,11 @@ exports.getYahooData = function (req, res, options) {
                         yf.games.user({ seasons: currentYear, game_codes: 'nba' }, function cb(err, data) {
                             leagueId = data[0].game_key;
 
-                            console.log(leagueId);
-
                             //Now that we have overall ID, get user specific league ID
                             yf.user.game_leagues(leagueId, function cb(err, data) {
                                 leagueId = data.games[0].leagues[0][0].league_key;
                                 res.cookie('leagueId', leagueId);
+                                res.cookie('fantasyPlatform', 'yahoo');
                                 callback(null, 1);
                             })
                         })
@@ -133,7 +132,6 @@ exports.getYahooData = function (req, res, options) {
                                                     callback();
                                                 }, function (err) {
                                                     if (err) console.error(err.message);
-                                                    console.log('team' + teamKey)
                                                     callback();
                                                 })
                                             }
@@ -335,8 +333,8 @@ exports.getEspnData = function (espnId, res) {
             res.send(error)
 
         if (body.messages !== undefined) {
-            res.status(500)
-            res.send(body)
+            res.status(500);
+            res.send(body);
             res.end();
             return;
         }
@@ -351,7 +349,6 @@ exports.getEspnData = function (espnId, res) {
             var teamId = teamData[i].id;
             //Loop through the players to add to an array
             for (var j = 0; j < teamPlayers.length; j++) {
-                console.log(teamPlayers[j].playerPoolEntry.player)
                 playerObject = {
                     //Adding in the .t. to the teamkey to keep it consistant with yahoo's format
                     'team_key': espnId + '.t.' + teamId,

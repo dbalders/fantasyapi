@@ -41,13 +41,14 @@ export class HomePage extends Component {
         }
 
         if (error === 'You are not authorized to view this League.') {
-            this.setState({espnIdError: 'You are not authorized to view this ESPN League.'});
+            this.setState({espnIdError: 'This league is private, it has to be made public.'});
         }
     }
 
     handleEspnTeamChange = (espnTeamSelected) => {
         Cookies.set('leagueId', this.state.espnId);
         Cookies.set('teamId', espnTeamSelected.value);
+        Cookies.set('fantasyPlatform', 'espn');
         window.location.reload();
     }
 
@@ -58,13 +59,21 @@ export class HomePage extends Component {
         return (
             <div className="landing-container flex-vertical flex-one">
                 <div className="landing-site-title flex-one flex">Fantasy Basketball Insights</div>
-                <div className="landing-actions-container">
+                <div className="landing-actions-container flex">
                     <div className="landing-actions flex-vertical">
-                        <div className="landing-text">Sign in with Yahoo</div>
+                        <div className="landing-text">Access your Yahoo league</div>
                         <div className="landing-buttons flex">
                             <div className="sign-in">
                                 <a href="/auth/yahoo">Sign in with Yahoo</a>
                             </div>
+                        </div>
+                    </div>
+                    <div className="landing-actions flex-vertical">
+                        <div className="landing-text">Enter ESPN League Id
+                            <div className="landing-text-small">(How to find id?)</div>
+                        </div>
+                        
+                        <div className="landing-buttons flex">
                             <EspnInput showEspnTeamInput={this.showEspnTeamInput} espnIdError={this.espnIdError} />
                         </div>
                         <div className={`team-select ${this.state.showEspnInput ? '' : 'hide'}`}>
@@ -72,6 +81,9 @@ export class HomePage extends Component {
                                 value={espnTeamSelected}
                                 onChange={this.handleEspnTeamChange}
                                 options={espnTeamSelect}
+                                placeholder='Select your team'
+                                className='espn-dropdown'
+                                classNamePrefix='espn-dropdown-items'
                             />
                         </div>
                         <div className={`espn-error ${this.state.espnIdError ? '' : 'hide'}`}>

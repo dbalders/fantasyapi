@@ -8,17 +8,24 @@ class App extends Component {
         super(props);
         this.state = {
             navText: '',
-            isLoggedIn: false
+            isLoggedIn: false,
+            fantasyPlatform: false
         }
     }
 
     componentDidMount() {
         var teamId = Cookies.get('teamId');
+        
         if (teamId !== undefined) {
             this.setState({ navText: 'Refresh Yahoo Data' });
             this.setState({isLoggedIn: true});
         } else {
             this.setState({ navText: 'Sign in with Yahoo' });
+        }
+
+        var fantasyPlatform = Cookies.get('fantasyPlatform');
+        if (fantasyPlatform === 'yahoo') {
+            this.setState({'fantasyPlatform': true})
         }
     }
 
@@ -32,8 +39,8 @@ class App extends Component {
         } else {
             homePage = <BuildPlayers/>;
             navBar = <div className="navbar flex">
-                        <div className="sign-in">
-                            <a href="/auth/yahoo">{this.state.navText}</a>
+                        <div className="nav-sign-in">
+                            <a className={`nav-sign-in-link ${this.state.fantasyPlatform ? '' : 'hide'}`} href="/auth/yahoo">{this.state.navText}</a>
                         </div>
                         <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>
                             <a href="/logout">Logout</a>
