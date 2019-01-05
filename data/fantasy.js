@@ -66,7 +66,6 @@ exports.getYahooData = function (req, res, options) {
                         })
                 },
                 function (callback) {
-                    console.log(leagueId)
                     //Use the league ID to get a list of all the teams and their players
                     yf.league.teams(leagueId,
                         function cb(err, data) {
