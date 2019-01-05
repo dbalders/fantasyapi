@@ -231,6 +231,7 @@ code {
 .team-select {
     width: 300px;
     margin: auto;
+    color: black;
 }
 
 .hide-button {
