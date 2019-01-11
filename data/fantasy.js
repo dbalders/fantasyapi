@@ -417,8 +417,6 @@ exports.refreshYahooData = function (leagueId, res, accessToken) {
     yf.league.teams(leagueId,
         function cb(err, data) {
             if (err) {
-                console.log(err);
-                console.log('here')
                 res.status(400).send(err);
                 return
             }
