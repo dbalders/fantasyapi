@@ -34,7 +34,7 @@ code {
 .sign-in {
     margin: auto 15px auto auto;
     border: 0;
-    background-color: #477DCA;
+    background-color: #380585;
     font-weight: bold;
     text-decoration: none;
 }
@@ -56,6 +56,18 @@ code {
     border: 0;
     font-weight: bold;
     text-decoration: none;
+}
+
+.nav-sign-in a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    height: 100%;
+    padding: 15px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    background-color: #380585;
 }
 
 .nav-sign-in-link {
@@ -84,16 +96,15 @@ code {
     margin: auto 15px auto 0;
     border: 0;
     background-color: #477DCA;
-    /* font-weight: bold; */
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.15rem;
     text-decoration: none;
 }
 
 .sign-out a {
     text-decoration: none;
     color: white;
-    text-transform: uppercase;
     display: inline-block;
-    width: 100%;
     height: 100%;
     padding: 15px;
     letter-spacing: .25px;
@@ -303,7 +314,7 @@ code {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 .table-container {
