@@ -96,6 +96,7 @@ app.get('/logout', function(req, res) {
     res.clearCookie("leagueId");
     res.clearCookie("teamId");
     res.clearCookie("fantasyPlatform");
+    res.clearCookie("yahooAccessToken");
     res.redirect('/');
 });
 

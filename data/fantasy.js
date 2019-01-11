@@ -54,6 +54,10 @@ exports.getYahooData = function (req, res, options) {
                         //first get the nba leagues user is in 
                         //First call only provides yahoo overall league ID
                         yf.games.user({ seasons: currentYear, game_codes: 'nba' }, function cb(err, data) {
+                            console.log(err)
+                            if (err) {
+                                return
+                            }
                             leagueId = data[0].game_key;
 
                             //Now that we have overall ID, get user specific league ID
@@ -61,6 +65,7 @@ exports.getYahooData = function (req, res, options) {
                                 leagueId = data.games[0].leagues[0][0].league_key;
                                 res.cookie('leagueId', leagueId);
                                 res.cookie('fantasyPlatform', 'yahoo');
+                                res.cookie('yahooAccessToken', accessToken);
                                 callback(null, 1);
                             })
                         })
@@ -318,7 +323,6 @@ function getPickups(leagueId, playerNames) {
 }
 
 exports.getEspnData = function (espnId, res) {
-    console.log(espnId)
     var url = 'http://fantasy.espn.com/apis/v3/games/fba/seasons/2019/segments/0/leagues/' + espnId + '?view=mRoster&view=mTeam';
     var teams = [];
     var players = [];
@@ -405,4 +409,78 @@ exports.getEspnData = function (espnId, res) {
         //Send the data back
         res.json(teams);
     });
+}
+
+exports.refreshYahooData = function (leagueId, res, accessToken) {
+    yf.setUserToken(accessToken);
+    var players = [];
+    var playerNames = [];
+    var loginExpired = false;
+    yf.league.teams(leagueId,
+        function cb(err, data) {
+            if (err) {
+                console.log(err);
+                console.log('here')
+                res.status(400).send(err);
+                return
+            }
+            else {
+                async.forEachOf(data.teams, function (value, key, callback) {
+                    yf.team.roster(data.teams[key].team_key,
+                        function cb(err, playersData) {
+                            var teamKey = data.teams[key].team_key;
+
+                            if (err) {
+                                console.log(err)
+                            } else {
+                                var teamPlayers = [];
+                                //After having their roster, store each player into a single player array
+                                async.forEachOf(playersData.roster, function (value, playerKey, callback) {
+                                    playerObject = {
+                                        'team_key': teamKey,
+                                        'player_key': playersData.roster[playerKey].player_key,
+                                        'player_id': playersData.roster[playerKey].player_id,
+                                        'first': playersData.roster[playerKey].name.first,
+                                        'last': playersData.roster[playerKey].name.last,
+                                        'full': playersData.roster[playerKey].name.full
+                                    };
+                                    players.push(playerObject);
+                                    teamPlayers.push(playerObject);
+                                    //push also to specific player name for string similarity later
+                                    playerNames.push(playersData.roster[playerKey].name.full);
+                                    callback();
+                                }, function (err) {
+                                    if (err) console.error(err.message);
+                                    callback();
+                                })
+                            }
+                        }
+                    )
+                }, function (err) {
+                    if (err) {
+                        console.error(err.message)
+                    } else {
+                        // Put all the players into the database
+                        Players.findOneAndUpdate({
+                            leagueId: leagueId
+                        }, {
+                                leagueId: leagueId,
+                                players: players
+                            }, {
+                                upsert: true
+                            },
+                            function (err, doc) {
+                                // if (err) return 
+                                if (doc !== null) {
+                                    doc.players = players;
+                                }
+                            });
+
+                        getPickups(leagueId, playerNames);
+                        res.json("Yahoo update successful");
+                        return
+                    }
+                });
+            }
+        });
 }

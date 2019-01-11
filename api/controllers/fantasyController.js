@@ -131,3 +131,22 @@ exports.get_espn_data = function(req, res) {
     fantasy.getEspnData(req.params.espnId, res);
     // res.json(req.params.espnId);
 }
+
+exports.refresh_yahoo_data = function(req, res) {
+    var cookies = req.headers.cookie;
+    var cookies = cookies.split("; ")
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookieName = cookies[i].split('=')[0];
+        var cookieValue = cookies[i].split('=')[1];
+
+        if (cookieName === "yahooAccessToken") {
+            var yahooAccessToken = cookieValue;
+        }
+        if (cookieName === "leagueId") {
+            var leagueId = cookieValue;
+        }
+    }
+
+    fantasy.refreshYahooData(leagueId, res, yahooAccessToken)
+}

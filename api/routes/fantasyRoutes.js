@@ -56,4 +56,9 @@ module.exports = function(app) {
         .get(fantasy.erase_current_data)
     // .post(fantasy.get_all_bets)
     // .delete(fantasy.delete_all_bets);
+
+    app.route('/api/refresh_yahoo_data')
+        .get(fantasy.refresh_yahoo_data)
+    // .post(fantasy.get_all_bets)
+    // .delete(fantasy.delete_all_bets);
 };

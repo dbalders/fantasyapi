@@ -58,6 +58,8 @@ export class HomePage extends Component {
 
         return (
             <div className="landing-container flex-vertical flex-one">
+                <div className="landing-background-color"></div>
+                <div className="landing-background-image"></div>
                 <div className="landing-site-title flex-one flex">Fantasy Basketball Insights</div>
                 <div className="landing-actions-container flex">
                     <div className="landing-actions flex-vertical">
