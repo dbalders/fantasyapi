@@ -233,10 +233,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.pV > 2 ? brightGreen :
                         rowInfo.row.pV > 1 ? mediumGreen : 
-                        rowInfo.row.pV > .5 ? lightGreen : 
+                        rowInfo.row.pV >= .5 ? lightGreen : 
                         rowInfo.row.pV < 0 && rowInfo.row.pV > -1 ? lightRed :
-                        rowInfo.row.pV < -1 && rowInfo.row.pV > -2 ? mediumRed : 
-                        rowInfo.row.pV < -2 ? brightRed : null,
+                        rowInfo.row.pV <= -1 && rowInfo.row.pV > -2 ? mediumRed : 
+                        rowInfo.row.pV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -248,10 +248,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['3V'] > 2 ? brightGreen :
                         rowInfo.row['3V'] > 1 ? mediumGreen : 
-                        rowInfo.row['3V'] > .5 ? lightGreen : 
+                        rowInfo.row['3V'] >= .5 ? lightGreen : 
                         rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -1 ? lightRed :
-                        rowInfo.row['3V'] < -1 && rowInfo.row['3V'] > -2 ? mediumRed : 
-                        rowInfo.row['3V'] < -2 ? brightRed : null,
+                        rowInfo.row['3V'] <= -1 && rowInfo.row['3V'] > -2 ? mediumRed : 
+                        rowInfo.row['3V'] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -263,10 +263,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.rV > 2 ? brightGreen :
                         rowInfo.row.rV > 1 ? mediumGreen : 
-                        rowInfo.row.rV > .5 ? lightGreen : 
+                        rowInfo.row.rV >= .5 ? lightGreen : 
                         rowInfo.row.rV < 0 && rowInfo.row.rV > -1 ? lightRed :
-                        rowInfo.row.rV < -1 && rowInfo.row.rV > -2 ? mediumRed : 
-                        rowInfo.row.rV < -2 ? brightRed : null,
+                        rowInfo.row.rV <= -1 && rowInfo.row.rV > -2 ? mediumRed : 
+                        rowInfo.row.rV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -278,10 +278,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.aV > 2 ? brightGreen :
                         rowInfo.row.aV > 1 ? mediumGreen : 
-                        rowInfo.row.aV > .5 ? lightGreen : 
+                        rowInfo.row.aV >= .5 ? lightGreen : 
                         rowInfo.row.aV < 0 && rowInfo.row.aV > -1 ? lightRed :
-                        rowInfo.row.aV < -1 && rowInfo.row.aV > -2 ? mediumRed : 
-                        rowInfo.row.aV < -2 ? brightRed : null,
+                        rowInfo.row.aV <= -1 && rowInfo.row.aV > -2 ? mediumRed : 
+                        rowInfo.row.aV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -293,10 +293,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.sV > 2 ? brightGreen :
                         rowInfo.row.sV > 1 ? mediumGreen : 
-                        rowInfo.row.sV > .5 ? lightGreen : 
+                        rowInfo.row.sV >= .5 ? lightGreen : 
                         rowInfo.row.sV < 0 && rowInfo.row.sV > -1 ? lightRed :
-                        rowInfo.row.sV < -1 && rowInfo.row.sV > -2 ? mediumRed : 
-                        rowInfo.row.sV < -2 ? brightRed : null,
+                        rowInfo.row.sV <= -1 && rowInfo.row.sV > -2 ? mediumRed : 
+                        rowInfo.row.sV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -308,10 +308,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.bV > 2 ? brightGreen :
                         rowInfo.row.bV > 1 ? mediumGreen : 
-                        rowInfo.row.bV > .5 ? lightGreen : 
+                        rowInfo.row.bV >= .5 ? lightGreen : 
                         rowInfo.row.bV < 0 && rowInfo.row.bV > -1 ? lightRed :
-                        rowInfo.row.bV < -1 && rowInfo.row.bV > -2 ? mediumRed : 
-                        rowInfo.row.bV < -2 ? brightRed : null,
+                        rowInfo.row.bV <= -1 && rowInfo.row.bV > -2 ? mediumRed : 
+                        rowInfo.row.bV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -323,10 +323,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['fg%V'] > 2 ? brightGreen :
                         rowInfo.row['fg%V'] > 1 ? mediumGreen : 
-                        rowInfo.row['fg%V'] > .5 ? lightGreen : 
+                        rowInfo.row['fg%V'] >= .5 ? lightGreen : 
                         rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -1 ? lightRed :
-                        rowInfo.row['fg%V'] < -1 && rowInfo.row['fg%V'] > -2 ? mediumRed : 
-                        rowInfo.row['fg%V'] < -2 ? brightRed : null,
+                        rowInfo.row['fg%V'] <= -1 && rowInfo.row['fg%V'] > -2 ? mediumRed : 
+                        rowInfo.row['fg%V'] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -338,10 +338,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['ft%V'] > 2 ? brightGreen :
                         rowInfo.row['ft%V'] > 1 ? mediumGreen : 
-                        rowInfo.row['ft%V'] > .5 ? lightGreen : 
+                        rowInfo.row['ft%V'] >= .5 ? lightGreen : 
                         rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -1 ? lightRed :
-                        rowInfo.row['ft%V'] < -1 && rowInfo.row['ft%V'] > -2 ? mediumRed : 
-                        rowInfo.row['ft%V'] < -2 ? brightRed : null,
+                        rowInfo.row['ft%V'] <= -1 && rowInfo.row['ft%V'] > -2 ? mediumRed : 
+                        rowInfo.row['ft%V'] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -353,10 +353,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.toV > 2 ? brightGreen :
                         rowInfo.row.toV > 1 ? mediumGreen : 
-                        rowInfo.row.toV > .5 ? lightGreen : 
+                        rowInfo.row.toV >= .5 ? lightGreen : 
                         rowInfo.row.toV < 0 && rowInfo.row.toV > -1 ? lightRed :
-                        rowInfo.row.toV < -1 && rowInfo.row.toV > -2 ? mediumRed : 
-                        rowInfo.row.toV < -2 ? brightRed : null,
+                        rowInfo.row.toV <= -1 && rowInfo.row.toV > -2 ? mediumRed : 
+                        rowInfo.row.toV <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -370,10 +370,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.pV > 1 ? brightGreen :
                         rowInfo.row.pV > .5 ? mediumGreen : 
-                        rowInfo.row.pV > .25 ? lightGreen : 
+                        rowInfo.row.pV >= .25 ? lightGreen : 
                         rowInfo.row.pV < 0 && rowInfo.row.pV > -0.25 ? lightRed :
                         rowInfo.row.pV < -0.25 && rowInfo.row.pV > -1 ? mediumRed : 
-                        rowInfo.row.pV < -1 ? brightRed : null,
+                        rowInfo.row.pV <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -385,10 +385,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['3V'] > 1 ? brightGreen :
                         rowInfo.row['3V'] > .5 ? mediumGreen : 
-                        rowInfo.row['3V'] > .25 ? lightGreen : 
+                        rowInfo.row['3V'] >= .25 ? lightGreen : 
                         rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -0.25 ? lightRed :
                         rowInfo.row['3V'] < -0.25 && rowInfo.row['3V'] > -1 ? mediumRed : 
-                        rowInfo.row['3V'] < -1 ? brightRed : null,
+                        rowInfo.row['3V'] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -400,10 +400,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.rV > 1 ? brightGreen :
                         rowInfo.row.rV > .5 ? mediumGreen : 
-                        rowInfo.row.rV > .25 ? lightGreen : 
+                        rowInfo.row.rV >= .25 ? lightGreen : 
                         rowInfo.row.rV < 0 && rowInfo.row.rV > -0.25 ? lightRed :
                         rowInfo.row.rV < -0.25 && rowInfo.row.rV > -1 ? mediumRed : 
-                        rowInfo.row.rV < -1 ? brightRed : null,
+                        rowInfo.row.rV <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -415,10 +415,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.aV > 1 ? brightGreen :
                         rowInfo.row.aV > .5 ? mediumGreen : 
-                        rowInfo.row.aV > .25 ? lightGreen : 
+                        rowInfo.row.aV >= .25 ? lightGreen : 
                         rowInfo.row.aV < 0 && rowInfo.row.aV > -0.25 ? lightRed :
                         rowInfo.row.aV < -0.25 && rowInfo.row.aV > -1 ? mediumRed : 
-                        rowInfo.row.aV < -1 ? brightRed : null,
+                        rowInfo.row.aV <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -430,10 +430,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.sV > 1 ? brightGreen :
                         rowInfo.row.sV > .5 ? mediumGreen : 
-                        rowInfo.row.sV > .25 ? lightGreen : 
+                        rowInfo.row.sV >= .25 ? lightGreen : 
                         rowInfo.row.sV < 0 && rowInfo.row.sV > -0.25 ? lightRed :
                         rowInfo.row.sV < -0.25 && rowInfo.row.sV > -1 ? mediumRed : 
-                        rowInfo.row.sV < -1 ? brightRed : null,
+                        rowInfo.row.sV <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -445,10 +445,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.bV > 1 ? brightGreen :
                         rowInfo.row.bV > .5 ? mediumGreen : 
-                        rowInfo.row.bV > .25 ? lightGreen : 
+                        rowInfo.row.bV >= .25 ? lightGreen : 
                         rowInfo.row.bV < 0 && rowInfo.row.bV > -0.25 ? lightRed :
                         rowInfo.row.bV < -0.25 && rowInfo.row.bV > -1 ? mediumRed : 
-                        rowInfo.row.bV < -1 ? brightRed : null,
+                        rowInfo.row.bV <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -460,10 +460,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['fg%V'] > 1 ? brightGreen :
                         rowInfo.row['fg%V'] > .5 ? mediumGreen : 
-                        rowInfo.row['fg%V'] > .25 ? lightGreen : 
+                        rowInfo.row['fg%V'] >= .25 ? lightGreen : 
                         rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -0.25 ? lightRed :
                         rowInfo.row['fg%V'] < -0.25 && rowInfo.row['fg%V'] > -1 ? mediumRed : 
-                        rowInfo.row['fg%V'] < -1 ? brightRed : null,
+                        rowInfo.row['fg%V'] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -475,10 +475,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row['ft%V'] > 1 ? brightGreen :
                         rowInfo.row['ft%V'] > .5 ? mediumGreen : 
-                        rowInfo.row['ft%V'] > .25 ? lightGreen : 
+                        rowInfo.row['ft%V'] >= .25 ? lightGreen : 
                         rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -0.25 ? lightRed :
                         rowInfo.row['ft%V'] < -0.25 && rowInfo.row['ft%V'] > -1 ? mediumRed : 
-                        rowInfo.row['ft%V'] < -1 ? brightRed : null,
+                        rowInfo.row['ft%V'] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -490,10 +490,10 @@ export class BuildPlayers extends Component {
                     style: {
                         backgroundColor: rowInfo && rowInfo.row.toV > 1 ? brightGreen :
                         rowInfo.row.toV > .5 ? mediumGreen : 
-                        rowInfo.row.toV > .25 ? lightGreen : 
+                        rowInfo.row.toV >= .25 ? lightGreen : 
                         rowInfo.row.toV < 0 && rowInfo.row.toV > -0.25 ? lightRed :
                         rowInfo.row.toV < -0.25 && rowInfo.row.toV > -1 ? mediumRed : 
-                        rowInfo.row.toV < -1 ? brightRed : null,
+                        rowInfo.row.toV <= -1 ? brightRed : null,
                     },
                 };
             },

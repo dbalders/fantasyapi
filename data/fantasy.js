@@ -254,8 +254,6 @@ function getPickups(leagueId, playerNames) {
 
             if (similarPlayerRating < 0.7) {
                 pickupTargets.push(players[i]);
-            } else {
-                // console.log(players[i])
             }
 
             callback();

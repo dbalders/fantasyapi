@@ -11,7 +11,8 @@ class App extends Component {
             navText: '',
             isLoggedIn: false,
             fantasyPlatform: false,
-            has_error: false
+            has_error: false,
+            key: 1
         }
 
         this.refreshYahooData = this.refreshYahooData.bind(this);
@@ -45,7 +46,8 @@ class App extends Component {
     refreshYahooData() {
         this.callApi('/api/refresh_yahoo_data/')
             .then(results => {
-                console.log(results);
+                //Change the key to re-render the components
+                this.setState({key: this.state.key + 1})
                 this.forceUpdate();
             })
             .catch(err => {
@@ -61,9 +63,9 @@ class App extends Component {
         var footer;
 
         if (!isLoggedIn) {
-            homePage = <HomePage/>;
+            homePage = <HomePage key={this.state.key}/>;
         } else {
-            homePage = <BuildPlayers/>;
+            homePage = <BuildPlayers  key={this.state.key}/>;
         }
 
         navBar = <div className="navbar flex">
