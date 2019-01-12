@@ -145,17 +145,7 @@ exports.getRankings = function (req, res) {
                 nbaSeasonPlayers[i].ftRating = ftRating;
                 nbaSeasonPlayers[i].overallRating = overallRating;
             }
-
-            console.log(ftSeasonAvg)
-            console.log(ftSeasonStDev)
-
-            console.log(fgSeasonAvg)
-            console.log(fgSeasonStDev)
-
-            console.log(ptsSeasonAvg)
-            console.log(ptsSeasonStDev);
         })
-
     }).then(function (data) {
         nba.stats.playerStats({ leagueID: "00", LastNGames: "7" }).then(function (data) {
 
