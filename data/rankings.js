@@ -84,19 +84,16 @@ exports.getRankings = function (req, res) {
         nbaSeasonPlayers = nbaSeasonPlayers[0];
 
         async.forEachOf(nbaSeasonPlayers, function (value, i, callback) {
-
-            for (var k = 0; k < nbaSeasonPlayers[i].gp; k++) {
-                if (nbaSeasonPlayers[i].nbaFantasyPtsRank < 350) {
-                    ftSeasonArray.push(nbaSeasonPlayers[i].ftPct);
-                    fgSeasonArray.push(nbaSeasonPlayers[i].fgPct);
-                    threeSeasonArray.push(nbaSeasonPlayers[i].fG3M);
-                    ptsSeasonArray.push(nbaSeasonPlayers[i].pts);
-                    rebSeasonArray.push(nbaSeasonPlayers[i].reb);
-                    astSeasonArray.push(nbaSeasonPlayers[i].ast);
-                    stlSeasonArray.push(nbaSeasonPlayers[i].stl);
-                    blkSeasonArray.push(nbaSeasonPlayers[i].blk);
-                    toSeasonArray.push(nbaSeasonPlayers[i].tov);
-                }
+            if (nbaSeasonPlayers[i].nbaFantasyPtsRank < 175) {
+                ftSeasonArray.push(nbaSeasonPlayers[i].ftPct);
+                fgSeasonArray.push(nbaSeasonPlayers[i].fgPct);
+                threeSeasonArray.push(nbaSeasonPlayers[i].fG3M);
+                ptsSeasonArray.push(nbaSeasonPlayers[i].pts);
+                rebSeasonArray.push(nbaSeasonPlayers[i].reb);
+                astSeasonArray.push(nbaSeasonPlayers[i].ast);
+                stlSeasonArray.push(nbaSeasonPlayers[i].stl);
+                blkSeasonArray.push(nbaSeasonPlayers[i].blk);
+                toSeasonArray.push(nbaSeasonPlayers[i].tov);
             }
 
             callback();
@@ -146,6 +143,7 @@ exports.getRankings = function (req, res) {
                 nbaSeasonPlayers[i].overallRating = overallRating;
             }
         })
+
     }).then(function (data) {
         nba.stats.playerStats({ leagueID: "00", LastNGames: "7" }).then(function (data) {
 
@@ -153,18 +151,16 @@ exports.getRankings = function (req, res) {
             nbaRecentPlayers = nbaRecentPlayers[0]
 
             async.forEachOf(nbaRecentPlayers, function (value, i, callback) {
-                for (var k = 0; k < nbaRecentPlayers[i].gp; k++) {
-                    if (nbaRecentPlayers[i].nbaFantasyPtsRank < 350) {
-                        ftRecentArray.push(nbaRecentPlayers[i].ftPct);
-                        fgRecentArray.push(nbaRecentPlayers[i].fgPct);
-                        threeRecentArray.push(nbaRecentPlayers[i].fG3M);
-                        ptsRecentArray.push(nbaRecentPlayers[i].pts);
-                        rebRecentArray.push(nbaRecentPlayers[i].reb);
-                        astRecentArray.push(nbaRecentPlayers[i].ast);
-                        stlRecentArray.push(nbaRecentPlayers[i].stl);
-                        blkRecentArray.push(nbaRecentPlayers[i].blk);
-                        toRecentArray.push(nbaRecentPlayers[i].tov);
-                    }
+                if (nbaRecentPlayers[i].nbaFantasyPtsRank < 175) {
+                    ftRecentArray.push(nbaRecentPlayers[i].ftPct);
+                    fgRecentArray.push(nbaRecentPlayers[i].fgPct);
+                    threeRecentArray.push(nbaRecentPlayers[i].fG3M);
+                    ptsRecentArray.push(nbaRecentPlayers[i].pts);
+                    rebRecentArray.push(nbaRecentPlayers[i].reb);
+                    astRecentArray.push(nbaRecentPlayers[i].ast);
+                    stlRecentArray.push(nbaRecentPlayers[i].stl);
+                    blkRecentArray.push(nbaRecentPlayers[i].blk);
+                    toRecentArray.push(nbaRecentPlayers[i].tov);
                 }
                 callback();
             }, function (err) {
@@ -317,11 +313,11 @@ exports.getRankings = function (req, res) {
                 //Here put the creation of the standard deviations and stuff and making the rankings prob
                 // console.log(PlayerSeasonData.find({}))
                 PlayerSeasonData.find({}, function (err, players) {
-                    if (err){
+                    if (err) {
                         res.send(err);
                     } else {
                         res.json('Rankings Completed');
-                    }  
+                    }
                 });
             });
         })
