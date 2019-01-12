@@ -77,7 +77,7 @@ var RankingsSeasonSchema = new Schema({
     }
 });
 
-var RankingsTwoWeeksSchema = new Schema({
+var RankingsRecentSchema = new Schema({
     fullName: {
         type: String
     },
@@ -125,7 +125,7 @@ var PickupTargetsSeasonSchema = new Schema({
     }
 });
 
-var PickupTargetsTwoWeeksSchema = new Schema({
+var PickupTargetsRecentSchema = new Schema({
     leagueId: {
         type: String
     },
@@ -134,9 +134,85 @@ var PickupTargetsTwoWeeksSchema = new Schema({
     }
 });
 
+var PlayerSeasonDataSchema = new Schema({
+    playerId: Number,
+    playerName: String,
+    teamId: Number,
+    teamAbbreviation: String,
+    min: Number,
+    fgPct: Number,
+    ftPct: Number,
+    fG3M: Number,
+    reb: Number,
+    ast: Number,
+    tov: Number,
+    stl: Number,
+    blk: Number,
+    pts: Number,
+    fgPctRank: Number,
+    ftPctRank: Number,
+    fg3mRank: Number,
+    rebRank: Number,
+    astRank: Number,
+    tovRank: Number,
+    stlRank: Number,
+    blkRank: Number,
+    ptsRank: Number,
+    ftRating: Number,
+    fgRating: Number,
+    ptsRating: Number,
+    threeRating: Number,
+    rebRating: Number,
+    astRating: Number,
+    stlRating: Number,
+    blkRating: Number,
+    toRating: Number,
+    overallRating: Number,
+    overallRank: Number
+})
+
+var PlayerRecentDataSchema = new Schema({
+    playerId: Number,
+    playerName: String,
+    teamId: Number,
+    teamAbbreviation: String,
+    min: Number,
+    fgPct: Number,
+    ftPct: Number,
+    fG3M: Number,
+    reb: Number,
+    ast: Number,
+    tov: Number,
+    stl: Number,
+    blk: Number,
+    pts: Number,
+    fgPctRank: Number,
+    ftPctRank: Number,
+    fg3mRank: Number,
+    rebRank: Number,
+    astRank: Number,
+    tovRank: Number,
+    stlRank: Number,
+    blkRank: Number,
+    ptsRank: Number,
+    ftRating: Number,
+    fgRating: Number,
+    ptsRating: Number,
+    threeRating: Number,
+    rebRating: Number,
+    astRating: Number,
+    stlRating: Number,
+    blkRating: Number,
+    toRating: Number,
+    overallRating: Number,
+    overallRank: Number
+})
+
 module.exports = mongoose.model('Players', PlayersSchema);
 module.exports = mongoose.model('Teams', TeamsSchema);
 module.exports = mongoose.model('RankingsSeason', RankingsSeasonSchema);
-module.exports = mongoose.model('RankingsTwoWeeks', RankingsTwoWeeksSchema);
+module.exports = mongoose.model('RankingsRecent', RankingsRecentSchema);
 module.exports = mongoose.model('PickupTargetsSeason', PickupTargetsSeasonSchema);
-module.exports = mongoose.model('PickupTargetsTwoWeeks', PickupTargetsTwoWeeksSchema);
+module.exports = mongoose.model('PickupTargetsRecent', PickupTargetsRecentSchema);
+module.exports = mongoose.model('PlayerSeasonData', PlayerSeasonDataSchema);
+module.exports = mongoose.model('PlayerRecentData', PlayerRecentDataSchema);

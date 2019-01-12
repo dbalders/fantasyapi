@@ -46,17 +46,15 @@ app.get('/', function(req, res) {
     var playerData;
     var playerRankings;
     var pickupTargets;
-    var playerRankingsTwoWeeks;
-    var pickupTargetsTwoWeeks;
-    var todayDate;
-    var twoWeeksDate;
+    var playerRankingsRecent;
+    var pickupTargetsRecent;
 
     //get the data from the session that is returned from yahoo
     if (req.session.pickupTargets)
         pickupTargets = req.session.pickupTargets;
 
-    if (req.session.pickupTargetsTwoWeeks)
-        pickupTargetsTwoWeeks = req.session.pickupTargetsTwoWeeks;
+    if (req.session.pickupTargetsRecent)
+        pickupTargetsRecent = req.session.pickupTargetsRecent;
 
     if (req.session.teamData)
         teamData = JSON.stringify(req.session.teamData, null, 2);
@@ -67,14 +65,8 @@ app.get('/', function(req, res) {
     if (req.session.playerRankings)
         playerRankings = JSON.stringify(req.session.playerRankings);
 
-    if (req.session.playerRankingsTwoWeeks)
-        playerRankingsTwoWeeks = JSON.stringify(req.session.playerRankingsTwoWeeks);
-
-    if (req.session.todayDate)
-        todayDate = req.session.todayDate;
-
-    if (req.session.twoWeeksDate)
-        twoWeeksDate = req.session.twoWeeksDate;
+    if (req.session.playerRankingsRecent)
+        playerRankingsRecent = JSON.stringify(req.session.playerRankingsRecent);
     
     //render the home page
     res.render('home', {
@@ -84,10 +76,8 @@ app.get('/', function(req, res) {
         playerData: playerData,
         playerRankings: playerRankings,
         pickupTargets: pickupTargets,
-        playerRankingsTwoWeeks: playerRankingsTwoWeeks,
-        pickupTargetsTwoWeeks: pickupTargetsTwoWeeks,
-        todayDate: todayDate,
-        twoWeeksDate: twoWeeksDate
+        playerRankingsRecent: playerRankingsRecent,
+        pickupTargetsRecent: pickupTargetsRecent
     });
 });
 

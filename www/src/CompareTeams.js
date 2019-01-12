@@ -10,9 +10,9 @@ export class CompareTeams extends Component {
         this.state = {
             teamSelected: [],
             compareStatsSeason: [],
-            compareStatsTwoWeeks: [],
+            compareStatsRecent: [],
             compareStatsSeasonAvg: [],
-            compareStatsTwoWeeksAvg: [],
+            compareStatsRecentAvg: [],
             showCompareTable: false
 
         }
@@ -46,48 +46,48 @@ export class CompareTeams extends Component {
 
     buildTeam(team) {
         var teamStatsSeason = [];
-        var teamStatsTwoWeeks = [];
+        var teamStatsRecent = [];
         var teamStatsSeasonAvg = [];
-        var teamStatsTwoWeeksAvg = [];
+        var teamStatsRecentAvg = [];
         var teamPlayers = team;
         var playerRankingsSeason = this.props.playerRankingsSeason;
-        var playerRankingsTwoWeeks = this.props.playerRankingsTwoWeeks;
+        var playerRankingsRecent = this.props.playerRankingsRecent;
 
         //for each player if string similarity > .7 in player rankings, then return
         for (var i = 0; i < teamPlayers.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
-                var similarPlayerSeason = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsSeason[j].fullName);
+                var similarPlayerSeason = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsSeason[j].playerName);
                 if (similarPlayerSeason > 0.7) {
                     teamStatsSeason.push(playerRankingsSeason[j]);
                     teamStatsSeasonAvg = {
-                        pV: (teamStatsSeasonAvg.pV) ? (teamStatsSeasonAvg.pV + playerRankingsSeason[j].pV) : playerRankingsSeason[j].pV,
-                        '3V': (teamStatsSeasonAvg['3V']) ? (teamStatsSeasonAvg['3V'] + playerRankingsSeason[j]['3V']) : playerRankingsSeason[j]['3V'],
-                        aV: (teamStatsSeasonAvg.aV) ? (teamStatsSeasonAvg.aV + playerRankingsSeason[j].aV) : playerRankingsSeason[j].aV,
-                        rV: (teamStatsSeasonAvg.rV) ? (teamStatsSeasonAvg.rV + playerRankingsSeason[j].rV) : playerRankingsSeason[j].rV,
-                        sV: (teamStatsSeasonAvg.sV) ? (teamStatsSeasonAvg.sV + playerRankingsSeason[j].sV) : playerRankingsSeason[j].sV,
-                        bV: (teamStatsSeasonAvg.bV) ? (teamStatsSeasonAvg.bV + playerRankingsSeason[j].bV) : playerRankingsSeason[j].bV,
-                        'fg%V': (teamStatsSeasonAvg['fg%V']) ? (teamStatsSeasonAvg['fg%V'] + playerRankingsSeason[j]['fg%V']) : playerRankingsSeason[j]['fg%V'],
-                        'ft%V': (teamStatsSeasonAvg['ft%V']) ? (teamStatsSeasonAvg['ft%V'] + playerRankingsSeason[j]['ft%V']) : playerRankingsSeason[j]['ft%V'],
-                        toV: (teamStatsSeasonAvg.toV) ? (teamStatsSeasonAvg.toV + playerRankingsSeason[j].toV) : playerRankingsSeason[j].toV
+                        ptsRating: (teamStatsSeasonAvg.ptsRating) ? (teamStatsSeasonAvg.ptsRating + playerRankingsSeason[j].ptsRating) : playerRankingsSeason[j].ptsRating,
+                        threeRating: (teamStatsSeasonAvg.threeRating) ? (teamStatsSeasonAvg.threeRating + playerRankingsSeason[j].threeRating) : playerRankingsSeason[j].threeRating,
+                        astRating: (teamStatsSeasonAvg.astRating) ? (teamStatsSeasonAvg.astRating + playerRankingsSeason[j].astRating) : playerRankingsSeason[j].astRating,
+                        rebRating: (teamStatsSeasonAvg.rebRating) ? (teamStatsSeasonAvg.rebRating + playerRankingsSeason[j].rebRating) : playerRankingsSeason[j].rebRating,
+                        stlRating: (teamStatsSeasonAvg.stlRating) ? (teamStatsSeasonAvg.stlRating + playerRankingsSeason[j].stlRating) : playerRankingsSeason[j].stlRating,
+                        blkRating: (teamStatsSeasonAvg.blkRating) ? (teamStatsSeasonAvg.blkRating + playerRankingsSeason[j].blkRating) : playerRankingsSeason[j].blkRating,
+                        fgRating: (teamStatsSeasonAvg.fgRating) ? (teamStatsSeasonAvg.fgRating + playerRankingsSeason[j].fgRating) : playerRankingsSeason[j].fgRating,
+                        ftRating: (teamStatsSeasonAvg.ftRating) ? (teamStatsSeasonAvg.ftRating + playerRankingsSeason[j].ftRating) : playerRankingsSeason[j].ftRating,
+                        toRating: (teamStatsSeasonAvg.toRating) ? (teamStatsSeasonAvg.toRating + playerRankingsSeason[j].toRating) : playerRankingsSeason[j].toRating
                     }
                     break
                 }
             }
 
-            for (var j = 0; j < playerRankingsTwoWeeks.length; j++) {
-                var similarPlayerTwoWeeks = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsTwoWeeks[j].fullName);
-                if (similarPlayerTwoWeeks > 0.7) {
-                    teamStatsTwoWeeks.push(playerRankingsTwoWeeks[j]);
-                    teamStatsTwoWeeksAvg = {
-                        pV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.pV + playerRankingsTwoWeeks[j].pV) : playerRankingsTwoWeeks[j].pV,
-                        '3V': (teamStatsTwoWeeksAvg['3V']) ? (teamStatsTwoWeeksAvg['3V'] + playerRankingsTwoWeeks[j]['3V']) : playerRankingsTwoWeeks[j]['3V'],
-                        aV: (teamStatsTwoWeeksAvg.aV) ? (teamStatsTwoWeeksAvg.aV + playerRankingsTwoWeeks[j].aV) : playerRankingsTwoWeeks[j].aV,
-                        rV: (teamStatsTwoWeeksAvg.rV) ? (teamStatsTwoWeeksAvg.rV + playerRankingsTwoWeeks[j].rV) : playerRankingsTwoWeeks[j].rV,
-                        sV: (teamStatsTwoWeeksAvg.sV) ? (teamStatsTwoWeeksAvg.sV + playerRankingsTwoWeeks[j].sV) : playerRankingsTwoWeeks[j].sV,
-                        bV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.bV + playerRankingsTwoWeeks[j].bV) : playerRankingsTwoWeeks[j].bV,
-                        'fg%V': (teamStatsTwoWeeksAvg['fg%V']) ? (teamStatsTwoWeeksAvg['fg%V'] + playerRankingsTwoWeeks[j]['fg%V']) : playerRankingsTwoWeeks[j]['fg%V'],
-                        'ft%V': (teamStatsTwoWeeksAvg['ft%V']) ? (teamStatsTwoWeeksAvg['ft%V'] + playerRankingsTwoWeeks[j]['ft%V']) : playerRankingsTwoWeeks[j]['ft%V'],
-                        toV: (teamStatsTwoWeeksAvg.toV) ? (teamStatsTwoWeeksAvg.toV + playerRankingsTwoWeeks[j].toV) : playerRankingsTwoWeeks[j].toV
+            for (var j = 0; j < playerRankingsRecent.length; j++) {
+                var similarPlayerRecent = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsRecent[j].playerName);
+                if (similarPlayerRecent > 0.7) {
+                    teamStatsRecent.push(playerRankingsRecent[j]);
+                    teamStatsRecentAvg = {
+                        ptsRating: (teamStatsRecentAvg.ptsRating) ? (teamStatsRecentAvg.ptsRating + playerRankingsRecent[j].ptsRating) : playerRankingsRecent[j].ptsRating,
+                        threeRating: (teamStatsRecentAvg.threeRating) ? (teamStatsRecentAvg.threeRating + playerRankingsRecent[j].threeRating) : playerRankingsRecent[j].threeRating,
+                        astRating: (teamStatsRecentAvg.astRating) ? (teamStatsRecentAvg.astRating + playerRankingsRecent[j].astRating) : playerRankingsRecent[j].astRating,
+                        rebRating: (teamStatsRecentAvg.rebRating) ? (teamStatsRecentAvg.rebRating + playerRankingsRecent[j].rebRating) : playerRankingsRecent[j].rebRating,
+                        stlRating: (teamStatsRecentAvg.stlRating) ? (teamStatsRecentAvg.stlRating + playerRankingsRecent[j].stlRating) : playerRankingsRecent[j].stlRating,
+                        blkRating: (teamStatsRecentAvg.blkRating) ? (teamStatsRecentAvg.blkRating + playerRankingsRecent[j].blkRating) : playerRankingsRecent[j].blkRating,
+                        fgRating: (teamStatsRecentAvg.fgRating) ? (teamStatsRecentAvg.fgRating + playerRankingsRecent[j].fgRating) : playerRankingsRecent[j].fgRating,
+                        ftRating: (teamStatsRecentAvg.ftRating) ? (teamStatsRecentAvg.ftRating + playerRankingsRecent[j].ftRating) : playerRankingsRecent[j].ftRating,
+                        toRating: (teamStatsRecentAvg.toRating) ? (teamStatsRecentAvg.toRating + playerRankingsRecent[j].toRating) : playerRankingsRecent[j].toRating
                     }
                     break
                 }
@@ -95,36 +95,36 @@ export class CompareTeams extends Component {
         }
 
         this.setState({ compareStatsSeason: teamStatsSeason });
-        this.setState({ compareStatsTwoWeeks: teamStatsTwoWeeks });
+        this.setState({ compareStatsRecent: teamStatsRecent });
 
         teamStatsSeasonAvg = {
-            pV: Number(teamStatsSeasonAvg.pV / teamStatsSeason.length).toFixed(2),
-            '3V': Number(teamStatsSeasonAvg['3V'] / teamStatsSeason.length).toFixed(2),
-            aV: Number(teamStatsSeasonAvg.aV / teamStatsSeason.length).toFixed(2),
-            rV: Number(teamStatsSeasonAvg.rV / teamStatsSeason.length).toFixed(2),
-            sV: Number(teamStatsSeasonAvg.sV / teamStatsSeason.length).toFixed(2),
-            bV: Number(teamStatsSeasonAvg.bV / teamStatsSeason.length).toFixed(2),
-            'fg%V': Number(teamStatsSeasonAvg['fg%V'] / teamStatsSeason.length).toFixed(2),
-            'ft%V': Number(teamStatsSeasonAvg['ft%V'] / teamStatsSeason.length).toFixed(2),
-            toV: Number(teamStatsSeasonAvg.toV / teamStatsSeason.length).toFixed(2)
+            ptsRating: Number(teamStatsSeasonAvg.ptsRating / teamStatsSeason.length).toFixed(2),
+            threeRating: Number(teamStatsSeasonAvg.threeRating / teamStatsSeason.length).toFixed(2),
+            astRating: Number(teamStatsSeasonAvg.astRating / teamStatsSeason.length).toFixed(2),
+            rebRating: Number(teamStatsSeasonAvg.rebRating / teamStatsSeason.length).toFixed(2),
+            stlRating: Number(teamStatsSeasonAvg.stlRating / teamStatsSeason.length).toFixed(2),
+            blkRating: Number(teamStatsSeasonAvg.blkRating / teamStatsSeason.length).toFixed(2),
+            fgRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
+            ftRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
+            toRating: Number(teamStatsSeasonAvg.ftRating / teamStatsSeason.length).toFixed(2)
         }
 
 
-        teamStatsTwoWeeksAvg = {
-            pV: Number(teamStatsTwoWeeksAvg.pV / teamStatsTwoWeeks.length).toFixed(2),
-            '3V': Number(teamStatsTwoWeeksAvg['3V'] / teamStatsTwoWeeks.length).toFixed(2),
-            aV: Number(teamStatsTwoWeeksAvg.aV / teamStatsTwoWeeks.length).toFixed(2),
-            rV: Number(teamStatsTwoWeeksAvg.rV / teamStatsTwoWeeks.length).toFixed(2),
-            sV: Number(teamStatsTwoWeeksAvg.sV / teamStatsTwoWeeks.length).toFixed(2),
-            bV: Number(teamStatsTwoWeeksAvg.bV / teamStatsTwoWeeks.length).toFixed(2),
-            'fg%V': Number(teamStatsTwoWeeksAvg['fg%V'] / teamStatsTwoWeeks.length).toFixed(2),
-            'ft%V': Number(teamStatsTwoWeeksAvg['ft%V'] / teamStatsTwoWeeks.length).toFixed(2),
-            toV: Number(teamStatsTwoWeeksAvg.toV / teamStatsTwoWeeks.length).toFixed(2)
+        teamStatsRecentAvg = {
+            ptsRating: Number(teamStatsRecentAvg.ptsRating / teamStatsRecent.length).toFixed(2),
+            threeRating: Number(teamStatsRecentAvg.threeRating / teamStatsRecent.length).toFixed(2),
+            astRating: Number(teamStatsRecentAvg.astRating / teamStatsRecent.length).toFixed(2),
+            rebRating: Number(teamStatsRecentAvg.rebRating / teamStatsRecent.length).toFixed(2),
+            stlRating: Number(teamStatsRecentAvg.stlRating / teamStatsRecent.length).toFixed(2),
+            blkRating: Number(teamStatsRecentAvg.blkRating / teamStatsRecent.length).toFixed(2),
+            fgRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
+            ftRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
+            toRating: Number(teamStatsRecentAvg.ftRating / teamStatsRecent.length).toFixed(2)
         }
 
         //Put the [] around the arrays so the table below can know its a single row
         this.setState({ compareStatsSeasonAvg: [teamStatsSeasonAvg] });
-        this.setState({ compareStatsTwoWeeksAvg: [teamStatsTwoWeeksAvg] });
+        this.setState({ compareStatsRecentAvg: [teamStatsRecentAvg] });
     }
 
     render() {
@@ -169,7 +169,7 @@ export class CompareTeams extends Component {
                         minRows={0}
                         defaultSortDesc={true}
                         defaultSorted={[{
-                            id: 'rank',
+                            id: 'overallRank',
                             desc: false
                         }]}
                       />

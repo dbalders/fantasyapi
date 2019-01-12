@@ -1,15 +1,17 @@
 'use strict';
 
 var fantasy = require('../../data/fantasy');
-
+var rankings = require('../../data/rankings');
 
 var mongoose = require('mongoose'),
     Players = mongoose.model('Players'),
     Teams = mongoose.model('Teams'),
     RankingsSeason = mongoose.model('RankingsSeason'),
-    RankingsTwoWeeks = mongoose.model('RankingsTwoWeeks'),
+    RankingsRecent = mongoose.model('RankingsRecent'),
     PickupTargetsSeason = mongoose.model('PickupTargetsSeason'),
-    PickupTargetsTwoWeeks = mongoose.model('PickupTargetsTwoWeeks');
+    PickupTargetsTwoWeeks = mongoose.model('PickupTargetsRecent'),
+    PlayerSeasonData = mongoose.model('PlayerSeasonData'),
+    PlayerRecentData = mongoose.model('PlayerRecentData');
 
 exports.list_all_players = function(req, res) {
     Players.find({ leagueId: req.params.leagueId }, function(err, players) {
@@ -70,7 +72,7 @@ exports.list_season_rankings = function(req, res) {
 };
 
 exports.list_two_week_rankings = function(req, res) {
-    RankingsTwoWeeks.find({}, function(err, players) {
+    RankingsRecent.find({}, function(err, players) {
         if (err)
             res.send(err);
         res.json(players);
@@ -83,7 +85,7 @@ exports.erase_current_data = function(req, res) {
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    RankingsTwoWeeks.remove({}, function(err, task) {
+    RankingsRecent.remove({}, function(err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
@@ -114,17 +116,24 @@ exports.erase_current_data = function(req, res) {
 };
 
 exports.get_rankings = function(req, res) {
-    RankingsSeason.remove({}, function(err, task) {
-        if (err)
-            res.send(err);
-    });
-    RankingsTwoWeeks.remove({}, function(err, task) {
-        if (err)
-            res.send(err);
-    });
+    rankings.getRankings(req, res);
+    // res.json("Rankings Completed");
+}
 
-    fantasy.getRankings();
-    res.json("Rankings Completed");
+exports.get_player_season_data = function(req, res) {
+    PlayerSeasonData.find({}, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+}
+
+exports.get_player_recent_data = function(req, res) {
+    PlayerRecentData.find({}, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
 }
 
 exports.get_espn_data = function(req, res) {
