@@ -9,17 +9,17 @@ export class BuildPlayers extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            playerTargetsTwoWeeks: [],
+            playerTargetsRecent: [],
             playerTargetsSeason: [],
             teamPlayers: [],
             playerRankingsSeason: [],
-            playerRankingsTwoWeeks: [],
+            playerRankingsRecent: [],
             teamStatsSeason: [],
-            teamStatsTwoWeeks: [],
+            teamStatsRecent: [],
             teamStatsSeasonAvg: [],
-            teamStatsTwoWeeksAvg: [],
+            teamStatsRecentAvg: [],
             playerPickupsSeason: [],
-            playerPickupsTwoWeeks: [],
+            playerPickupsRecent: [],
             teams: [],
             teamSelected: null,
             leagueId: null
@@ -37,7 +37,7 @@ export class BuildPlayers extends Component {
             this.callApi('/api/targets/twoweeks/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
-                    this.setState({ playerTargetsTwoWeeks: playerData });
+                    this.setState({ playerTargetsRecent: playerData });
                 })
                 .catch(err => console.log(err));
 
@@ -49,17 +49,17 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
-            this.callApi('/api/rankings/season/')
+            this.callApi('/api/player_data/season/')
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsSeason: playerData });
                 })
                 .catch(err => console.log(err));
 
-            this.callApi('/api/rankings/twoweeks/')
+            this.callApi('/api/player_data/recent/')
                 .then(results => {
                     var playerData = results;
-                    this.setState({ playerRankingsTwoWeeks: playerData });
+                    this.setState({ playerRankingsRecent: playerData });
                 })
                 .catch(err => console.log(err));
 
@@ -76,10 +76,10 @@ export class BuildPlayers extends Component {
                     .then(results => {
                         var playerData = results;
                         //check if the data is there, and if not, add a .5 sec wait then send to the build function
-                        if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsTwoWeeks.length === 0) {
+                        if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsRecent.length === 0) {
                             setTimeout(function() {
                                 this.setState({ teamPlayers: playerData }, this.buildTeam);
-                            }.bind(this), 500)
+                            }.bind(this), 1000)
                         } else {
                             this.setState({ teamPlayers: playerData }, this.buildTeam).bind(this);
                         }
@@ -100,52 +100,52 @@ export class BuildPlayers extends Component {
 
     buildTeam() {
         var teamStatsSeason = [];
-        var teamStatsTwoWeeks = [];
+        var teamStatsRecent = [];
         var teamStatsSeasonAvg = [];
-        var teamStatsTwoWeeksAvg = [];
+        var teamStatsRecentAvg = [];
         var teamPickupsSeason = [];
-        var teamPickupsTwoWeeks = [];
+        var teamPickupsRecent = [];
         var teamPlayers = this.state.teamPlayers;
         var playerRankingsSeason = this.state.playerRankingsSeason;
-        var playerRankingsTwoWeeks = this.state.playerRankingsTwoWeeks;
+        var playerRankingsRecent = this.state.playerRankingsRecent;
         var playerPickupsSeason = this.state.playerTargetsSeason;
-        var playerPickupsTwoWeeks = this.state.playerTargetsTwoWeeks;
+        var playerPickupsRecent = this.state.playerTargetsRecent;
 
         //for each player if string similarity > .7 in player rankings, then return
         for (var i = 0; i < teamPlayers.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
-                var similarPlayerSeason = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsSeason[j].fullName);
+                var similarPlayerSeason = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsSeason[j].playerName);
                 if (similarPlayerSeason > 0.7) {
                     teamStatsSeason.push(playerRankingsSeason[j]);
                     teamStatsSeasonAvg = {
-                        pV: (teamStatsSeasonAvg.pV) ? (teamStatsSeasonAvg.pV + playerRankingsSeason[j].pV) : playerRankingsSeason[j].pV,
-                        '3V': (teamStatsSeasonAvg['3V']) ? (teamStatsSeasonAvg['3V'] + playerRankingsSeason[j]['3V']) : playerRankingsSeason[j]['3V'],
-                        aV: (teamStatsSeasonAvg.aV) ? (teamStatsSeasonAvg.aV + playerRankingsSeason[j].aV) : playerRankingsSeason[j].aV,
-                        rV: (teamStatsSeasonAvg.rV) ? (teamStatsSeasonAvg.rV + playerRankingsSeason[j].rV) : playerRankingsSeason[j].rV,
-                        sV: (teamStatsSeasonAvg.sV) ? (teamStatsSeasonAvg.sV + playerRankingsSeason[j].sV) : playerRankingsSeason[j].sV,
-                        bV: (teamStatsSeasonAvg.bV) ? (teamStatsSeasonAvg.bV + playerRankingsSeason[j].bV) : playerRankingsSeason[j].bV,
-                        'fg%V': (teamStatsSeasonAvg['fg%V']) ? (teamStatsSeasonAvg['fg%V'] + playerRankingsSeason[j]['fg%V']) : playerRankingsSeason[j]['fg%V'],
-                        'ft%V': (teamStatsSeasonAvg['ft%V']) ? (teamStatsSeasonAvg['ft%V'] + playerRankingsSeason[j]['ft%V']) : playerRankingsSeason[j]['ft%V'],
-                        toV: (teamStatsSeasonAvg.toV) ? (teamStatsSeasonAvg.toV + playerRankingsSeason[j].toV) : playerRankingsSeason[j].toV
+                        ptsRating: (teamStatsSeasonAvg.ptsRating) ? (teamStatsSeasonAvg.ptsRating + playerRankingsSeason[j].ptsRating) : playerRankingsSeason[j].ptsRating,
+                        threeRating: (teamStatsSeasonAvg.threeRating) ? (teamStatsSeasonAvg.threeRating + playerRankingsSeason[j].threeRating) : playerRankingsSeason[j].threeRating,
+                        astRating: (teamStatsSeasonAvg.astRating) ? (teamStatsSeasonAvg.astRating + playerRankingsSeason[j].astRating) : playerRankingsSeason[j].astRating,
+                        rebRating: (teamStatsSeasonAvg.rebRating) ? (teamStatsSeasonAvg.rebRating + playerRankingsSeason[j].rebRating) : playerRankingsSeason[j].rebRating,
+                        stlRating: (teamStatsSeasonAvg.stlRating) ? (teamStatsSeasonAvg.stlRating + playerRankingsSeason[j].stlRating) : playerRankingsSeason[j].stlRating,
+                        blkRating: (teamStatsSeasonAvg.blkRating) ? (teamStatsSeasonAvg.blkRating + playerRankingsSeason[j].blkRating) : playerRankingsSeason[j].blkRating,
+                        fgRating: (teamStatsSeasonAvg.fgRating) ? (teamStatsSeasonAvg.fgRating + playerRankingsSeason[j].fgRating) : playerRankingsSeason[j].fgRating,
+                        ftRating: (teamStatsSeasonAvg.ftRating) ? (teamStatsSeasonAvg.ftRating + playerRankingsSeason[j].ftRating) : playerRankingsSeason[j].ftRating,
+                        toRating: (teamStatsSeasonAvg.toRating) ? (teamStatsSeasonAvg.toRating + playerRankingsSeason[j].toRating) : playerRankingsSeason[j].toRating
                     }
                     break
                 }
             }
 
-            for (var j = 0; j < playerRankingsTwoWeeks.length; j++) {
-                var similarPlayerTwoWeeks = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsTwoWeeks[j].fullName);
-                if (similarPlayerTwoWeeks > 0.7) {
-                    teamStatsTwoWeeks.push(playerRankingsTwoWeeks[j]);
-                    teamStatsTwoWeeksAvg = {
-                        pV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.pV + playerRankingsTwoWeeks[j].pV) : playerRankingsTwoWeeks[j].pV,
-                        '3V': (teamStatsTwoWeeksAvg['3V']) ? (teamStatsTwoWeeksAvg['3V'] + playerRankingsTwoWeeks[j]['3V']) : playerRankingsTwoWeeks[j]['3V'],
-                        aV: (teamStatsTwoWeeksAvg.aV) ? (teamStatsTwoWeeksAvg.aV + playerRankingsTwoWeeks[j].aV) : playerRankingsTwoWeeks[j].aV,
-                        rV: (teamStatsTwoWeeksAvg.rV) ? (teamStatsTwoWeeksAvg.rV + playerRankingsTwoWeeks[j].rV) : playerRankingsTwoWeeks[j].rV,
-                        sV: (teamStatsTwoWeeksAvg.sV) ? (teamStatsTwoWeeksAvg.sV + playerRankingsTwoWeeks[j].sV) : playerRankingsTwoWeeks[j].sV,
-                        bV: (teamStatsTwoWeeksAvg.pV) ? (teamStatsTwoWeeksAvg.bV + playerRankingsTwoWeeks[j].bV) : playerRankingsTwoWeeks[j].bV,
-                        'fg%V': (teamStatsTwoWeeksAvg['fg%V']) ? (teamStatsTwoWeeksAvg['fg%V'] + playerRankingsTwoWeeks[j]['fg%V']) : playerRankingsTwoWeeks[j]['fg%V'],
-                        'ft%V': (teamStatsTwoWeeksAvg['ft%V']) ? (teamStatsTwoWeeksAvg['ft%V'] + playerRankingsTwoWeeks[j]['ft%V']) : playerRankingsTwoWeeks[j]['ft%V'],
-                        toV: (teamStatsTwoWeeksAvg.toV) ? (teamStatsTwoWeeksAvg.toV + playerRankingsTwoWeeks[j].toV) : playerRankingsTwoWeeks[j].toV
+            for (var j = 0; j < playerRankingsRecent.length; j++) {
+                var similarPlayerRecent = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsRecent[j].playerName);
+                if (similarPlayerRecent > 0.7) {
+                    teamStatsRecent.push(playerRankingsRecent[j]);
+                    teamStatsRecentAvg = {
+                        ptsRating: (teamStatsRecentAvg.ptsRating) ? (teamStatsRecentAvg.ptsRating + playerRankingsRecent[j].ptsRating) : playerRankingsRecent[j].ptsRating,
+                        threeRating: (teamStatsRecentAvg.threeRating) ? (teamStatsRecentAvg.threeRating + playerRankingsRecent[j].threeRating) : playerRankingsRecent[j].threeRating,
+                        astRating: (teamStatsRecentAvg.astRating) ? (teamStatsRecentAvg.astRating + playerRankingsRecent[j].astRating) : playerRankingsRecent[j].astRating,
+                        rebRating: (teamStatsRecentAvg.rebRating) ? (teamStatsRecentAvg.rebRating + playerRankingsRecent[j].rebRating) : playerRankingsRecent[j].rebRating,
+                        stlRating: (teamStatsRecentAvg.stlRating) ? (teamStatsRecentAvg.stlRating + playerRankingsRecent[j].stlRating) : playerRankingsRecent[j].stlRating,
+                        blkRating: (teamStatsRecentAvg.blkRating) ? (teamStatsRecentAvg.blkRating + playerRankingsRecent[j].blkRating) : playerRankingsRecent[j].blkRating,
+                        fgRating: (teamStatsRecentAvg.fgRating) ? (teamStatsRecentAvg.fgRating + playerRankingsRecent[j].fgRating) : playerRankingsRecent[j].fgRating,
+                        ftRating: (teamStatsRecentAvg.ftRating) ? (teamStatsRecentAvg.ftRating + playerRankingsRecent[j].ftRating) : playerRankingsRecent[j].ftRating,
+                        toRating: (teamStatsRecentAvg.toRating) ? (teamStatsRecentAvg.toRating + playerRankingsRecent[j].toRating) : playerRankingsRecent[j].toRating
                     }
                     break
                 }
@@ -154,7 +154,7 @@ export class BuildPlayers extends Component {
 
         for (var i = 0; i < playerPickupsSeason.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
-                var similarTargetsSeason = stringSimilarity.compareTwoStrings(playerPickupsSeason[i].fullName, playerRankingsSeason[j].fullName);
+                var similarTargetsSeason = stringSimilarity.compareTwoStrings(playerPickupsSeason[i].playerName, playerRankingsSeason[j].playerName);
                 if (similarTargetsSeason > 0.7) {
                     teamPickupsSeason.push(playerRankingsSeason[j]);
                     break
@@ -162,49 +162,49 @@ export class BuildPlayers extends Component {
             }
         }
 
-        for (var i = 0; i < playerPickupsTwoWeeks.length; i++) {
-            for (var j = 0; j < playerRankingsTwoWeeks.length; j++) {
-                var similarTargetsTwoWeeks = stringSimilarity.compareTwoStrings(playerPickupsTwoWeeks[i].fullName, playerRankingsTwoWeeks[j].fullName);
-                if (similarTargetsTwoWeeks > 0.7) {
-                    teamPickupsTwoWeeks.push(playerRankingsTwoWeeks[j]);
+        for (var i = 0; i < playerPickupsRecent.length; i++) {
+            for (var j = 0; j < playerRankingsRecent.length; j++) {
+                var similarTargetsRecent = stringSimilarity.compareTwoStrings(playerPickupsRecent[i].playerName, playerRankingsRecent[j].playerName);
+                if (similarTargetsRecent > 0.7) {
+                    teamPickupsRecent.push(playerRankingsRecent[j]);
                     break
                 }
             }
         }
 
         this.setState({ teamStatsSeason: teamStatsSeason });
-        this.setState({ teamStatsTwoWeeks: teamStatsTwoWeeks });
+        this.setState({ teamStatsRecent: teamStatsRecent });
         this.setState({ playerPickupsSeason: playerPickupsSeason });
-        this.setState({ playerPickupsTwoWeeks: playerPickupsTwoWeeks });
+        this.setState({ playerPickupsRecent: playerPickupsRecent });
 
         teamStatsSeasonAvg = {
-            pV: Number(teamStatsSeasonAvg.pV / teamStatsSeason.length).toFixed(2),
-            '3V': Number(teamStatsSeasonAvg['3V'] / teamStatsSeason.length).toFixed(2),
-            aV: Number(teamStatsSeasonAvg.aV / teamStatsSeason.length).toFixed(2),
-            rV: Number(teamStatsSeasonAvg.rV / teamStatsSeason.length).toFixed(2),
-            sV: Number(teamStatsSeasonAvg.sV / teamStatsSeason.length).toFixed(2),
-            bV: Number(teamStatsSeasonAvg.bV / teamStatsSeason.length).toFixed(2),
-            'fg%V': Number(teamStatsSeasonAvg['fg%V'] / teamStatsSeason.length).toFixed(2),
-            'ft%V': Number(teamStatsSeasonAvg['ft%V'] / teamStatsSeason.length).toFixed(2),
-            toV: Number(teamStatsSeasonAvg.toV / teamStatsSeason.length).toFixed(2)
+            ptsRating: Number(teamStatsSeasonAvg.ptsRating / teamStatsSeason.length).toFixed(2),
+            threeRating: Number(teamStatsSeasonAvg.threeRating / teamStatsSeason.length).toFixed(2),
+            astRating: Number(teamStatsSeasonAvg.astRating / teamStatsSeason.length).toFixed(2),
+            rebRating: Number(teamStatsSeasonAvg.rebRating / teamStatsSeason.length).toFixed(2),
+            stlRating: Number(teamStatsSeasonAvg.stlRating / teamStatsSeason.length).toFixed(2),
+            blkRating: Number(teamStatsSeasonAvg.blkRating / teamStatsSeason.length).toFixed(2),
+            fgRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
+            ftRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
+            toRating: Number(teamStatsSeasonAvg.ftRating / teamStatsSeason.length).toFixed(2)
         }
 
 
-        teamStatsTwoWeeksAvg = {
-            pV: Number(teamStatsTwoWeeksAvg.pV / teamStatsTwoWeeks.length).toFixed(2),
-            '3V': Number(teamStatsTwoWeeksAvg['3V'] / teamStatsTwoWeeks.length).toFixed(2),
-            aV: Number(teamStatsTwoWeeksAvg.aV / teamStatsTwoWeeks.length).toFixed(2),
-            rV: Number(teamStatsTwoWeeksAvg.rV / teamStatsTwoWeeks.length).toFixed(2),
-            sV: Number(teamStatsTwoWeeksAvg.sV / teamStatsTwoWeeks.length).toFixed(2),
-            bV: Number(teamStatsTwoWeeksAvg.bV / teamStatsTwoWeeks.length).toFixed(2),
-            'fg%V': Number(teamStatsTwoWeeksAvg['fg%V'] / teamStatsTwoWeeks.length).toFixed(2),
-            'ft%V': Number(teamStatsTwoWeeksAvg['ft%V'] / teamStatsTwoWeeks.length).toFixed(2),
-            toV: Number(teamStatsTwoWeeksAvg.toV / teamStatsTwoWeeks.length).toFixed(2)
+        teamStatsRecentAvg = {
+            ptsRating: Number(teamStatsRecentAvg.ptsRating / teamStatsRecent.length).toFixed(2),
+            threeRating: Number(teamStatsRecentAvg.threeRating / teamStatsRecent.length).toFixed(2),
+            astRating: Number(teamStatsRecentAvg.astRating / teamStatsRecent.length).toFixed(2),
+            rebRating: Number(teamStatsRecentAvg.rebRating / teamStatsRecent.length).toFixed(2),
+            stlRating: Number(teamStatsRecentAvg.stlRating / teamStatsRecent.length).toFixed(2),
+            blkRating: Number(teamStatsRecentAvg.blkRating / teamStatsRecent.length).toFixed(2),
+            fgRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
+            ftRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
+            toRating: Number(teamStatsRecentAvg.ftRating / teamStatsRecent.length).toFixed(2)
         }
 
         //Put the [] around the arrays so the table below can know its a single row
         this.setState({ teamStatsSeasonAvg: [teamStatsSeasonAvg] });
-        this.setState({ teamStatsTwoWeeksAvg: [teamStatsTwoWeeksAvg] });
+        this.setState({ teamStatsRecentAvg: [teamStatsRecentAvg] });
     }
 
     render() {
@@ -217,146 +217,146 @@ export class BuildPlayers extends Component {
         const brightRed = '#ff8282';
         const columnNames = [{
             Header: 'Rank',
-            accessor: 'rank'
+            accessor: 'overallRank'
         }, {
             Header: 'Value',
-            accessor: 'value'
+            accessor: 'overallRating'
         }, {
             Header: 'Name',
-            accessor: 'fullName',
+            accessor: 'playerName',
             width: 200
         }, {
             Header: 'Points',
-            accessor: 'pV',
+            accessor: 'ptsRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.pV > 2 ? brightGreen :
-                        rowInfo.row.pV > 1 ? mediumGreen : 
-                        rowInfo.row.pV >= .5 ? lightGreen : 
-                        rowInfo.row.pV < 0 && rowInfo.row.pV > -1 ? lightRed :
-                        rowInfo.row.pV <= -1 && rowInfo.row.pV > -2 ? mediumRed : 
-                        rowInfo.row.pV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ptsRating > 2 ? brightGreen :
+                        rowInfo.row.ptsRating > 1 ? mediumGreen : 
+                        rowInfo.row.ptsRating >= .5 ? lightGreen : 
+                        rowInfo.row.ptsRating < 0 && rowInfo.row.ptsRating > -1 ? lightRed :
+                        rowInfo.row.ptsRating <= -1 && rowInfo.row.ptsRating > -2 ? mediumRed : 
+                        rowInfo.row.ptsRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: '3s',
-            accessor: '3V',
+            accessor: 'threeRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['3V'] > 2 ? brightGreen :
-                        rowInfo.row['3V'] > 1 ? mediumGreen : 
-                        rowInfo.row['3V'] >= .5 ? lightGreen : 
-                        rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -1 ? lightRed :
-                        rowInfo.row['3V'] <= -1 && rowInfo.row['3V'] > -2 ? mediumRed : 
-                        rowInfo.row['3V'] <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.threeRating > 2 ? brightGreen :
+                        rowInfo.row.threeRating > 1 ? mediumGreen : 
+                        rowInfo.row.threeRating >= .5 ? lightGreen : 
+                        rowInfo.row.threeRating < 0 && rowInfo.row.threeRating > -1 ? lightRed :
+                        rowInfo.row.threeRating <= -1 && rowInfo.row.threeRating > -2 ? mediumRed : 
+                        rowInfo.row.threeRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Rebounds',
-            accessor: 'rV',
+            accessor: 'rebRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.rV > 2 ? brightGreen :
-                        rowInfo.row.rV > 1 ? mediumGreen : 
-                        rowInfo.row.rV >= .5 ? lightGreen : 
-                        rowInfo.row.rV < 0 && rowInfo.row.rV > -1 ? lightRed :
-                        rowInfo.row.rV <= -1 && rowInfo.row.rV > -2 ? mediumRed : 
-                        rowInfo.row.rV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.rebRating > 2 ? brightGreen :
+                        rowInfo.row.rebRating > 1 ? mediumGreen : 
+                        rowInfo.row.rebRating >= .5 ? lightGreen : 
+                        rowInfo.row.rebRating < 0 && rowInfo.row.rebRating > -1 ? lightRed :
+                        rowInfo.row.rebRating <= -1 && rowInfo.row.rebRating > -2 ? mediumRed : 
+                        rowInfo.row.rebRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Assists',
-            accessor: 'aV',
+            accessor: 'astRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.aV > 2 ? brightGreen :
-                        rowInfo.row.aV > 1 ? mediumGreen : 
-                        rowInfo.row.aV >= .5 ? lightGreen : 
-                        rowInfo.row.aV < 0 && rowInfo.row.aV > -1 ? lightRed :
-                        rowInfo.row.aV <= -1 && rowInfo.row.aV > -2 ? mediumRed : 
-                        rowInfo.row.aV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.astRating > 2 ? brightGreen :
+                        rowInfo.row.astRating > 1 ? mediumGreen : 
+                        rowInfo.row.astRating >= .5 ? lightGreen : 
+                        rowInfo.row.astRating < 0 && rowInfo.row.astRating > -1 ? lightRed :
+                        rowInfo.row.astRating <= -1 && rowInfo.row.astRating > -2 ? mediumRed : 
+                        rowInfo.row.astRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Steals',
-            accessor: 'sV',
+            accessor: 'stlRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.sV > 2 ? brightGreen :
-                        rowInfo.row.sV > 1 ? mediumGreen : 
-                        rowInfo.row.sV >= .5 ? lightGreen : 
-                        rowInfo.row.sV < 0 && rowInfo.row.sV > -1 ? lightRed :
-                        rowInfo.row.sV <= -1 && rowInfo.row.sV > -2 ? mediumRed : 
-                        rowInfo.row.sV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.stlRating > 2 ? brightGreen :
+                        rowInfo.row.stlRating > 1 ? mediumGreen : 
+                        rowInfo.row.stlRating >= .5 ? lightGreen : 
+                        rowInfo.row.stlRating < 0 && rowInfo.row.stlRating > -1 ? lightRed :
+                        rowInfo.row.stlRating <= -1 && rowInfo.row.stlRating > -2 ? mediumRed : 
+                        rowInfo.row.stlRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Blocks',
-            accessor: 'bV',
+            accessor: 'blkRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.bV > 2 ? brightGreen :
-                        rowInfo.row.bV > 1 ? mediumGreen : 
-                        rowInfo.row.bV >= .5 ? lightGreen : 
-                        rowInfo.row.bV < 0 && rowInfo.row.bV > -1 ? lightRed :
-                        rowInfo.row.bV <= -1 && rowInfo.row.bV > -2 ? mediumRed : 
-                        rowInfo.row.bV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.blkRating > 2 ? brightGreen :
+                        rowInfo.row.blkRating > 1 ? mediumGreen : 
+                        rowInfo.row.blkRating >= .5 ? lightGreen : 
+                        rowInfo.row.blkRating < 0 && rowInfo.row.blkRating > -1 ? lightRed :
+                        rowInfo.row.blkRating <= -1 && rowInfo.row.blkRating > -2 ? mediumRed : 
+                        rowInfo.row.blkRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FG%',
-            accessor: 'fg%V',
+            accessor: 'fgRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['fg%V'] > 2 ? brightGreen :
-                        rowInfo.row['fg%V'] > 1 ? mediumGreen : 
-                        rowInfo.row['fg%V'] >= .5 ? lightGreen : 
-                        rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -1 ? lightRed :
-                        rowInfo.row['fg%V'] <= -1 && rowInfo.row['fg%V'] > -2 ? mediumRed : 
-                        rowInfo.row['fg%V'] <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.fgRating > 2 ? brightGreen :
+                        rowInfo.row.fgRating > 1 ? mediumGreen : 
+                        rowInfo.row.fgRating >= .5 ? lightGreen : 
+                        rowInfo.row.fgRating < 0 && rowInfo.row.fgRating > -1 ? lightRed :
+                        rowInfo.row.fgRating <= -1 && rowInfo.row.fgRating > -2 ? mediumRed : 
+                        rowInfo.row.fgRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ft%V',
+            accessor: 'ftRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['ft%V'] > 2 ? brightGreen :
-                        rowInfo.row['ft%V'] > 1 ? mediumGreen : 
-                        rowInfo.row['ft%V'] >= .5 ? lightGreen : 
-                        rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -1 ? lightRed :
-                        rowInfo.row['ft%V'] <= -1 && rowInfo.row['ft%V'] > -2 ? mediumRed : 
-                        rowInfo.row['ft%V'] <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ftRating > 2 ? brightGreen :
+                        rowInfo.row.ftRating > 1 ? mediumGreen : 
+                        rowInfo.row.ftRating >= .5 ? lightGreen : 
+                        rowInfo.row.ftRating < 0 && rowInfo.row.ftRating > -1 ? lightRed :
+                        rowInfo.row.ftRating <= -1 && rowInfo.row.ftRating > -2 ? mediumRed : 
+                        rowInfo.row.ftRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Turnovers',
-            accessor: 'toV',
+            accessor: 'toRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.toV > 2 ? brightGreen :
-                        rowInfo.row.toV > 1 ? mediumGreen : 
-                        rowInfo.row.toV >= .5 ? lightGreen : 
-                        rowInfo.row.toV < 0 && rowInfo.row.toV > -1 ? lightRed :
-                        rowInfo.row.toV <= -1 && rowInfo.row.toV > -2 ? mediumRed : 
-                        rowInfo.row.toV <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.toRating > 2 ? brightGreen :
+                        rowInfo.row.toRating > 1 ? mediumGreen : 
+                        rowInfo.row.toRating >= .5 ? lightGreen : 
+                        rowInfo.row.toRating < 0 && rowInfo.row.toRating > -1 ? lightRed :
+                        rowInfo.row.toRating <= -1 && rowInfo.row.toRating > -2 ? mediumRed : 
+                        rowInfo.row.toRating <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -364,136 +364,136 @@ export class BuildPlayers extends Component {
 
         const columnNamesAvg = [{
             Header: 'Points',
-            accessor: 'pV',
+            accessor: 'ptsRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.pV > 1 ? brightGreen :
-                        rowInfo.row.pV > .5 ? mediumGreen : 
-                        rowInfo.row.pV >= .25 ? lightGreen : 
-                        rowInfo.row.pV < 0 && rowInfo.row.pV > -0.25 ? lightRed :
-                        rowInfo.row.pV < -0.25 && rowInfo.row.pV > -1 ? mediumRed : 
-                        rowInfo.row.pV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ptsRating > 1 ? brightGreen :
+                        rowInfo.row.ptsRating > .5 ? mediumGreen : 
+                        rowInfo.row.ptsRating >= .25 ? lightGreen : 
+                        rowInfo.row.ptsRating < 0 && rowInfo.row.ptsRating > -0.25 ? lightRed :
+                        rowInfo.row.ptsRating < -0.25 && rowInfo.row.ptsRating > -1 ? mediumRed : 
+                        rowInfo.row.ptsRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: '3s',
-            accessor: '3V',
+            accessor: 'threeRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['3V'] > 1 ? brightGreen :
-                        rowInfo.row['3V'] > .5 ? mediumGreen : 
-                        rowInfo.row['3V'] >= .25 ? lightGreen : 
-                        rowInfo.row['3V'] < 0 && rowInfo.row['3V'] > -0.25 ? lightRed :
-                        rowInfo.row['3V'] < -0.25 && rowInfo.row['3V'] > -1 ? mediumRed : 
-                        rowInfo.row['3V'] <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.threeRating > 1 ? brightGreen :
+                        rowInfo.row.threeRating > .5 ? mediumGreen : 
+                        rowInfo.row.threeRating >= .25 ? lightGreen : 
+                        rowInfo.row.threeRating < 0 && rowInfo.row.threeRating > -0.25 ? lightRed :
+                        rowInfo.row.threeRating < -0.25 && rowInfo.row.threeRating > -1 ? mediumRed : 
+                        rowInfo.row.threeRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Rebounds',
-            accessor: 'rV',
+            accessor: 'rebRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.rV > 1 ? brightGreen :
-                        rowInfo.row.rV > .5 ? mediumGreen : 
-                        rowInfo.row.rV >= .25 ? lightGreen : 
-                        rowInfo.row.rV < 0 && rowInfo.row.rV > -0.25 ? lightRed :
-                        rowInfo.row.rV < -0.25 && rowInfo.row.rV > -1 ? mediumRed : 
-                        rowInfo.row.rV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.rebRating > 1 ? brightGreen :
+                        rowInfo.row.rebRating > .5 ? mediumGreen : 
+                        rowInfo.row.rebRating >= .25 ? lightGreen : 
+                        rowInfo.row.rebRating < 0 && rowInfo.row.rebRating > -0.25 ? lightRed :
+                        rowInfo.row.rebRating < -0.25 && rowInfo.row.rebRating > -1 ? mediumRed : 
+                        rowInfo.row.rebRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Assists',
-            accessor: 'aV',
+            accessor: 'astRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.aV > 1 ? brightGreen :
-                        rowInfo.row.aV > .5 ? mediumGreen : 
-                        rowInfo.row.aV >= .25 ? lightGreen : 
-                        rowInfo.row.aV < 0 && rowInfo.row.aV > -0.25 ? lightRed :
-                        rowInfo.row.aV < -0.25 && rowInfo.row.aV > -1 ? mediumRed : 
-                        rowInfo.row.aV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.astRating > 1 ? brightGreen :
+                        rowInfo.row.astRating > .5 ? mediumGreen : 
+                        rowInfo.row.astRating >= .25 ? lightGreen : 
+                        rowInfo.row.astRating < 0 && rowInfo.row.astRating > -0.25 ? lightRed :
+                        rowInfo.row.astRating < -0.25 && rowInfo.row.astRating > -1 ? mediumRed : 
+                        rowInfo.row.astRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Steals',
-            accessor: 'sV',
+            accessor: 'stlRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.sV > 1 ? brightGreen :
-                        rowInfo.row.sV > .5 ? mediumGreen : 
-                        rowInfo.row.sV >= .25 ? lightGreen : 
-                        rowInfo.row.sV < 0 && rowInfo.row.sV > -0.25 ? lightRed :
-                        rowInfo.row.sV < -0.25 && rowInfo.row.sV > -1 ? mediumRed : 
-                        rowInfo.row.sV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.stlRating > 1 ? brightGreen :
+                        rowInfo.row.stlRating > .5 ? mediumGreen : 
+                        rowInfo.row.stlRating >= .25 ? lightGreen : 
+                        rowInfo.row.stlRating < 0 && rowInfo.row.stlRating > -0.25 ? lightRed :
+                        rowInfo.row.stlRating < -0.25 && rowInfo.row.stlRating > -1 ? mediumRed : 
+                        rowInfo.row.stlRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Blocks',
-            accessor: 'bV',
+            accessor: 'blkRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.bV > 1 ? brightGreen :
-                        rowInfo.row.bV > .5 ? mediumGreen : 
-                        rowInfo.row.bV >= .25 ? lightGreen : 
-                        rowInfo.row.bV < 0 && rowInfo.row.bV > -0.25 ? lightRed :
-                        rowInfo.row.bV < -0.25 && rowInfo.row.bV > -1 ? mediumRed : 
-                        rowInfo.row.bV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.blkRating > 1 ? brightGreen :
+                        rowInfo.row.blkRating > .5 ? mediumGreen : 
+                        rowInfo.row.blkRating >= .25 ? lightGreen : 
+                        rowInfo.row.blkRating < 0 && rowInfo.row.blkRating > -0.25 ? lightRed :
+                        rowInfo.row.blkRating < -0.25 && rowInfo.row.blkRating > -1 ? mediumRed : 
+                        rowInfo.row.blkRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FG%',
-            accessor: 'fg%V',
+            accessor: 'fgRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['fg%V'] > 1 ? brightGreen :
-                        rowInfo.row['fg%V'] > .5 ? mediumGreen : 
-                        rowInfo.row['fg%V'] >= .25 ? lightGreen : 
-                        rowInfo.row['fg%V'] < 0 && rowInfo.row['fg%V'] > -0.25 ? lightRed :
-                        rowInfo.row['fg%V'] < -0.25 && rowInfo.row['fg%V'] > -1 ? mediumRed : 
-                        rowInfo.row['fg%V'] <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.fgRating > 1 ? brightGreen :
+                        rowInfo.row.fgRating > .5 ? mediumGreen : 
+                        rowInfo.row.fgRating >= .25 ? lightGreen : 
+                        rowInfo.row.fgRating < 0 && rowInfo.row.fgRating > -0.25 ? lightRed :
+                        rowInfo.row.fgRating < -0.25 && rowInfo.row.fgRating > -1 ? mediumRed : 
+                        rowInfo.row.fgRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ft%V',
+            accessor: 'ftRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row['ft%V'] > 1 ? brightGreen :
-                        rowInfo.row['ft%V'] > .5 ? mediumGreen : 
-                        rowInfo.row['ft%V'] >= .25 ? lightGreen : 
-                        rowInfo.row['ft%V'] < 0 && rowInfo.row['ft%V'] > -0.25 ? lightRed :
-                        rowInfo.row['ft%V'] < -0.25 && rowInfo.row['ft%V'] > -1 ? mediumRed : 
-                        rowInfo.row['ft%V'] <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ftRating > 1 ? brightGreen :
+                        rowInfo.row.ftRating > .5 ? mediumGreen : 
+                        rowInfo.row.ftRating >= .25 ? lightGreen : 
+                        rowInfo.row.ftRating < 0 && rowInfo.row.ftRating > -0.25 ? lightRed :
+                        rowInfo.row.ftRating < -0.25 && rowInfo.row.ftRating > -1 ? mediumRed : 
+                        rowInfo.row.ftRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Turnovers',
-            accessor: 'toV',
+            accessor: 'toRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.toV > 1 ? brightGreen :
-                        rowInfo.row.toV > .5 ? mediumGreen : 
-                        rowInfo.row.toV >= .25 ? lightGreen : 
-                        rowInfo.row.toV < 0 && rowInfo.row.toV > -0.25 ? lightRed :
-                        rowInfo.row.toV < -0.25 && rowInfo.row.toV > -1 ? mediumRed : 
-                        rowInfo.row.toV <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.toRating > 1 ? brightGreen :
+                        rowInfo.row.toRating > .5 ? mediumGreen : 
+                        rowInfo.row.toRating >= .25 ? lightGreen : 
+                        rowInfo.row.toRating < 0 && rowInfo.row.toRating > -0.25 ? lightRed :
+                        rowInfo.row.toRating < -0.25 && rowInfo.row.toRating > -1 ? mediumRed : 
+                        rowInfo.row.toRating <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -503,7 +503,7 @@ export class BuildPlayers extends Component {
         var compareTeamsHTML = "";
         if (this.state.leagueId) {
             compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
-            playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsTwoWeeks={this.state.playerRankingsTwoWeeks} 
+            playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent} 
             columnNamesAvg={columnNamesAvg} />
         }
 
@@ -519,7 +519,7 @@ export class BuildPlayers extends Component {
                         minRows={0}
                         defaultSortDesc={true}
                         defaultSorted={[{
-                            id: 'rank',
+                            id: 'overallRank',
                             desc: false
                         }]}
                       />
@@ -541,13 +541,13 @@ export class BuildPlayers extends Component {
                 <h3 className="team-table-header">Teams Last 2 Weeks Rankings</h3>
                 <div className="team-table">
                   <ReactTable
-                    data={this.state.teamStatsTwoWeeks}
+                    data={this.state.teamStatsRecent}
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
                     defaultSortDesc={true}
                     defaultSorted={[{
-                        id: 'rank',
+                        id: 'overallRank',
                         desc: false
                     }]}
                   />
@@ -556,7 +556,7 @@ export class BuildPlayers extends Component {
                 {/*<h4 className="team-avg-header">Avg Last 2 Weeks Rankings</h4> */}
                 <div className="team-avg-table">
                   <ReactTable
-                    data={this.state.teamStatsTwoWeeksAvg}
+                    data={this.state.teamStatsRecentAvg}
                     columns={columnNamesAvg}
                     showPagination={false}
                     minRows={0}
@@ -571,7 +571,7 @@ export class BuildPlayers extends Component {
                     minRows={0}
                     defaultSortDesc={true}
                     defaultSorted={[{
-                        id: 'rank',
+                        id: 'overallRank',
                         desc: false
                     }]}
                   />
@@ -579,13 +579,13 @@ export class BuildPlayers extends Component {
                 <h3 className="team-table-header">Last 2 Weeks Potential Pickup Targets</h3>
                 <div className="team-table">
                   <ReactTable
-                    data={this.state.playerPickupsTwoWeeks}
+                    data={this.state.playerPickupsRecent}
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
                     defaultSortDesc={true}
                     defaultSorted={[{
-                        id: 'rank',
+                        id: 'overallRank',
                         desc: false
                     }]}
                   />

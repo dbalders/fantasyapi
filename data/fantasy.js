@@ -8,9 +8,11 @@ var mongoose = require('mongoose'),
     Players = mongoose.model('Players'),
     Teams = mongoose.model('Teams'),
     RankingsSeason = mongoose.model('RankingsSeason'),
-    RankingsTwoWeeks = mongoose.model('RankingsTwoWeeks'),
+    RankingsRecent = mongoose.model('RankingsRecent'),
     PickupTargetsSeason = mongoose.model('PickupTargetsSeason'),
-    PickupTargetsTwoWeeks = mongoose.model('PickupTargetsTwoWeeks');
+    PickupTargetsRecent = mongoose.model('PickupTargetsRecent'),
+    PlayerSeasonData = mongoose.model('PlayerSeasonData'),
+    PlayerRecentData = mongoose.model('PlayerRecentData');
 
 var clientId = process.env.APP_CLIENT_ID || require('../conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('../conf.js').APP_CLIENT_SECRET;
@@ -173,83 +175,17 @@ exports.getYahooData = function (req, res, options) {
 
 }
 
-exports.getRankings = function () {
-    var playerRankings = [];
-    var playerRankingsTwoWeeks = [];
-
-    //Get rankings for season
-    scraper.get('https://basketballmonster.com/playerrankings.aspx')
-        .then(function (tableData) {
-            tableData = tableData[0];
-            async.forEachOf(tableData, function (value, i, callback) {
-
-                RankingsSeason.create({
-                    'rank': tableData[i].Rank_16,
-                    'value': tableData[i].Value_16,
-                    'fullName': tableData[i].Name_16,
-                    'pV': tableData[i].pV_16,
-                    '3V': tableData[i]['3/g_16'],
-                    'rV': tableData[i].rV_16,
-                    'aV': tableData[i].aV_16,
-                    'sV': tableData[i].sV_16,
-                    'bV': tableData[i].bV_16,
-                    'fg%V': tableData[i]['fg%V_16'],
-                    'ft%V': tableData[i]['ft%V_16'],
-                    'toV': tableData[i].toV_16
-                });
-
-                callback();
-            }, function (err) {
-                //Finding rankings for last 2 weeks
-                var todayFullDate = new Date();
-                var todayDate = ("0" + (todayFullDate.getMonth() + 1)).slice(-2);
-                var twoWeeksFullDate = new Date(+new Date - 12096e5)
-                var twoWeeksDate = ("0" + (twoWeeksFullDate.getMonth() + 1)).slice(-2);
-                todayDate = todayDate + ("0" + todayFullDate.getDate()).slice(-2);
-                todayDate = todayDate + todayFullDate.getUTCFullYear();
-                twoWeeksDate = twoWeeksDate + ("0" + twoWeeksFullDate.getDate()).slice(-2);;
-                twoWeeksDate = twoWeeksDate + twoWeeksFullDate.getUTCFullYear();
-
-                scraper.get('https://basketballmonster.com/playerrankings.aspx?start=' + twoWeeksDate + '&end=' + todayDate)
-                    .then(function (tableData) {
-                        tableData = tableData[0];
-                        async.forEachOf(tableData, function (value, i, callback) {
-
-                            RankingsTwoWeeks.create({
-                                'rank': tableData[i].Rank_16,
-                                'value': tableData[i].Value_16,
-                                'fullName': tableData[i].Name_16,
-                                'pV': tableData[i].pV_16,
-                                '3V': tableData[i]['3/g_16'],
-                                'rV': tableData[i].rV_16,
-                                'aV': tableData[i].aV_16,
-                                'sV': tableData[i].sV_16,
-                                'bV': tableData[i].bV_16,
-                                'fg%V': tableData[i]['fg%V_16'],
-                                'ft%V': tableData[i]['ft%V_16'],
-                                'toV': tableData[i].toV_16
-                            });
-
-                            callback();
-                        }, function (err) {
-                            return
-                        })
-                    });
-            })
-        });
-}
-
 function getPickups(leagueId, playerNames) {
     var rankingsSeason = [];
-    var rankingsTwoWeeks = [];
+    var rankingsRecent = [];
 
-    RankingsSeason.find({}, function (err, players) {
+    PlayerSeasonData.find({}, function (err, players) {
         if (err)
             res.send(err);
         var pickupTargets = [];
         async.forEachOf(players, function (value, i, callback) {
 
-            var similarPlayer = stringSimilarity.findBestMatch(players[i].fullName, playerNames);
+            var similarPlayer = stringSimilarity.findBestMatch(players[i].playerName, playerNames);
             var similarPlayerRating = similarPlayer.bestMatch.rating;
 
             if (similarPlayerRating < 0.7) {
@@ -281,13 +217,13 @@ function getPickups(leagueId, playerNames) {
         })
     });
 
-    RankingsTwoWeeks.find({}, function (err, players) {
+    PlayerRecentData.find({}, function (err, players) {
         if (err)
             res.send(err);
         var pickupTargets = [];
         async.forEachOf(players, function (value, i, callback) {
 
-            var similarPlayer = stringSimilarity.findBestMatch(players[i].fullName, playerNames);
+            var similarPlayer = stringSimilarity.findBestMatch(players[i].playerName, playerNames);
             var similarPlayerRating = similarPlayer.bestMatch.rating;
 
             if (similarPlayerRating < 0.7) {
@@ -299,7 +235,7 @@ function getPickups(leagueId, playerNames) {
             if (err)
                 res.send(err);
 
-            PickupTargetsTwoWeeks.findOneAndUpdate({
+            PickupTargetsRecent.findOneAndUpdate({
                 leagueId: leagueId
             }, {
                     leagueId: leagueId,

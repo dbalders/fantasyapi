@@ -62,12 +62,11 @@ code {
     text-decoration: none;
     color: white;
     display: inline-block;
-    height: 100%;
     padding: 15px;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 1.15rem;
     font-weight: 400;
-    background-color: #380585;
+    cursor: pointer;
 }
 
 .nav-sign-in-link {
@@ -83,6 +82,25 @@ code {
 
 .nav-sign-in-link img {
     height: 100%;
+}
+
+.nav-refresh {
+    margin: auto 15px auto auto;
+    border: 0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-refresh a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    padding: 15px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    background-color: #380585;
+    cursor: pointer;
 }
 
 /* .sign-in a:hover {

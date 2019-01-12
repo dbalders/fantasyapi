@@ -77,7 +77,7 @@ class App extends Component {
                             <img src={YahooSigninImage} />
                         </a>
 
-                        <div className={`nav-sign-in ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
+                        <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
                             <a>Refresh Yahoo Data</a>
                         </div>
                     </div>
