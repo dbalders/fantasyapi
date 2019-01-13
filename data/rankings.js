@@ -22,6 +22,9 @@ exports.getRankings = function (req, res) {
     var stlSeasonArray = [];
     var blkSeasonArray = [];
     var toSeasonArray = [];
+    var ftaSeasonArray = [];
+    var fgaSeasonArray = [];
+    var minSeasonArray = [];
     var ftSeasonStDev;
     var fgSeasonStDev;
     var threeSeasonStDev;
@@ -31,6 +34,9 @@ exports.getRankings = function (req, res) {
     var stlSeasonStDev;
     var blkSeasonStDev;
     var toSeasonStDev;
+    var fgaSeasonStDev;
+    var ftaSeasonStDev;
+    var minSeasonStDev;
     var ftSeasonAvg;
     var fgSeasonAvg;
     var threeSeasonAvg;
@@ -40,6 +46,12 @@ exports.getRankings = function (req, res) {
     var stlSeasonAvg;
     var blkSeasonAvg;
     var toSeasonAvg;
+    var minSeasonAvg;
+    var ftaSeasonAvg;
+    var fgaSeasonAvg;
+    var ftMixedSeasonAvg;
+    var fgMixedSeasonAvg;
+    var minSeasonAvg;
 
     var ftRecentArray = [];
     var fgRecentArray = [];
@@ -50,6 +62,9 @@ exports.getRankings = function (req, res) {
     var stlRecentArray = [];
     var blkRecentArray = [];
     var toRecentArray = [];
+    var ftaRecentArray = [];
+    var fgaRecentArray = [];
+    var minRecentArray = [];
     var ftRecentStDev;
     var fgRecentStDev;
     var threeRecentStDev;
@@ -59,6 +74,9 @@ exports.getRankings = function (req, res) {
     var stlRecentStDev;
     var blkRecentStDev;
     var toRecentStDev;
+    var ftaRecentStDev;
+    var fgaRecentStDev;
+    var minRecentStDev;
     var ftRecentAvg;
     var fgRecentAvg;
     var threeRecentAvg;
@@ -68,6 +86,11 @@ exports.getRankings = function (req, res) {
     var stlRecentAvg;
     var blkRecentAvg;
     var toRecentAvg;
+    var ftaRecentAvg;
+    var fgaRecentAvg;
+    var ftMixedRecentAvg;
+    var fgMixedRecentAvg;
+    var minRecentAvg;
 
     PlayerSeasonData.remove({}, function (err, task) {
         if (err)
@@ -94,6 +117,9 @@ exports.getRankings = function (req, res) {
                 stlSeasonArray.push(nbaSeasonPlayers[i].stl);
                 blkSeasonArray.push(nbaSeasonPlayers[i].blk);
                 toSeasonArray.push(nbaSeasonPlayers[i].tov);
+                ftaSeasonArray.push(nbaSeasonPlayers[i].fta);
+                fgaSeasonArray.push(nbaSeasonPlayers[i].fga);
+                minSeasonArray.push(nbaSeasonPlayers[i].min);
             }
 
             callback();
@@ -107,6 +133,9 @@ exports.getRankings = function (req, res) {
             stlSeasonStDev = stats.stdev(stlSeasonArray).toFixed(2);
             blkSeasonStDev = stats.stdev(blkSeasonArray).toFixed(2);
             toSeasonStDev = stats.stdev(toSeasonArray).toFixed(2);
+            ftaSeasonStDev = stats.stdev(ftaSeasonArray).toFixed(2);
+            fgaSeasonStDev = stats.stdev(fgaSeasonArray).toFixed(2);
+            minSeasonStDev = (stats.stdev(minSeasonArray) * 5).toFixed(2);
 
             ftSeasonAvg = stats.mean(ftSeasonArray).toFixed(2);
             fgSeasonAvg = stats.mean(fgSeasonArray).toFixed(2);
@@ -117,6 +146,9 @@ exports.getRankings = function (req, res) {
             stlSeasonAvg = stats.mean(stlSeasonArray).toFixed(2);
             blkSeasonAvg = stats.mean(blkSeasonArray).toFixed(2);
             toSeasonAvg = stats.mean(toSeasonArray).toFixed(2);
+            ftaSeasonAvg = stats.mean(ftaSeasonArray).toFixed(2);
+            fgaSeasonAvg = stats.mean(fgaSeasonArray).toFixed(2);
+            minSeasonAvg = stats.mean(minSeasonArray).toFixed(2);
 
             for (var i = 0; i < nbaSeasonPlayers.length; i++) {
                 var ftRating = Number((nbaSeasonPlayers[i].ftPct - ftSeasonAvg) / ftSeasonStDev).toFixed(2);
@@ -128,8 +160,21 @@ exports.getRankings = function (req, res) {
                 var stlRating = Number((nbaSeasonPlayers[i].stl - stlSeasonAvg) / stlSeasonStDev).toFixed(2);
                 var blkRating = Number((nbaSeasonPlayers[i].blk - blkSeasonAvg) / blkSeasonStDev).toFixed(2);
                 var toRating = Number(0 - (nbaSeasonPlayers[i].tov - toSeasonAvg) / toSeasonStDev).toFixed(2);
+                var ftaRating = Number((nbaSeasonPlayers[i].fta - ftaSeasonAvg) / ftaSeasonStDev).toFixed(2);
+                var fgaRating = Number((nbaSeasonPlayers[i].fga - fgaSeasonAvg) / fgaSeasonStDev).toFixed(2);
+                var minRating = Number((nbaSeasonPlayers[i].min - minSeasonAvg) / minSeasonStDev).toFixed(2);
 
-                var overallRating = ((+ftRating + +fgRating + +threeRating + +rebRating + +astRating + +ptsRating + +stlRating + +blkRating + +toRating) / 9).toFixed(2);
+                threeRating = (+threeRating + +minRating).toFixed(2);
+                rebRating = (+rebRating + +minRating).toFixed(2);
+                astRating = (+astRating + +minRating).toFixed(2);
+                ptsRating = (+ptsRating + +minRating).toFixed(2);
+                stlRating = (+stlRating + +minRating).toFixed(2);
+                blkRating = (+blkRating + +minRating).toFixed(2);
+                toRating = (+toRating + +minRating).toFixed(2);
+                var ftMixedRating = ((+ftRating + +ftaRating) / 2).toFixed(2);
+                var fgMixedRating = ((+fgRating + +fgaRating) / 2).toFixed(2);
+
+                var overallRating = ((+ftMixedRating + +fgMixedRating + +threeRating + +rebRating + +astRating + +ptsRating + +stlRating + +blkRating + +toRating) / 9).toFixed(2);
 
                 nbaSeasonPlayers[i].fgRating = fgRating;
                 nbaSeasonPlayers[i].threeRating = threeRating;
@@ -140,8 +185,25 @@ exports.getRankings = function (req, res) {
                 nbaSeasonPlayers[i].blkRating = blkRating;
                 nbaSeasonPlayers[i].toRating = toRating;
                 nbaSeasonPlayers[i].ftRating = ftRating;
+                nbaSeasonPlayers[i].ftaRating = ftaRating;
+                nbaSeasonPlayers[i].fgaRating = fgaRating;
+                nbaSeasonPlayers[i].ftMixedRating = ftMixedRating;
+                nbaSeasonPlayers[i].fgMixedRating = fgMixedRating;
                 nbaSeasonPlayers[i].overallRating = overallRating;
             }
+
+            // console.log('ftSeasonAvg ' + ftSeasonAvg)
+            // console.log('ftSeasonStDev' + ftSeasonStDev)
+            // console.log('ftaSeasonAvg ' + ftaSeasonAvg)
+            // console.log('ftaSeasonStDev ' + ftaSeasonStDev)
+
+            // console.log('fgSeasonAvg ' + fgSeasonAvg)
+            // console.log('fgSeasonStDev ' + fgSeasonStDev)
+            // console.log('fgaSeasonAvg ' + fgaSeasonAvg)
+            // console.log('fgaSeasonStDev ' + fgaSeasonStDev)
+
+            // console.log('minSeasonAvg ' + minSeasonAvg);
+            // console.log('minSeasonStDev ' + minSeasonStDev);
         })
 
     }).then(function (data) {
@@ -161,6 +223,9 @@ exports.getRankings = function (req, res) {
                     stlRecentArray.push(nbaRecentPlayers[i].stl);
                     blkRecentArray.push(nbaRecentPlayers[i].blk);
                     toRecentArray.push(nbaRecentPlayers[i].tov);
+                    ftaRecentArray.push(nbaRecentPlayers[i].fta);
+                    fgaRecentArray.push(nbaRecentPlayers[i].fga);
+                    minRecentArray.push(nbaRecentPlayers[i].min);
                 }
                 callback();
             }, function (err) {
@@ -173,6 +238,9 @@ exports.getRankings = function (req, res) {
                 stlRecentStDev = stats.stdev(stlRecentArray).toFixed(2);
                 blkRecentStDev = stats.stdev(blkRecentArray).toFixed(2);
                 toRecentStDev = stats.stdev(toRecentArray).toFixed(2);
+                ftaRecentStDev = stats.stdev(ftaRecentArray).toFixed(2);
+                fgaRecentStDev = stats.stdev(fgaRecentArray).toFixed(2);
+                minRecentStDev = (stats.stdev(minRecentArray) * 5).toFixed(2);
 
                 ftRecentAvg = stats.mean(ftRecentArray).toFixed(2);
                 fgRecentAvg = stats.mean(fgRecentArray).toFixed(2);
@@ -183,19 +251,35 @@ exports.getRankings = function (req, res) {
                 stlRecentAvg = stats.mean(stlRecentArray).toFixed(2);
                 blkRecentAvg = stats.mean(blkRecentArray).toFixed(2);
                 toRecentAvg = stats.mean(toRecentArray).toFixed(2);
+                ftaRecentAvg = stats.mean(ftaRecentArray).toFixed(2);
+                fgaRecentAvg = stats.mean(fgaRecentArray).toFixed(2);
+                minRecentAvg = stats.mean(minRecentArray).toFixed(2);
 
                 for (var i = 0; i < nbaRecentPlayers.length; i++) {
-                    var ftRating = Number((nbaRecentPlayers[i].ftPct - ftSeasonAvg) / ftSeasonStDev).toFixed(2);
-                    var fgRating = Number((nbaRecentPlayers[i].fgPct - fgSeasonAvg) / fgSeasonStDev).toFixed(2);
-                    var threeRating = Number((nbaRecentPlayers[i].fG3M - threeSeasonAvg) / threeSeasonStDev).toFixed(2);
-                    var rebRating = Number((nbaRecentPlayers[i].reb - rebSeasonAvg) / rebSeasonStDev).toFixed(2);
-                    var astRating = Number((nbaRecentPlayers[i].ast - astSeasonAvg) / astSeasonStDev).toFixed(2);
-                    var ptsRating = Number((nbaRecentPlayers[i].pts - ptsSeasonAvg) / ptsSeasonStDev).toFixed(2);
-                    var stlRating = Number((nbaRecentPlayers[i].stl - stlSeasonAvg) / stlSeasonStDev).toFixed(2);
-                    var blkRating = Number((nbaRecentPlayers[i].blk - blkSeasonAvg) / blkSeasonStDev).toFixed(2);
-                    var toRating = Number(0 - (nbaRecentPlayers[i].tov - toSeasonAvg) / toSeasonStDev).toFixed(2);
+                    var ftRating = Number((nbaRecentPlayers[i].ftPct - ftRecentAvg) / ftRecentStDev).toFixed(2);
+                    var fgRating = Number((nbaRecentPlayers[i].fgPct - fgRecentAvg) / fgRecentStDev).toFixed(2);
+                    var threeRating = Number((nbaRecentPlayers[i].fG3M - threeRecentAvg) / threeRecentStDev).toFixed(2);
+                    var rebRating = Number((nbaRecentPlayers[i].reb - rebRecentAvg) / rebRecentStDev).toFixed(2);
+                    var astRating = Number((nbaRecentPlayers[i].ast - astRecentAvg) / astRecentStDev).toFixed(2);
+                    var ptsRating = Number((nbaRecentPlayers[i].pts - ptsRecentAvg) / ptsRecentStDev).toFixed(2);
+                    var stlRating = Number((nbaRecentPlayers[i].stl - stlRecentAvg) / stlRecentStDev).toFixed(2);
+                    var blkRating = Number((nbaRecentPlayers[i].blk - blkRecentAvg) / blkRecentStDev).toFixed(2);
+                    var toRating = Number(0 - (nbaRecentPlayers[i].tov - toRecentAvg) / toRecentStDev).toFixed(2);
+                    var ftaRating = Number((nbaRecentPlayers[i].fta - ftaRecentAvg) / ftaRecentStDev).toFixed(2);
+                    var fgaRating = Number((nbaRecentPlayers[i].fga - fgaRecentAvg) / fgaRecentStDev).toFixed(2);
+                    var minRating = Number((nbaRecentPlayers[i].min - minSeasonAvg) / minSeasonStDev).toFixed(2);
 
-                    var overallRating = ((+ftRating + +fgRating + +threeRating + +rebRating + +astRating + +ptsRating + +stlRating + +blkRating + +toRating) / 9).toFixed(2);
+                    threeRating = (+threeRating + +minRating).toFixed(2);
+                    rebRating = (+rebRating + +minRating).toFixed(2);
+                    astRating = (+astRating + +minRating).toFixed(2);
+                    ptsRating = (+ptsRating + +minRating).toFixed(2);
+                    stlRating = (+stlRating + +minRating).toFixed(2);
+                    blkRating = (+blkRating + +minRating).toFixed(2);
+                    toRating = (+toRating + +minRating).toFixed(2);
+                    var ftMixedRating = ((+ftRating + +ftaRating) / 2).toFixed(2);
+                    var fgMixedRating = ((+fgRating + +fgaRating) / 2).toFixed(2);
+
+                    var overallRating = ((+ftMixedRating + +fgMixedRating + +threeRating + +rebRating + +astRating + +ptsRating + +stlRating + +blkRating + +toRating) / 9).toFixed(2);
 
                     nbaRecentPlayers[i].fgRating = fgRating;
                     nbaRecentPlayers[i].threeRating = threeRating;
@@ -206,6 +290,8 @@ exports.getRankings = function (req, res) {
                     nbaRecentPlayers[i].blkRating = blkRating;
                     nbaRecentPlayers[i].toRating = toRating;
                     nbaRecentPlayers[i].ftRating = ftRating;
+                    nbaRecentPlayers[i].ftMixedRating = ftMixedRating;
+                    nbaRecentPlayers[i].fgMixedRating = fgMixedRating;
                     nbaRecentPlayers[i].overallRating = overallRating;
                 }
             })
@@ -234,6 +320,8 @@ exports.getRankings = function (req, res) {
                                 stl: nbaSeasonPlayers[i].stl,
                                 blk: nbaSeasonPlayers[i].blk,
                                 pts: nbaSeasonPlayers[i].pts,
+                                fta: nbaSeasonPlayers[i].fta,
+                                fga: nbaSeasonPlayers[i].fga,
                                 fgPctRank: nbaSeasonPlayers[i].fgPctRank,
                                 ftPctRank: nbaSeasonPlayers[i].ftPctRank,
                                 fg3mRank: nbaSeasonPlayers[i].fg3mRank,
@@ -243,6 +331,8 @@ exports.getRankings = function (req, res) {
                                 stlRank: nbaSeasonPlayers[i].stlRank,
                                 blkRank: nbaSeasonPlayers[i].blkRank,
                                 ptsRank: nbaSeasonPlayers[i].ptsRank,
+                                ftaRank: nbaSeasonPlayers[i].ftaRank,
+                                fgaRank: nbaSeasonPlayers[i].ftaRank,
                                 ftRating: nbaSeasonPlayers[i].ftRating,
                                 fgRating: nbaSeasonPlayers[i].fgRating,
                                 ptsRating: nbaSeasonPlayers[i].ptsRating,
@@ -252,6 +342,10 @@ exports.getRankings = function (req, res) {
                                 stlRating: nbaSeasonPlayers[i].stlRating,
                                 blkRating: nbaSeasonPlayers[i].blkRating,
                                 toRating: nbaSeasonPlayers[i].toRating,
+                                ftaRating: nbaSeasonPlayers[i].ftaRating,
+                                fgaRating: nbaSeasonPlayers[i].fgaRating,
+                                ftMixedRating: nbaSeasonPlayers[i].ftMixedRating,
+                                fgMixedRating: nbaSeasonPlayers[i].fgMixedRating,
                                 overallRating: nbaSeasonPlayers[i].overallRating,
                                 overallRank: playerRank
                             });
@@ -282,6 +376,8 @@ exports.getRankings = function (req, res) {
                                 stl: nbaRecentPlayers[i].stl,
                                 blk: nbaRecentPlayers[i].blk,
                                 pts: nbaRecentPlayers[i].pts,
+                                fta: nbaRecentPlayers[i].fta,
+                                fga: nbaRecentPlayers[i].fga,
                                 fgPctRank: nbaRecentPlayers[i].fgPctRank,
                                 ftPctRank: nbaRecentPlayers[i].ftPctRank,
                                 fg3mRank: nbaRecentPlayers[i].fg3mRank,
@@ -291,6 +387,8 @@ exports.getRankings = function (req, res) {
                                 stlRank: nbaRecentPlayers[i].stlRank,
                                 blkRank: nbaRecentPlayers[i].blkRank,
                                 ptsRank: nbaRecentPlayers[i].ptsRank,
+                                ftaRank: nbaRecentPlayers[i].ftaRank,
+                                fgaRank: nbaRecentPlayers[i].fgaRank,
                                 ftRating: nbaRecentPlayers[i].ftRating,
                                 fgRating: nbaRecentPlayers[i].fgRating,
                                 ptsRating: nbaRecentPlayers[i].ptsRating,
@@ -300,6 +398,10 @@ exports.getRankings = function (req, res) {
                                 stlRating: nbaRecentPlayers[i].stlRating,
                                 blkRating: nbaRecentPlayers[i].blkRating,
                                 toRating: nbaRecentPlayers[i].toRating,
+                                ftaRating: nbaRecentPlayers[i].ftaRating,
+                                fgaRating: nbaRecentPlayers[i].fgaRating,
+                                ftMixedRating: nbaRecentPlayers[i].ftMixedRating,
+                                fgMixedRating: nbaRecentPlayers[i].fgMixedRating,
                                 overallRating: nbaRecentPlayers[i].overallRating,
                                 overallRank: playerRank
                             });
@@ -311,7 +413,6 @@ exports.getRankings = function (req, res) {
                 }
             }, function (err, results) {
                 //Here put the creation of the standard deviations and stuff and making the rankings prob
-                // console.log(PlayerSeasonData.find({}))
                 PlayerSeasonData.find({}, function (err, players) {
                     if (err) {
                         res.send(err);

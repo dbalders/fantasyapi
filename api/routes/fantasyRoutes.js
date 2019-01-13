@@ -19,8 +19,8 @@ module.exports = function (app) {
     app.route('/api/rankings/season/')
         .get(fantasy.list_season_rankings)
 
-    app.route('/api/rankings/twoweeks/')
-        .get(fantasy.list_two_week_rankings)
+    app.route('/api/rankings/recent/')
+        .get(fantasy.list_recent_rankings)
 
     app.route('/api/get_rankings')
         .get(fantasy.get_rankings)
@@ -28,8 +28,8 @@ module.exports = function (app) {
     app.route('/api/targets/season/:leagueId')
         .get(fantasy.list_season_pickups)
 
-    app.route('/api/targets/twoweeks/:leagueId')
-        .get(fantasy.list_two_week_pickups)
+    app.route('/api/targets/recent/:leagueId')
+        .get(fantasy.list_recent_pickups)
 
     app.route('/api/espn/league/:espnId')
         .get(fantasy.get_espn_data)

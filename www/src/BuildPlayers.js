@@ -34,7 +34,7 @@ export class BuildPlayers extends Component {
             this.setState({ leagueId: leagueId });
 
             //Targets from last 2 weeks ranking
-            this.callApi('/api/targets/twoweeks/' + leagueId)
+            this.callApi('/api/targets/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
                     this.setState({ playerTargetsRecent: playerData });
@@ -124,8 +124,8 @@ export class BuildPlayers extends Component {
                         rebRating: (teamStatsSeasonAvg.rebRating) ? (teamStatsSeasonAvg.rebRating + playerRankingsSeason[j].rebRating) : playerRankingsSeason[j].rebRating,
                         stlRating: (teamStatsSeasonAvg.stlRating) ? (teamStatsSeasonAvg.stlRating + playerRankingsSeason[j].stlRating) : playerRankingsSeason[j].stlRating,
                         blkRating: (teamStatsSeasonAvg.blkRating) ? (teamStatsSeasonAvg.blkRating + playerRankingsSeason[j].blkRating) : playerRankingsSeason[j].blkRating,
-                        fgRating: (teamStatsSeasonAvg.fgRating) ? (teamStatsSeasonAvg.fgRating + playerRankingsSeason[j].fgRating) : playerRankingsSeason[j].fgRating,
-                        ftRating: (teamStatsSeasonAvg.ftRating) ? (teamStatsSeasonAvg.ftRating + playerRankingsSeason[j].ftRating) : playerRankingsSeason[j].ftRating,
+                        fgMixedRating: (teamStatsSeasonAvg.fgMixedRating) ? (teamStatsSeasonAvg.fgMixedRating + playerRankingsSeason[j].fgMixedRating) : playerRankingsSeason[j].fgMixedRating,
+                        ftMixedRating: (teamStatsSeasonAvg.ftMixedRating) ? (teamStatsSeasonAvg.ftMixedRating + playerRankingsSeason[j].ftMixedRating) : playerRankingsSeason[j].ftMixedRating,
                         toRating: (teamStatsSeasonAvg.toRating) ? (teamStatsSeasonAvg.toRating + playerRankingsSeason[j].toRating) : playerRankingsSeason[j].toRating
                     }
                     break
@@ -143,8 +143,8 @@ export class BuildPlayers extends Component {
                         rebRating: (teamStatsRecentAvg.rebRating) ? (teamStatsRecentAvg.rebRating + playerRankingsRecent[j].rebRating) : playerRankingsRecent[j].rebRating,
                         stlRating: (teamStatsRecentAvg.stlRating) ? (teamStatsRecentAvg.stlRating + playerRankingsRecent[j].stlRating) : playerRankingsRecent[j].stlRating,
                         blkRating: (teamStatsRecentAvg.blkRating) ? (teamStatsRecentAvg.blkRating + playerRankingsRecent[j].blkRating) : playerRankingsRecent[j].blkRating,
-                        fgRating: (teamStatsRecentAvg.fgRating) ? (teamStatsRecentAvg.fgRating + playerRankingsRecent[j].fgRating) : playerRankingsRecent[j].fgRating,
-                        ftRating: (teamStatsRecentAvg.ftRating) ? (teamStatsRecentAvg.ftRating + playerRankingsRecent[j].ftRating) : playerRankingsRecent[j].ftRating,
+                        fgMixedRating: (teamStatsRecentAvg.fgMixedRating) ? (teamStatsRecentAvg.fgMixedRating + playerRankingsRecent[j].fgMixedRating) : playerRankingsRecent[j].fgMixedRating,
+                        ftRaftMixedRatingting: (teamStatsRecentAvg.ftMixedRating) ? (teamStatsRecentAvg.ftMixedRating + playerRankingsRecent[j].ftMixedRating) : playerRankingsRecent[j].ftMixedRating,
                         toRating: (teamStatsRecentAvg.toRating) ? (teamStatsRecentAvg.toRating + playerRankingsRecent[j].toRating) : playerRankingsRecent[j].toRating
                     }
                     break
@@ -184,8 +184,8 @@ export class BuildPlayers extends Component {
             rebRating: Number(teamStatsSeasonAvg.rebRating / teamStatsSeason.length).toFixed(2),
             stlRating: Number(teamStatsSeasonAvg.stlRating / teamStatsSeason.length).toFixed(2),
             blkRating: Number(teamStatsSeasonAvg.blkRating / teamStatsSeason.length).toFixed(2),
-            fgRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
-            ftRating: Number(teamStatsSeasonAvg.fgRating / teamStatsSeason.length).toFixed(2),
+            fgMixedRating: Number(teamStatsSeasonAvg.fgMixedRating / teamStatsSeason.length).toFixed(2),
+            ftMixedRating: Number(teamStatsSeasonAvg.ftMixedRating / teamStatsSeason.length).toFixed(2),
             toRating: Number(teamStatsSeasonAvg.ftRating / teamStatsSeason.length).toFixed(2)
         }
 
@@ -197,8 +197,8 @@ export class BuildPlayers extends Component {
             rebRating: Number(teamStatsRecentAvg.rebRating / teamStatsRecent.length).toFixed(2),
             stlRating: Number(teamStatsRecentAvg.stlRating / teamStatsRecent.length).toFixed(2),
             blkRating: Number(teamStatsRecentAvg.blkRating / teamStatsRecent.length).toFixed(2),
-            fgRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
-            ftRating: Number(teamStatsRecentAvg.fgRating / teamStatsRecent.length).toFixed(2),
+            fgMixedRating: Number(teamStatsRecentAvg.fgMixedRating / teamStatsRecent.length).toFixed(2),
+            ftMixedRating: Number(teamStatsRecentAvg.ftMixedRating / teamStatsRecent.length).toFixed(2),
             toRating: Number(teamStatsRecentAvg.ftRating / teamStatsRecent.length).toFixed(2)
         }
 
@@ -317,31 +317,31 @@ export class BuildPlayers extends Component {
             },
         }, {
             Header: 'FG%',
-            accessor: 'fgRating',
+            accessor: 'fgMixedRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.fgRating > 2 ? brightGreen :
-                        rowInfo.row.fgRating > 1 ? mediumGreen : 
-                        rowInfo.row.fgRating >= .5 ? lightGreen : 
-                        rowInfo.row.fgRating < 0 && rowInfo.row.fgRating > -1 ? lightRed :
-                        rowInfo.row.fgRating <= -1 && rowInfo.row.fgRating > -2 ? mediumRed : 
-                        rowInfo.row.fgRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.fgMixedRating > 2 ? brightGreen :
+                        rowInfo.row.fgMixedRating > 1 ? mediumGreen : 
+                        rowInfo.row.fgMixedRating >= .5 ? lightGreen : 
+                        rowInfo.row.fgMixedRating < 0 && rowInfo.row.fgMixedRating > -1 ? lightRed :
+                        rowInfo.row.fgMixedRating <= -1 && rowInfo.row.fgMixedRating > -2 ? mediumRed : 
+                        rowInfo.row.fgMixedRating <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ftRating',
+            accessor: 'ftMixedRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ftRating > 2 ? brightGreen :
-                        rowInfo.row.ftRating > 1 ? mediumGreen : 
-                        rowInfo.row.ftRating >= .5 ? lightGreen : 
-                        rowInfo.row.ftRating < 0 && rowInfo.row.ftRating > -1 ? lightRed :
-                        rowInfo.row.ftRating <= -1 && rowInfo.row.ftRating > -2 ? mediumRed : 
-                        rowInfo.row.ftRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ftMixedRating > 2 ? brightGreen :
+                        rowInfo.row.ftMixedRating > 1 ? mediumGreen : 
+                        rowInfo.row.ftMixedRating >= .5 ? lightGreen : 
+                        rowInfo.row.ftMixedRating < 0 && rowInfo.row.ftMixedRating > -1 ? lightRed :
+                        rowInfo.row.ftMixedRating <= -1 && rowInfo.row.ftMixedRating > -2 ? mediumRed : 
+                        rowInfo.row.ftMixedRating <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -454,31 +454,31 @@ export class BuildPlayers extends Component {
             },
         }, {
             Header: 'FG%',
-            accessor: 'fgRating',
+            accessor: 'fgMixedRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.fgRating > 1 ? brightGreen :
-                        rowInfo.row.fgRating > .5 ? mediumGreen : 
-                        rowInfo.row.fgRating >= .25 ? lightGreen : 
-                        rowInfo.row.fgRating < 0 && rowInfo.row.fgRating > -0.25 ? lightRed :
-                        rowInfo.row.fgRating < -0.25 && rowInfo.row.fgRating > -1 ? mediumRed : 
-                        rowInfo.row.fgRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.fgMixedRating > 1 ? brightGreen :
+                        rowInfo.row.fgMixedRating > .5 ? mediumGreen : 
+                        rowInfo.row.fgMixedRating >= .25 ? lightGreen : 
+                        rowInfo.row.fgMixedRating < 0 && rowInfo.row.fgMixedRating > -0.25 ? lightRed :
+                        rowInfo.row.fgMixedRating < -0.25 && rowInfo.row.fgMixedRating > -1 ? mediumRed : 
+                        rowInfo.row.fgMixedRating <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ftRating',
+            accessor: 'ftMixedRating',
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ftRating > 1 ? brightGreen :
-                        rowInfo.row.ftRating > .5 ? mediumGreen : 
-                        rowInfo.row.ftRating >= .25 ? lightGreen : 
-                        rowInfo.row.ftRating < 0 && rowInfo.row.ftRating > -0.25 ? lightRed :
-                        rowInfo.row.ftRating < -0.25 && rowInfo.row.ftRating > -1 ? mediumRed : 
-                        rowInfo.row.ftRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row.ftMixedRating > 1 ? brightGreen :
+                        rowInfo.row.ftMixedRating > .5 ? mediumGreen : 
+                        rowInfo.row.ftMixedRating >= .25 ? lightGreen : 
+                        rowInfo.row.ftMixedRating < 0 && rowInfo.row.ftMixedRating > -0.25 ? lightRed :
+                        rowInfo.row.ftMixedRating < -0.25 && rowInfo.row.ftMixedRating > -1 ? mediumRed : 
+                        rowInfo.row.ftMixedRating <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -538,7 +538,7 @@ export class BuildPlayers extends Component {
 
                 {compareTeamsHTML}
 
-                <h3 className="team-table-header">Teams Last 2 Weeks Rankings</h3>
+                <h3 className="team-table-header">Teams Recent Rankings</h3>
                 <div className="team-table">
                   <ReactTable
                     data={this.state.teamStatsRecent}
@@ -576,7 +576,7 @@ export class BuildPlayers extends Component {
                     }]}
                   />
                 </div>
-                <h3 className="team-table-header">Last 2 Weeks Potential Pickup Targets</h3>
+                <h3 className="team-table-header">Recent Potential Pickup Targets</h3>
                 <div className="team-table">
                   <ReactTable
                     data={this.state.playerPickupsRecent}

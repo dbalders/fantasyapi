@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
     RankingsSeason = mongoose.model('RankingsSeason'),
     RankingsRecent = mongoose.model('RankingsRecent'),
     PickupTargetsSeason = mongoose.model('PickupTargetsSeason'),
-    PickupTargetsTwoWeeks = mongoose.model('PickupTargetsRecent'),
+    PickupTargetsRecent = mongoose.model('PickupTargetsRecent'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
     PlayerRecentData = mongoose.model('PlayerRecentData');
 
@@ -29,8 +29,8 @@ exports.list_season_pickups = function(req, res) {
     });
 };
 
-exports.list_two_week_pickups = function(req, res) {
-    PickupTargetsTwoWeeks.find({ leagueId: req.params.leagueId }, function(err, players) {
+exports.list_recent_pickups = function(req, res) {
+    PickupTargetsRecent.find({ leagueId: req.params.leagueId }, function(err, players) {
         if (err)
             res.send(err);
         res.json(players);
@@ -64,15 +64,15 @@ exports.list_teams_players = function(req, res) {
 };
 
 exports.list_season_rankings = function(req, res) {
-    RankingsSeason.find({}, function(err, players) {
+    PlayerSeasonData.find({}, function(err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
-};
+}; 
 
-exports.list_two_week_rankings = function(req, res) {
-    RankingsRecent.find({}, function(err, players) {
+exports.list_recent_rankings = function(req, res) {
+    PlayerRecentData.find({}, function(err, players) {
         if (err)
             res.send(err);
         res.json(players);
