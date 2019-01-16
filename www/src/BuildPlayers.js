@@ -11,9 +11,17 @@ export class BuildPlayers extends Component {
         this.state = {
             playerTargetsRecent: [],
             playerTargetsSeason: [],
+            playerTargetsLocalRecent: [],
+            playerTargetsLocalSeason: [],
+            playerTargetsBBMRecent: [],
+            playerTargetsBBMSeason: [],
             teamPlayers: [],
             playerRankingsSeason: [],
             playerRankingsRecent: [],
+            playerRankingsLocalSeason: [],
+            playerRankingsLocalRecent: [],
+            playerRankingsBBMSeason: [],
+            playerRankingsBBMRecent: [],
             teamStatsSeason: [],
             teamStatsRecent: [],
             teamStatsSeasonAvg: [],
@@ -22,8 +30,12 @@ export class BuildPlayers extends Component {
             playerPickupsRecent: [],
             teams: [],
             teamSelected: null,
-            leagueId: null
+            leagueId: null,
+            showBBMStats: false,
+            statsHeaders: [],
+            updateCompareTable: false
         }
+        this.changeStats = this.changeStats.bind(this);
     }
 
     componentDidMount() {
@@ -33,11 +45,12 @@ export class BuildPlayers extends Component {
         if (leagueId) {
             this.setState({ leagueId: leagueId });
 
-            //Targets from last 2 weeks ranking
             this.callApi('/api/targets/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
-                    this.setState({ playerTargetsRecent: playerData });
+                    this.setState({ playerTargetsLocalRecent: playerData }, function () {
+                        this.setState({ playerTargetsRecent: this.state.playerTargetsLocalRecent });
+                    });
                 })
                 .catch(err => console.log(err));
 
@@ -45,28 +58,65 @@ export class BuildPlayers extends Component {
             this.callApi('/api/targets/season/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
-                    this.setState({ playerTargetsSeason: playerData });
+                    this.setState({ playerTargetsLocalSeason: playerData }, function () {
+                        this.setState({ playerTargetsSeason: this.state.playerTargetsLocalSeason });
+                    });
                 })
                 .catch(err => console.log(err));
 
             this.callApi('/api/player_data/season/')
                 .then(results => {
                     var playerData = results;
-                    this.setState({ playerRankingsSeason: playerData });
+                    this.setState({ playerRankingsLocalSeason: playerData }, function () {
+                        this.setState({ playerRankingsSeason: this.state.playerRankingsLocalSeason });
+                    });
                 })
                 .catch(err => console.log(err));
 
             this.callApi('/api/player_data/recent/')
                 .then(results => {
                     var playerData = results;
-                    this.setState({ playerRankingsRecent: playerData });
+                    this.setState({ playerRankingsLocalRecent: playerData }, function () {
+                        this.setState({ playerRankingsRecent: this.state.playerRankingsLocalRecent });
+                    });
                 })
                 .catch(err => console.log(err));
+
 
             this.callApi('/api/teams/' + leagueId)
                 .then(results => {
                     var teams = results[0].teams;
                     this.setState({ teams: teams });
+                })
+                .catch(err => console.log(err));
+
+            this.callApi('/api/targets/bbm/recent/' + leagueId)
+                .then(results => {
+                    var playerData = results[0].players;
+                    this.setState({ playerTargetsBBMRecent: playerData });
+                })
+                .catch(err => console.log(err));
+
+            //Targets from season ranking
+            this.callApi('/api/targets/bbm/season/' + leagueId)
+                .then(results => {
+                    var playerData = results[0].players;
+                    this.setState({ playerTargetsBBMSeason: playerData });
+                })
+                .catch(err => console.log(err));
+
+            this.callApi('/api/rankings/bbm/season/')
+                .then(results => {
+                    var playerData = results;
+                    this.setState({ playerRankingsBBMSeason: playerData });
+                })
+                .catch(err => console.log(err));
+
+
+            this.callApi('/api/rankings/bbm/recent/')
+                .then(results => {
+                    var playerData = results;
+                    this.setState({ playerRankingsBBMRecent: playerData });
                 })
                 .catch(err => console.log(err));
 
@@ -77,7 +127,7 @@ export class BuildPlayers extends Component {
                         var playerData = results;
                         //check if the data is there, and if not, add a .5 sec wait then send to the build function
                         if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsRecent.length === 0) {
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 this.setState({ teamPlayers: playerData }, this.buildTeam);
                             }.bind(this), 1000)
                         } else {
@@ -97,6 +147,35 @@ export class BuildPlayers extends Component {
 
         return body;
     };
+
+    changeStats() {
+        var leagueId = Cookies.get('leagueId');
+        // this.setState({ showBBMStats: !this.state.showBBMStats });
+        this.setState({ showBBMStats: !this.state.showBBMStats }, () => {
+            if (this.state.showBBMStats) {
+                this.setState({
+                    playerTargetsSeason: this.state.playerTargetsBBMRecent,
+                    playerTargetsRecent: this.state.playerTargetsBBMSeason,
+                    playerRankingsSeason: this.state.playerRankingsBBMSeason,
+                    playerRankingsRecent: this.state.playerRankingsBBMRecent,
+                    updateCompareTable: true
+                }, function () {
+                    this.buildTeam()
+                })
+            } else {
+                this.setState({
+                    playerTargetsSeason: this.state.playerTargetsLocalRecent,
+                    playerTargetsRecent: this.state.playerTargetsLocalSeason,
+                    playerRankingsSeason: this.state.playerRankingsLocalSeason,
+                    playerRankingsRecent: this.state.playerRankingsLocalRecent,
+                    updateCompareTable: true
+                }, function () {
+                    this.buildTeam();
+                })
+            }
+
+        })
+    }
 
     buildTeam() {
         var teamStatsSeason = [];
@@ -144,7 +223,7 @@ export class BuildPlayers extends Component {
                         stlRating: (teamStatsRecentAvg.stlRating) ? (teamStatsRecentAvg.stlRating + playerRankingsRecent[j].stlRating) : playerRankingsRecent[j].stlRating,
                         blkRating: (teamStatsRecentAvg.blkRating) ? (teamStatsRecentAvg.blkRating + playerRankingsRecent[j].blkRating) : playerRankingsRecent[j].blkRating,
                         fgMixedRating: (teamStatsRecentAvg.fgMixedRating) ? (teamStatsRecentAvg.fgMixedRating + playerRankingsRecent[j].fgMixedRating) : playerRankingsRecent[j].fgMixedRating,
-                        ftRaftMixedRatingting: (teamStatsRecentAvg.ftMixedRating) ? (teamStatsRecentAvg.ftMixedRating + playerRankingsRecent[j].ftMixedRating) : playerRankingsRecent[j].ftMixedRating,
+                        ftMixedRating: (teamStatsRecentAvg.ftMixedRating) ? (teamStatsRecentAvg.ftMixedRating + playerRankingsRecent[j].ftMixedRating) : playerRankingsRecent[j].ftMixedRating,
                         toRating: (teamStatsRecentAvg.toRating) ? (teamStatsRecentAvg.toRating + playerRankingsRecent[j].toRating) : playerRankingsRecent[j].toRating
                     }
                     break
@@ -186,7 +265,7 @@ export class BuildPlayers extends Component {
             blkRating: Number(teamStatsSeasonAvg.blkRating / teamStatsSeason.length).toFixed(2),
             fgMixedRating: Number(teamStatsSeasonAvg.fgMixedRating / teamStatsSeason.length).toFixed(2),
             ftMixedRating: Number(teamStatsSeasonAvg.ftMixedRating / teamStatsSeason.length).toFixed(2),
-            toRating: Number(teamStatsSeasonAvg.ftRating / teamStatsSeason.length).toFixed(2)
+            toRating: Number(teamStatsSeasonAvg.toRating / teamStatsSeason.length).toFixed(2)
         }
 
 
@@ -199,7 +278,7 @@ export class BuildPlayers extends Component {
             blkRating: Number(teamStatsRecentAvg.blkRating / teamStatsRecent.length).toFixed(2),
             fgMixedRating: Number(teamStatsRecentAvg.fgMixedRating / teamStatsRecent.length).toFixed(2),
             ftMixedRating: Number(teamStatsRecentAvg.ftMixedRating / teamStatsRecent.length).toFixed(2),
-            toRating: Number(teamStatsRecentAvg.ftRating / teamStatsRecent.length).toFixed(2)
+            toRating: Number(teamStatsRecentAvg.toRating / teamStatsRecent.length).toFixed(2)
         }
 
         //Put the [] around the arrays so the table below can know its a single row
@@ -215,148 +294,174 @@ export class BuildPlayers extends Component {
         const lightRed = '#ffdfdf';
         const mediumRed = '#ffb8b8';
         const brightRed = '#ff8282';
+
+        var nameHeader = '';
+        var rankHeader = '';
+        var ratingHeader = '';
+        var ptsHeader = '';
+        var threesHeader = '';
+        var rebHeader = '';
+        var astHeader = '';
+        var stlHeader = '';
+        var blkHeader = '';
+        var ftHeader = '';
+        var fgHeader = '';
+        var toHeader = '';
+        nameHeader = 'playerName';
+        rankHeader = 'overallRank';
+        ratingHeader = 'overallRating';
+        ptsHeader = 'ptsRating';
+        threesHeader = 'threeRating';
+        rebHeader = 'rebRating';
+        astHeader = 'astRating';
+        stlHeader = 'stlRating';
+        blkHeader = 'blkRating';
+        ftHeader = 'ftMixedRating';
+        fgHeader = 'fgMixedRating';
+        toHeader = 'toRating';
+
         const columnNames = [{
             Header: 'Rank',
-            accessor: 'overallRank'
+            accessor: rankHeader
         }, {
             Header: 'Value',
-            accessor: 'overallRating'
+            accessor: ratingHeader
         }, {
             Header: 'Name',
-            accessor: 'playerName',
+            accessor: nameHeader,
             width: 200
         }, {
             Header: 'Points',
-            accessor: 'ptsRating',
+            accessor: ptsHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ptsRating > 2 ? brightGreen :
-                        rowInfo.row.ptsRating > 1 ? mediumGreen : 
-                        rowInfo.row.ptsRating >= .5 ? lightGreen : 
-                        rowInfo.row.ptsRating < 0 && rowInfo.row.ptsRating > -1 ? lightRed :
-                        rowInfo.row.ptsRating <= -1 && rowInfo.row.ptsRating > -2 ? mediumRed : 
-                        rowInfo.row.ptsRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[ptsHeader] > 2 ? brightGreen :
+                            rowInfo.row[ptsHeader] > 1 ? mediumGreen :
+                                rowInfo.row[ptsHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -1 ? lightRed :
+                                        rowInfo.row[ptsHeader] <= -1 && rowInfo.row[ptsHeader] > -2 ? mediumRed :
+                                            rowInfo.row[ptsHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: '3s',
-            accessor: 'threeRating',
+            accessor: threesHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.threeRating > 2 ? brightGreen :
-                        rowInfo.row.threeRating > 1 ? mediumGreen : 
-                        rowInfo.row.threeRating >= .5 ? lightGreen : 
-                        rowInfo.row.threeRating < 0 && rowInfo.row.threeRating > -1 ? lightRed :
-                        rowInfo.row.threeRating <= -1 && rowInfo.row.threeRating > -2 ? mediumRed : 
-                        rowInfo.row.threeRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[threesHeader] > 2 ? brightGreen :
+                            rowInfo.row[threesHeader] > 1 ? mediumGreen :
+                                rowInfo.row[threesHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -1 ? lightRed :
+                                        rowInfo.row[threesHeader] <= -1 && rowInfo.row[threesHeader] > -2 ? mediumRed :
+                                            rowInfo.row[threesHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Rebounds',
-            accessor: 'rebRating',
+            accessor: rebHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.rebRating > 2 ? brightGreen :
-                        rowInfo.row.rebRating > 1 ? mediumGreen : 
-                        rowInfo.row.rebRating >= .5 ? lightGreen : 
-                        rowInfo.row.rebRating < 0 && rowInfo.row.rebRating > -1 ? lightRed :
-                        rowInfo.row.rebRating <= -1 && rowInfo.row.rebRating > -2 ? mediumRed : 
-                        rowInfo.row.rebRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[rebHeader] > 2 ? brightGreen :
+                            rowInfo.row[rebHeader] > 1 ? mediumGreen :
+                                rowInfo.row[rebHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -1 ? lightRed :
+                                        rowInfo.row[rebHeader] <= -1 && rowInfo.row[rebHeader] > -2 ? mediumRed :
+                                            rowInfo.row[rebHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Assists',
-            accessor: 'astRating',
+            accessor: astHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.astRating > 2 ? brightGreen :
-                        rowInfo.row.astRating > 1 ? mediumGreen : 
-                        rowInfo.row.astRating >= .5 ? lightGreen : 
-                        rowInfo.row.astRating < 0 && rowInfo.row.astRating > -1 ? lightRed :
-                        rowInfo.row.astRating <= -1 && rowInfo.row.astRating > -2 ? mediumRed : 
-                        rowInfo.row.astRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[astHeader] > 2 ? brightGreen :
+                            rowInfo.row[astHeader] > 1 ? mediumGreen :
+                                rowInfo.row[astHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -1 ? lightRed :
+                                        rowInfo.row[astHeader] <= -1 && rowInfo.row[astHeader] > -2 ? mediumRed :
+                                            rowInfo.row[astHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Steals',
-            accessor: 'stlRating',
+            accessor: stlHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.stlRating > 2 ? brightGreen :
-                        rowInfo.row.stlRating > 1 ? mediumGreen : 
-                        rowInfo.row.stlRating >= .5 ? lightGreen : 
-                        rowInfo.row.stlRating < 0 && rowInfo.row.stlRating > -1 ? lightRed :
-                        rowInfo.row.stlRating <= -1 && rowInfo.row.stlRating > -2 ? mediumRed : 
-                        rowInfo.row.stlRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[stlHeader] > 2 ? brightGreen :
+                            rowInfo.row[stlHeader] > 1 ? mediumGreen :
+                                rowInfo.row[stlHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -1 ? lightRed :
+                                        rowInfo.row[stlHeader] <= -1 && rowInfo.row[stlHeader] > -2 ? mediumRed :
+                                            rowInfo.row[stlHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Blocks',
-            accessor: 'blkRating',
+            accessor: blkHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.blkRating > 2 ? brightGreen :
-                        rowInfo.row.blkRating > 1 ? mediumGreen : 
-                        rowInfo.row.blkRating >= .5 ? lightGreen : 
-                        rowInfo.row.blkRating < 0 && rowInfo.row.blkRating > -1 ? lightRed :
-                        rowInfo.row.blkRating <= -1 && rowInfo.row.blkRating > -2 ? mediumRed : 
-                        rowInfo.row.blkRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[blkHeader] > 2 ? brightGreen :
+                            rowInfo.row[blkHeader] > 1 ? mediumGreen :
+                                rowInfo.row[blkHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -1 ? lightRed :
+                                        rowInfo.row[blkHeader] <= -1 && rowInfo.row[blkHeader] > -2 ? mediumRed :
+                                            rowInfo.row[blkHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FG%',
-            accessor: 'fgMixedRating',
+            accessor: fgHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.fgMixedRating > 2 ? brightGreen :
-                        rowInfo.row.fgMixedRating > 1 ? mediumGreen : 
-                        rowInfo.row.fgMixedRating >= .5 ? lightGreen : 
-                        rowInfo.row.fgMixedRating < 0 && rowInfo.row.fgMixedRating > -1 ? lightRed :
-                        rowInfo.row.fgMixedRating <= -1 && rowInfo.row.fgMixedRating > -2 ? mediumRed : 
-                        rowInfo.row.fgMixedRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[fgHeader] > 2 ? brightGreen :
+                            rowInfo.row[fgHeader] > 1 ? mediumGreen :
+                                rowInfo.row[fgHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -1 ? lightRed :
+                                        rowInfo.row[fgHeader] <= -1 && rowInfo.row[fgHeader] > -2 ? mediumRed :
+                                            rowInfo.row[fgHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ftMixedRating',
+            accessor: ftHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ftMixedRating > 2 ? brightGreen :
-                        rowInfo.row.ftMixedRating > 1 ? mediumGreen : 
-                        rowInfo.row.ftMixedRating >= .5 ? lightGreen : 
-                        rowInfo.row.ftMixedRating < 0 && rowInfo.row.ftMixedRating > -1 ? lightRed :
-                        rowInfo.row.ftMixedRating <= -1 && rowInfo.row.ftMixedRating > -2 ? mediumRed : 
-                        rowInfo.row.ftMixedRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[ftHeader] > 2 ? brightGreen :
+                            rowInfo.row[ftHeader] > 1 ? mediumGreen :
+                                rowInfo.row[ftHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -1 ? lightRed :
+                                        rowInfo.row[ftHeader] <= -1 && rowInfo.row[ftHeader] > -2 ? mediumRed :
+                                            rowInfo.row[ftHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Turnovers',
-            accessor: 'toRating',
+            accessor: toHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.toRating > 2 ? brightGreen :
-                        rowInfo.row.toRating > 1 ? mediumGreen : 
-                        rowInfo.row.toRating >= .5 ? lightGreen : 
-                        rowInfo.row.toRating < 0 && rowInfo.row.toRating > -1 ? lightRed :
-                        rowInfo.row.toRating <= -1 && rowInfo.row.toRating > -2 ? mediumRed : 
-                        rowInfo.row.toRating <= -2 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[toHeader] > 2 ? brightGreen :
+                            rowInfo.row[toHeader] > 1 ? mediumGreen :
+                                rowInfo.row[toHeader] >= .5 ? lightGreen :
+                                    rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -1 ? lightRed :
+                                        rowInfo.row[toHeader] <= -1 && rowInfo.row[toHeader] > -2 ? mediumRed :
+                                            rowInfo.row[toHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -364,136 +469,136 @@ export class BuildPlayers extends Component {
 
         const columnNamesAvg = [{
             Header: 'Points',
-            accessor: 'ptsRating',
+            accessor: ptsHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ptsRating > 1 ? brightGreen :
-                        rowInfo.row.ptsRating > .5 ? mediumGreen : 
-                        rowInfo.row.ptsRating >= .25 ? lightGreen : 
-                        rowInfo.row.ptsRating < 0 && rowInfo.row.ptsRating > -0.25 ? lightRed :
-                        rowInfo.row.ptsRating < -0.25 && rowInfo.row.ptsRating > -1 ? mediumRed : 
-                        rowInfo.row.ptsRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[ptsHeader] > 1 ? brightGreen :
+                            rowInfo.row[ptsHeader] > .5 ? mediumGreen :
+                                rowInfo.row[ptsHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[ptsHeader] < -0.25 && rowInfo.row[ptsHeader] > -1 ? mediumRed :
+                                            rowInfo.row[ptsHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: '3s',
-            accessor: 'threeRating',
+            accessor: threesHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.threeRating > 1 ? brightGreen :
-                        rowInfo.row.threeRating > .5 ? mediumGreen : 
-                        rowInfo.row.threeRating >= .25 ? lightGreen : 
-                        rowInfo.row.threeRating < 0 && rowInfo.row.threeRating > -0.25 ? lightRed :
-                        rowInfo.row.threeRating < -0.25 && rowInfo.row.threeRating > -1 ? mediumRed : 
-                        rowInfo.row.threeRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[threesHeader] > 1 ? brightGreen :
+                            rowInfo.row[threesHeader] > .5 ? mediumGreen :
+                                rowInfo.row[threesHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[threesHeader] < -0.25 && rowInfo.row[threesHeader] > -1 ? mediumRed :
+                                            rowInfo.row[threesHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Rebounds',
-            accessor: 'rebRating',
+            accessor: rebHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.rebRating > 1 ? brightGreen :
-                        rowInfo.row.rebRating > .5 ? mediumGreen : 
-                        rowInfo.row.rebRating >= .25 ? lightGreen : 
-                        rowInfo.row.rebRating < 0 && rowInfo.row.rebRating > -0.25 ? lightRed :
-                        rowInfo.row.rebRating < -0.25 && rowInfo.row.rebRating > -1 ? mediumRed : 
-                        rowInfo.row.rebRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[rebHeader] > 1 ? brightGreen :
+                            rowInfo.row[rebHeader] > .5 ? mediumGreen :
+                                rowInfo.row[rebHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[rebHeader] < -0.25 && rowInfo.row[rebHeader] > -1 ? mediumRed :
+                                            rowInfo.row[rebHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Assists',
-            accessor: 'astRating',
+            accessor: astHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.astRating > 1 ? brightGreen :
-                        rowInfo.row.astRating > .5 ? mediumGreen : 
-                        rowInfo.row.astRating >= .25 ? lightGreen : 
-                        rowInfo.row.astRating < 0 && rowInfo.row.astRating > -0.25 ? lightRed :
-                        rowInfo.row.astRating < -0.25 && rowInfo.row.astRating > -1 ? mediumRed : 
-                        rowInfo.row.astRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[astHeader] > 1 ? brightGreen :
+                            rowInfo.row[astHeader] > .5 ? mediumGreen :
+                                rowInfo.row[astHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[astHeader] < -0.25 && rowInfo.row[astHeader] > -1 ? mediumRed :
+                                            rowInfo.row[astHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Steals',
-            accessor: 'stlRating',
+            accessor: stlHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.stlRating > 1 ? brightGreen :
-                        rowInfo.row.stlRating > .5 ? mediumGreen : 
-                        rowInfo.row.stlRating >= .25 ? lightGreen : 
-                        rowInfo.row.stlRating < 0 && rowInfo.row.stlRating > -0.25 ? lightRed :
-                        rowInfo.row.stlRating < -0.25 && rowInfo.row.stlRating > -1 ? mediumRed : 
-                        rowInfo.row.stlRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[stlHeader] > 1 ? brightGreen :
+                            rowInfo.row[stlHeader] > .5 ? mediumGreen :
+                                rowInfo.row[stlHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[stlHeader] < -0.25 && rowInfo.row[stlHeader] > -1 ? mediumRed :
+                                            rowInfo.row[stlHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Blocks',
-            accessor: 'blkRating',
+            accessor: blkHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.blkRating > 1 ? brightGreen :
-                        rowInfo.row.blkRating > .5 ? mediumGreen : 
-                        rowInfo.row.blkRating >= .25 ? lightGreen : 
-                        rowInfo.row.blkRating < 0 && rowInfo.row.blkRating > -0.25 ? lightRed :
-                        rowInfo.row.blkRating < -0.25 && rowInfo.row.blkRating > -1 ? mediumRed : 
-                        rowInfo.row.blkRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[blkHeader] > 1 ? brightGreen :
+                            rowInfo.row[blkHeader] > .5 ? mediumGreen :
+                                rowInfo.row[blkHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[blkHeader] < -0.25 && rowInfo.row[blkHeader] > -1 ? mediumRed :
+                                            rowInfo.row[blkHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FG%',
-            accessor: 'fgMixedRating',
+            accessor: fgHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.fgMixedRating > 1 ? brightGreen :
-                        rowInfo.row.fgMixedRating > .5 ? mediumGreen : 
-                        rowInfo.row.fgMixedRating >= .25 ? lightGreen : 
-                        rowInfo.row.fgMixedRating < 0 && rowInfo.row.fgMixedRating > -0.25 ? lightRed :
-                        rowInfo.row.fgMixedRating < -0.25 && rowInfo.row.fgMixedRating > -1 ? mediumRed : 
-                        rowInfo.row.fgMixedRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[fgHeader] > 1 ? brightGreen :
+                            rowInfo.row[fgHeader] > .5 ? mediumGreen :
+                                rowInfo.row[fgHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[fgHeader] < -0.25 && rowInfo.row[fgHeader] > -1 ? mediumRed :
+                                            rowInfo.row[fgHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'FT%',
-            accessor: 'ftMixedRating',
+            accessor: ftHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.ftMixedRating > 1 ? brightGreen :
-                        rowInfo.row.ftMixedRating > .5 ? mediumGreen : 
-                        rowInfo.row.ftMixedRating >= .25 ? lightGreen : 
-                        rowInfo.row.ftMixedRating < 0 && rowInfo.row.ftMixedRating > -0.25 ? lightRed :
-                        rowInfo.row.ftMixedRating < -0.25 && rowInfo.row.ftMixedRating > -1 ? mediumRed : 
-                        rowInfo.row.ftMixedRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[ftHeader] > 1 ? brightGreen :
+                            rowInfo.row[ftHeader] > .5 ? mediumGreen :
+                                rowInfo.row[ftHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[ftHeader] < -0.25 && rowInfo.row[ftHeader] > -1 ? mediumRed :
+                                            rowInfo.row[ftHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
         }, {
             Header: 'Turnovers',
-            accessor: 'toRating',
+            accessor: toHeader,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
-                        backgroundColor: rowInfo && rowInfo.row.toRating > 1 ? brightGreen :
-                        rowInfo.row.toRating > .5 ? mediumGreen : 
-                        rowInfo.row.toRating >= .25 ? lightGreen : 
-                        rowInfo.row.toRating < 0 && rowInfo.row.toRating > -0.25 ? lightRed :
-                        rowInfo.row.toRating < -0.25 && rowInfo.row.toRating > -1 ? mediumRed : 
-                        rowInfo.row.toRating <= -1 ? brightRed : null,
+                        backgroundColor: rowInfo && rowInfo.row[toHeader] > 1 ? brightGreen :
+                            rowInfo.row[toHeader] > .5 ? mediumGreen :
+                                rowInfo.row[toHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[toHeader] < -0.25 && rowInfo.row[toHeader] > -1 ? mediumRed :
+                                            rowInfo.row[toHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -503,17 +608,55 @@ export class BuildPlayers extends Component {
         var compareTeamsHTML = "";
         if (this.state.leagueId) {
             compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
-            playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent} 
-            columnNamesAvg={columnNamesAvg} />
+                playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent}
+                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} />
+        }
+
+        var showStatsText;
+        if (!this.state.showBBMStats) {
+            showStatsText = 'Use BasketballMonster Rankings';
+        } else {
+            showStatsText = 'Use FantasyBasketball.io Rankings';
         }
 
         return (
             <div className="table-container flex-vertical">
+                <div className="flex center">
+                    <div className="change-stats-btn" onClick={this.changeStats}>{showStatsText}</div>
+                </div>
                 <div className="table-group">
                     <h3 className="team-table-header">Teams Season Rankings</h3>
                     <div className="team-table">
-                      <ReactTable
-                        data={this.state.teamStatsSeason}
+                        <ReactTable
+                            data={this.state.teamStatsSeason}
+                            columns={columnNames}
+                            showPagination={false}
+                            minRows={0}
+                            defaultSortDesc={true}
+                            defaultSorted={[{
+                                id: 'overallRank',
+                                desc: false
+                            }]}
+                        />
+                    </div>
+
+                    {/* <h4 className="team-avg-header">Avg Season Rankings</h4> */}
+                    <div className="team-avg-table">
+                        <ReactTable
+                            data={this.state.teamStatsSeasonAvg}
+                            columns={columnNamesAvg}
+                            showPagination={false}
+                            minRows={0}
+                        />
+                    </div>
+                </div>
+
+                {compareTeamsHTML}
+
+                <h3 className="team-table-header">Teams Recent Rankings</h3>
+                <div className="team-table">
+                    <ReactTable
+                        data={this.state.teamStatsRecent}
                         columns={columnNames}
                         showPagination={false}
                         minRows={0}
@@ -522,73 +665,45 @@ export class BuildPlayers extends Component {
                             id: 'overallRank',
                             desc: false
                         }]}
-                      />
-                    </div>
-
-                    {/* <h4 className="team-avg-header">Avg Season Rankings</h4> */}
-                    <div className="team-avg-table">
-                      <ReactTable
-                        data={this.state.teamStatsSeasonAvg}
-                        columns={columnNamesAvg}
-                        showPagination={false}
-                        minRows={0}
-                      />
-                    </div>
-                </div>
-
-                {compareTeamsHTML}
-
-                <h3 className="team-table-header">Teams Recent Rankings</h3>
-                <div className="team-table">
-                  <ReactTable
-                    data={this.state.teamStatsRecent}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-                  />
+                    />
                 </div>
 
                 {/*<h4 className="team-avg-header">Avg Last 2 Weeks Rankings</h4> */}
                 <div className="team-avg-table">
-                  <ReactTable
-                    data={this.state.teamStatsRecentAvg}
-                    columns={columnNamesAvg}
-                    showPagination={false}
-                    minRows={0}
-                  />
+                    <ReactTable
+                        data={this.state.teamStatsRecentAvg}
+                        columns={columnNamesAvg}
+                        showPagination={false}
+                        minRows={0}
+                    />
                 </div>
                 <h3 className="team-table-header">Season Potential Pickup Targets</h3>
                 <div className="team-table">
-                  <ReactTable
-                    data={this.state.playerPickupsSeason}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-                  />
+                    <ReactTable
+                        data={this.state.playerPickupsSeason}
+                        columns={columnNames}
+                        showPagination={false}
+                        minRows={0}
+                        defaultSortDesc={true}
+                        defaultSorted={[{
+                            id: 'overallRank',
+                            desc: false
+                        }]}
+                    />
                 </div>
                 <h3 className="team-table-header">Recent Potential Pickup Targets</h3>
                 <div className="team-table">
-                  <ReactTable
-                    data={this.state.playerPickupsRecent}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-                  />
+                    <ReactTable
+                        data={this.state.playerPickupsRecent}
+                        columns={columnNames}
+                        showPagination={false}
+                        minRows={0}
+                        defaultSortDesc={true}
+                        defaultSorted={[{
+                            id: 'overallRank',
+                            desc: false
+                        }]}
+                    />
                 </div>
             </div>
         )

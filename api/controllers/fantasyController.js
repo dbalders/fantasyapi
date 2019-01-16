@@ -6,10 +6,12 @@ var rankings = require('../../data/rankings');
 var mongoose = require('mongoose'),
     Players = mongoose.model('Players'),
     Teams = mongoose.model('Teams'),
-    RankingsSeason = mongoose.model('RankingsSeason'),
-    RankingsRecent = mongoose.model('RankingsRecent'),
+    BBMRankingsSeason = mongoose.model('BBMRankingsSeason'),
+    BBMRankingsRecent = mongoose.model('BBMRankingsRecent'),
     PickupTargetsSeason = mongoose.model('PickupTargetsSeason'),
     PickupTargetsRecent = mongoose.model('PickupTargetsRecent'),
+    BBMPickupTargetsSeason = mongoose.model('BBMPickupTargetsSeason'),
+    BBMPickupTargetsRecent = mongoose.model('BBMPickupTargetsRecent'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
     PlayerRecentData = mongoose.model('PlayerRecentData');
 
@@ -31,6 +33,22 @@ exports.list_season_pickups = function(req, res) {
 
 exports.list_recent_pickups = function(req, res) {
     PickupTargetsRecent.find({ leagueId: req.params.leagueId }, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+};
+
+exports.list_season_bbm_pickups = function(req, res) {
+    BBMPickupTargetsSeason.find({ leagueId: req.params.leagueId }, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+};
+
+exports.list_recent_bbm_pickups = function(req, res) {
+    BBMPickupTargetsRecent.find({ leagueId: req.params.leagueId }, function(err, players) {
         if (err)
             res.send(err);
         res.json(players);
@@ -79,13 +97,29 @@ exports.list_recent_rankings = function(req, res) {
     });
 };
 
+exports.list_season_bbm_rankings = function(req, res) {
+    BBMRankingsSeason.find({}, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+}; 
+
+exports.list_recent_bbm_rankings = function(req, res) {
+    BBMRankingsRecent.find({}, function(err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+};
+
 exports.erase_current_data = function(req, res) {
-    RankingsSeason.remove({}, function(err, task) {
+    BBMRankingsSeason.remove({}, function(err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    RankingsRecent.remove({}, function(err, task) {
+    BBMRankingsRecent.remove({}, function(err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
@@ -117,7 +151,8 @@ exports.erase_current_data = function(req, res) {
 
 exports.get_rankings = function(req, res) {
     rankings.getRankings(req, res);
-    // res.json("Rankings Completed");
+    rankings.getBBMRankings(req,res);
+    res.json("Rankings Completed");
 }
 
 exports.get_player_season_data = function(req, res) {

@@ -1,18 +1,19 @@
 var request = require("request"),
     YahooFantasy = require('yahoo-fantasy'),
     async = require("async"),
-    scraper = require('table-scraper'),
     stringSimilarity = require('string-similarity');
 
 var mongoose = require('mongoose'),
     Players = mongoose.model('Players'),
     Teams = mongoose.model('Teams'),
-    RankingsSeason = mongoose.model('RankingsSeason'),
-    RankingsRecent = mongoose.model('RankingsRecent'),
     PickupTargetsSeason = mongoose.model('PickupTargetsSeason'),
     PickupTargetsRecent = mongoose.model('PickupTargetsRecent'),
+    BBMPickupTargetsSeason = mongoose.model('BBMPickupTargetsSeason'),
+    BBMPickupTargetsRecent = mongoose.model('BBMPickupTargetsRecent'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
-    PlayerRecentData = mongoose.model('PlayerRecentData');
+    PlayerRecentData = mongoose.model('PlayerRecentData'),
+    BBMRankingsSeason = mongoose.model('BBMRankingsSeason'),
+    BBMRankingsRecent = mongoose.model('BBMRankingsRecent');
 
 var clientId = process.env.APP_CLIENT_ID || require('../conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('../conf.js').APP_CLIENT_SECRET;
@@ -236,6 +237,83 @@ function getPickups(leagueId, playerNames) {
                 res.send(err);
 
             PickupTargetsRecent.findOneAndUpdate({
+                leagueId: leagueId
+            }, {
+                    leagueId: leagueId,
+                    players: pickupTargets
+                }, {
+                    upsert: true
+                },
+                function (err, doc) {
+                    if (err)
+                        res.send(err);
+
+                    if (doc !== null) {
+                        doc.players = pickupTargets;
+                    }
+                });
+            return
+        })
+    });
+
+    BBMRankingsSeason.find({}, function (err, players) {
+        if (err)
+            res.send(err);
+        var pickupTargets = [];
+        async.forEachOf(players, function (value, i, callback) {
+
+            var similarPlayer = stringSimilarity.findBestMatch(players[i].playerName, playerNames);
+            var similarPlayerRating = similarPlayer.bestMatch.rating;
+
+            if (similarPlayerRating < 0.7) {
+                pickupTargets.push(players[i]);
+            }
+
+            callback();
+        }, function (err) {
+            if (err)
+                res.send(err);
+
+            BBMPickupTargetsSeason.findOneAndUpdate({
+                leagueId: leagueId
+            }, {
+                    leagueId: leagueId,
+                    players: pickupTargets
+                }, {
+                    upsert: true
+                },
+                function (err, doc) {
+                    if (err)
+                        res.send(err);
+
+                    if (doc !== null) {
+                        doc.players = pickupTargets;
+                    }
+                });
+            return
+        })
+    });
+
+    BBMRankingsRecent.find({}, function (err, players) {
+        if (err)
+            res.send(err);
+        var pickupTargets = [];
+
+        async.forEachOf(players, function (value, i, callback) {
+
+            var similarPlayer = stringSimilarity.findBestMatch(players[i].playerName, playerNames);
+            var similarPlayerRating = similarPlayer.bestMatch.rating; 
+
+            if (similarPlayerRating < 0.7) {
+                pickupTargets.push(players[i]);
+            }
+
+            callback();
+        }, function (err) {
+            if (err)
+                res.send(err);
+
+            BBMPickupTargetsRecent.findOneAndUpdate({
                 leagueId: leagueId
             }, {
                     leagueId: leagueId,

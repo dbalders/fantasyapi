@@ -22,6 +22,12 @@ module.exports = function (app) {
     app.route('/api/rankings/recent/')
         .get(fantasy.list_recent_rankings)
 
+    app.route('/api/rankings/bbm/season/')
+        .get(fantasy.list_season_bbm_rankings)
+
+    app.route('/api/rankings/bbm/recent/')
+        .get(fantasy.list_recent_bbm_rankings)
+
     app.route('/api/get_rankings')
         .get(fantasy.get_rankings)
 
@@ -30,6 +36,12 @@ module.exports = function (app) {
 
     app.route('/api/targets/recent/:leagueId')
         .get(fantasy.list_recent_pickups)
+
+    app.route('/api/targets/bbm/season/:leagueId')
+        .get(fantasy.list_season_bbm_pickups)
+
+    app.route('/api/targets/bbm/recent/:leagueId')
+        .get(fantasy.list_recent_bbm_pickups)
 
     app.route('/api/espn/league/:espnId')
         .get(fantasy.get_espn_data)

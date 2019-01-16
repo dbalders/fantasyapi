@@ -1,11 +1,14 @@
 var request = require("request"),
     async = require("async"),
     nba = require("nba"),
+    scraper = require('table-scraper'),
     stats = require("stats-lite");
 
 var mongoose = require('mongoose'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
-    PlayerRecentData = mongoose.model('PlayerRecentData')
+    PlayerRecentData = mongoose.model('PlayerRecentData'),
+    BBMRankingsRecent = mongoose.model('BBMRankingsRecent'),
+    BBMRankingsSeason = mongoose.model('BBMRankingsSeason')
 
 exports.getRankings = function (req, res) {
     var playerRankings = [];
@@ -416,11 +419,98 @@ exports.getRankings = function (req, res) {
                 PlayerSeasonData.find({}, function (err, players) {
                     if (err) {
                         res.send(err);
-                    } else {
-                        res.json('Rankings Completed');
                     }
                 });
             });
         })
     })
+}
+
+exports.getBBMRankings = function () {
+    var playerRankings = [];
+    var playerRankingsTwoWeeks = [];
+    var todayFullDate = new Date();
+    var todayDate = ("0" + (todayFullDate.getMonth() + 1)).slice(-2);
+    var twoWeeksFullDate = new Date(+new Date - 12096e5)
+    var twoWeeksDate = ("0" + (twoWeeksFullDate.getMonth() + 1)).slice(-2);
+    var seasonStartYear;
+    todayDate = todayDate + ("0" + todayFullDate.getDate()).slice(-2);
+    todayDate = todayDate + todayFullDate.getUTCFullYear();
+    twoWeeksDate = twoWeeksDate + ("0" + twoWeeksFullDate.getDate()).slice(-2);;
+    twoWeeksDate = twoWeeksDate + twoWeeksFullDate.getUTCFullYear();
+
+    //If it is before july, then teh season start date should be the year before
+    if (todayFullDate.getMonth() < 7) {
+        seasonStartYear = todayFullDate.getUTCFullYear() - 1;
+    } else {
+        seasonStartYear = todayFullDate.getUTCFullYear();
+    }
+
+    BBMRankingsSeason.remove({}, function (err, task) {
+        if (err)
+            res.send(err);
+    });
+    BBMRankingsRecent.remove({}, function (err, task) {
+        if (err)
+            res.send(err);
+    });
+
+    //Get rankings for season
+    scraper.get('https://basketballmonster.com/playerrankings.aspx?start=0701' + seasonStartYear + '&end=' + todayDate)
+        .then(function (tableData) {
+            tableData = tableData[0];
+            async.forEachOf(tableData, function (value, i, callback) {
+
+                var tableHeaderNumber = Object.getOwnPropertyNames(tableData[0])[0];
+                tableHeaderNumber = tableHeaderNumber.split('_')[1]
+
+                BBMRankingsSeason.create({
+                    'overallRank': tableData[i]['Rank_' + tableHeaderNumber],
+                    'overallRating': tableData[i]['Value_' + tableHeaderNumber],
+                    'playerName': tableData[i]['Name_' + tableHeaderNumber],
+                    'ptsRating': tableData[i]['pV_' + tableHeaderNumber],
+                    'threeRating': tableData[i]['3/g_' + tableHeaderNumber],
+                    'rebRating': tableData[i]['rV_' + tableHeaderNumber],
+                    'astRating': tableData[i]['aV_' + tableHeaderNumber],
+                    'stlRating': tableData[i]['sV_' + tableHeaderNumber],
+                    'blkRating': tableData[i]['bV_' + tableHeaderNumber],
+                    'fgMixedRating': tableData[i]['fg%V_' + tableHeaderNumber],
+                    'ftMixedRating': tableData[i]['ft%V_' + tableHeaderNumber],
+                    'toRating': tableData[i]['toV_' + tableHeaderNumber]
+                });
+
+                callback();
+            }, function (err) {
+
+                scraper.get('https://basketballmonster.com/playerrankings.aspx?start=' + twoWeeksDate + '&end=' + todayDate)
+                    .then(function (tableData) {
+                        tableData = tableData[0];
+
+                        var tableHeaderNumber = Object.getOwnPropertyNames(tableData[0])[0];
+                        tableHeaderNumber = tableHeaderNumber.split('_')[1]
+
+                        async.forEachOf(tableData, function (value, i, callback) {
+
+                            BBMRankingsRecent.create({
+                                'overallRank': tableData[i]['Rank_' + tableHeaderNumber],
+                                'overallRating': tableData[i]['Value_' + tableHeaderNumber],
+                                'playerName': tableData[i]['Name_' + tableHeaderNumber],
+                                'ptsRating': tableData[i]['pV_' + tableHeaderNumber],
+                                'threeRating': tableData[i]['3/g_' + tableHeaderNumber],
+                                'rebRating': tableData[i]['rV_' + tableHeaderNumber],
+                                'astRating': tableData[i]['aV_' + tableHeaderNumber],
+                                'stlRating': tableData[i]['sV_' + tableHeaderNumber],
+                                'blkRating': tableData[i]['bV_' + tableHeaderNumber],
+                                'fgMixedRating': tableData[i]['fg%V_' + tableHeaderNumber],
+                                'ftMixedRating': tableData[i]['ft%V_' + tableHeaderNumber],
+                                'toRating': tableData[i]['toV_' + tableHeaderNumber]
+                            });
+
+                            callback();
+                        }, function (err) {
+                            return
+                        })
+                    });
+            })
+        });
 }

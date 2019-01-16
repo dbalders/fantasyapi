@@ -271,7 +271,18 @@ code {
     font-size: 1rem;
 }
 
-/*Universal CSS Classes*/
+.change-stats-btn {
+    margin: auto;
+    background-color: #74b9ff;
+    padding: 25px 35px;
+    color: white;
+    font-size: 1.25rem;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+/****************************Universal CSS Classes***********************/
 
 .flex-wrapper {
     display: flex;

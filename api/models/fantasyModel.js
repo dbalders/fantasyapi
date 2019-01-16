@@ -38,80 +38,80 @@ var TeamsSchema = new Schema({
     }
 });
 
-var RankingsSeasonSchema = new Schema({
-    fullName: {
+var BBMRankingsSeasonSchema = new Schema({
+    playerName: {
         type: String
     },
-    rank: {
+    overallRank: {
         type: Number
     },
-    value: {
+    overallRating: {
         type: Number
     },
-    pV: {
+    ptsRating: {
         type: Number
     },
-    rV: {
+    rebRating: {
         type: Number
     },
-    aV: {
+    astRating: {
         type: Number
     },
-    sV: {
+    stlRating: {
         type: Number
     },
-    bV: {
+    blkRating: {
         type: Number
     },
-    'fg%V': {
+    fgMixedRating: {
         type: Number
     },
-    'ft%V': {
+    ftMixedRating: {
         type: Number
     },
-    toV: {
+    toRating: {
         type: Number
     },
-    '3V': {
+    threeRating: {
         type: Number
     }
 });
 
-var RankingsRecentSchema = new Schema({
-    fullName: {
+var BBMRankingsRecentSchema = new Schema({
+    playerName: {
         type: String
     },
-    rank: {
+    overallRank: {
         type: Number
     },
-    value: {
+    overallRating: {
         type: Number
     },
-    pV: {
+    ptsRating: {
         type: Number
     },
-    rV: {
+    rebRating: {
         type: Number
     },
-    aV: {
+    astRating: {
         type: Number
     },
-    sV: {
+    stlRating: {
         type: Number
     },
-    bV: {
+    blkRating: {
         type: Number
     },
-    'fg%V': {
+    fgMixedRating: {
         type: Number
     },
-    'ft%V': {
+    ftMixedRating: {
         type: Number
     },
-    toV: {
+    toRating: {
         type: Number
     },
-    '3V': {
+    threeRating: {
         type: Number
     }
 });
@@ -126,6 +126,24 @@ var PickupTargetsSeasonSchema = new Schema({
 });
 
 var PickupTargetsRecentSchema = new Schema({
+    leagueId: {
+        type: String
+    },
+    players: {
+        type: Array
+    }
+});
+
+var BBMPickupTargetsSeasonSchema = new Schema({
+    leagueId: {
+        type: String
+    },
+    players: {
+        type: Array
+    }
+});
+
+var BBMPickupTargetsRecentSchema = new Schema({
     leagueId: {
         type: String
     },
@@ -226,9 +244,11 @@ var PlayerRecentDataSchema = new Schema({
 
 module.exports = mongoose.model('Players', PlayersSchema);
 module.exports = mongoose.model('Teams', TeamsSchema);
-module.exports = mongoose.model('RankingsSeason', RankingsSeasonSchema);
-module.exports = mongoose.model('RankingsRecent', RankingsRecentSchema);
+module.exports = mongoose.model('BBMRankingsSeason', BBMRankingsSeasonSchema);
+module.exports = mongoose.model('BBMRankingsRecent', BBMRankingsRecentSchema);
 module.exports = mongoose.model('PickupTargetsSeason', PickupTargetsSeasonSchema);
 module.exports = mongoose.model('PickupTargetsRecent', PickupTargetsRecentSchema);
+module.exports = mongoose.model('BBMPickupTargetsSeason', BBMPickupTargetsSeasonSchema);
+module.exports = mongoose.model('BBMPickupTargetsRecent', BBMPickupTargetsRecentSchema);
 module.exports = mongoose.model('PlayerSeasonData', PlayerSeasonDataSchema);
 module.exports = mongoose.model('PlayerRecentData', PlayerRecentDataSchema);
