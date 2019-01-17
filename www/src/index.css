@@ -282,6 +282,10 @@ code {
 
 }
 
+.expandedRow {
+    min-height: 35px;
+}
+
 /****************************Universal CSS Classes***********************/
 
 .flex-wrapper {

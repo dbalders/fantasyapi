@@ -74,7 +74,18 @@ var BBMRankingsSeasonSchema = new Schema({
     },
     threeRating: {
         type: Number
-    }
+    },
+    fgPct: Number,
+    ftPct: Number,
+    fG3M: Number,
+    reb: Number,
+    ast: Number,
+    tov: Number,
+    stl: Number,
+    blk: Number,
+    pts: Number,
+    fta: Number,
+    fga: Number
 });
 
 var BBMRankingsRecentSchema = new Schema({
@@ -113,7 +124,18 @@ var BBMRankingsRecentSchema = new Schema({
     },
     threeRating: {
         type: Number
-    }
+    },
+    fgPct: Number,
+    ftPct: Number,
+    fG3M: Number,
+    reb: Number,
+    ast: Number,
+    tov: Number,
+    stl: Number,
+    blk: Number,
+    pts: Number,
+    fta: Number,
+    fga: Number
 });
 
 var PickupTargetsSeasonSchema = new Schema({

@@ -39,12 +39,14 @@ export class BuildPlayers extends Component {
     }
 
     componentDidMount() {
+        //Grab team and league ID from cookies
         var leagueId = Cookies.get('leagueId');
         var teamId = Cookies.get('teamId');
 
         if (leagueId) {
             this.setState({ leagueId: leagueId });
 
+            //Get all the league info from each api endpoint
             this.callApi('/api/targets/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
@@ -64,6 +66,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
+            //Local rankings for the season
             this.callApi('/api/player_data/season/')
                 .then(results => {
                     var playerData = results;
@@ -73,6 +76,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
+            //Local rankings for recent
             this.callApi('/api/player_data/recent/')
                 .then(results => {
                     var playerData = results;
@@ -82,7 +86,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
-
+            //List of the teams in the league
             this.callApi('/api/teams/' + leagueId)
                 .then(results => {
                     var teams = results[0].teams;
@@ -90,6 +94,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
+            //BBM targets recent
             this.callApi('/api/targets/bbm/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
@@ -97,7 +102,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
-            //Targets from season ranking
+            //BBM targets season
             this.callApi('/api/targets/bbm/season/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
@@ -105,6 +110,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
+            //BBM rankings season
             this.callApi('/api/rankings/bbm/season/')
                 .then(results => {
                     var playerData = results;
@@ -112,7 +118,7 @@ export class BuildPlayers extends Component {
                 })
                 .catch(err => console.log(err));
 
-
+            //BBM rankings recent
             this.callApi('/api/rankings/bbm/recent/')
                 .then(results => {
                     var playerData = results;
@@ -125,7 +131,7 @@ export class BuildPlayers extends Component {
                 this.callApi('/api/teams/' + leagueId + '/' + teamId)
                     .then(results => {
                         var playerData = results;
-                        //check if the data is there, and if not, add a .5 sec wait then send to the build function
+                        //check if the data is there, and if not, add a 1 sec wait then send to the build function
                         if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsRecent.length === 0) {
                             setTimeout(function () {
                                 this.setState({ teamPlayers: playerData }, this.buildTeam);
@@ -149,9 +155,11 @@ export class BuildPlayers extends Component {
     };
 
     changeStats() {
+        //Grab league ID
         var leagueId = Cookies.get('leagueId');
-        // this.setState({ showBBMStats: !this.state.showBBMStats });
+        //Toggle the state to show BBM stats or local
         this.setState({ showBBMStats: !this.state.showBBMStats }, () => {
+            //If BBM stats is true, load in their data
             if (this.state.showBBMStats) {
                 this.setState({
                     playerTargetsSeason: this.state.playerTargetsBBMRecent,
@@ -160,9 +168,13 @@ export class BuildPlayers extends Component {
                     playerRankingsRecent: this.state.playerRankingsBBMRecent,
                     updateCompareTable: true
                 }, function () {
+                    //Rebuild page with new data
                     this.buildTeam()
+                    //set this state back to false to stop the constant re-render of compare table
+                    this.setState({ updateCompareTable: false })
                 })
             } else {
+                //If local stats is true, load the local data
                 this.setState({
                     playerTargetsSeason: this.state.playerTargetsLocalRecent,
                     playerTargetsRecent: this.state.playerTargetsLocalSeason,
@@ -170,7 +182,10 @@ export class BuildPlayers extends Component {
                     playerRankingsRecent: this.state.playerRankingsLocalRecent,
                     updateCompareTable: true
                 }, function () {
+                    //Rebuild Team with new data
                     this.buildTeam();
+                    //set this state back to false to stop the constant re-render of compare table
+                    this.setState({ updateCompareTable: false })
                 })
             }
 
@@ -190,12 +205,14 @@ export class BuildPlayers extends Component {
         var playerPickupsSeason = this.state.playerTargetsSeason;
         var playerPickupsRecent = this.state.playerTargetsRecent;
 
-        //for each player if string similarity > .7 in player rankings, then return
+        //for each player on the team, if string similarity > .7 in the player rankings, then add that player to the array
         for (var i = 0; i < teamPlayers.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
                 var similarPlayerSeason = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsSeason[j].playerName);
                 if (similarPlayerSeason > 0.7) {
+                    //Push the player to the team array
                     teamStatsSeason.push(playerRankingsSeason[j]);
+                    //Start calculating averages by adding them all up
                     teamStatsSeasonAvg = {
                         ptsRating: (teamStatsSeasonAvg.ptsRating) ? (teamStatsSeasonAvg.ptsRating + playerRankingsSeason[j].ptsRating) : playerRankingsSeason[j].ptsRating,
                         threeRating: (teamStatsSeasonAvg.threeRating) ? (teamStatsSeasonAvg.threeRating + playerRankingsSeason[j].threeRating) : playerRankingsSeason[j].threeRating,
@@ -211,6 +228,7 @@ export class BuildPlayers extends Component {
                 }
             }
 
+            //Same here for recent data
             for (var j = 0; j < playerRankingsRecent.length; j++) {
                 var similarPlayerRecent = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsRecent[j].playerName);
                 if (similarPlayerRecent > 0.7) {
@@ -231,6 +249,7 @@ export class BuildPlayers extends Component {
             }
         }
 
+        //Do the same for the pickup targets to get their data
         for (var i = 0; i < playerPickupsSeason.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
                 var similarTargetsSeason = stringSimilarity.compareTwoStrings(playerPickupsSeason[i].playerName, playerRankingsSeason[j].playerName);
@@ -256,6 +275,7 @@ export class BuildPlayers extends Component {
         this.setState({ playerPickupsSeason: playerPickupsSeason });
         this.setState({ playerPickupsRecent: playerPickupsRecent });
 
+        //Divide averages total by the number of players they have to get avg number
         teamStatsSeasonAvg = {
             ptsRating: Number(teamStatsSeasonAvg.ptsRating / teamStatsSeason.length).toFixed(2),
             threeRating: Number(teamStatsSeasonAvg.threeRating / teamStatsSeason.length).toFixed(2),
@@ -295,6 +315,7 @@ export class BuildPlayers extends Component {
         const mediumRed = '#ffb8b8';
         const brightRed = '#ff8282';
 
+        //Make headers variable in case I need it in the future
         var nameHeader = '';
         var rankHeader = '';
         var ratingHeader = '';
@@ -320,19 +341,24 @@ export class BuildPlayers extends Component {
         fgHeader = 'fgMixedRating';
         toHeader = 'toRating';
 
+        //column names for the main player columns
         const columnNames = [{
             Header: 'Rank',
-            accessor: rankHeader
+            accessor: rankHeader,
+            className: "center"
         }, {
             Header: 'Value',
-            accessor: ratingHeader
+            accessor: ratingHeader,
+            className: "center"
         }, {
             Header: 'Name',
             accessor: nameHeader,
-            width: 200
+            width: 200,
+            className: "center"
         }, {
             Header: 'Points',
             accessor: ptsHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -342,12 +368,14 @@ export class BuildPlayers extends Component {
                                     rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -1 ? lightRed :
                                         rowInfo.row[ptsHeader] <= -1 && rowInfo.row[ptsHeader] > -2 ? mediumRed :
                                             rowInfo.row[ptsHeader] <= -2 ? brightRed : null,
-                    },
+                    }
                 };
             },
+
         }, {
             Header: '3s',
             accessor: threesHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -363,6 +391,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Rebounds',
             accessor: rebHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -378,6 +407,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Assists',
             accessor: astHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -393,6 +423,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Steals',
             accessor: stlHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -408,6 +439,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Blocks',
             accessor: blkHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -423,6 +455,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'FG%',
             accessor: fgHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -438,6 +471,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'FT%',
             accessor: ftHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -453,6 +487,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Turnovers',
             accessor: toHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -467,9 +502,11 @@ export class BuildPlayers extends Component {
             },
         }];
 
+        //column names for the average tables
         const columnNamesAvg = [{
             Header: 'Points',
             accessor: ptsHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -485,6 +522,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: '3s',
             accessor: threesHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -500,6 +538,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Rebounds',
             accessor: rebHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -515,6 +554,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Assists',
             accessor: astHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -530,6 +570,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Steals',
             accessor: stlHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -545,6 +586,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Blocks',
             accessor: blkHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -554,12 +596,13 @@ export class BuildPlayers extends Component {
                                     rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -0.25 ? lightRed :
                                         rowInfo.row[blkHeader] < -0.25 && rowInfo.row[blkHeader] > -1 ? mediumRed :
                                             rowInfo.row[blkHeader] <= -1 ? brightRed : null,
-                    },
+                    }
                 };
-            },
+            }
         }, {
             Header: 'FG%',
             accessor: fgHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -569,12 +612,13 @@ export class BuildPlayers extends Component {
                                     rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -0.25 ? lightRed :
                                         rowInfo.row[fgHeader] < -0.25 && rowInfo.row[fgHeader] > -1 ? mediumRed :
                                             rowInfo.row[fgHeader] <= -1 ? brightRed : null,
-                    },
+                    }
                 };
-            },
+            }
         }, {
             Header: 'FT%',
             accessor: ftHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -584,12 +628,13 @@ export class BuildPlayers extends Component {
                                     rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -0.25 ? lightRed :
                                         rowInfo.row[ftHeader] < -0.25 && rowInfo.row[ftHeader] > -1 ? mediumRed :
                                             rowInfo.row[ftHeader] <= -1 ? brightRed : null,
-                    },
+                    }
                 };
-            },
+            }
         }, {
             Header: 'Turnovers',
             accessor: toHeader,
+            className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -599,19 +644,76 @@ export class BuildPlayers extends Component {
                                     rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -0.25 ? lightRed :
                                         rowInfo.row[toHeader] < -0.25 && rowInfo.row[toHeader] > -1 ? mediumRed :
                                             rowInfo.row[toHeader] <= -1 ? brightRed : null,
-                    },
+                    }
                 };
-            },
+            }
         }];
+
+        const expandedColumnNames = [{
+            headerClassName: 'hide',
+            width: 35,
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            width: 200,
+            className: "center",
+            Cell: row => (
+                <div>Stats per game</div>
+            )
+        }, {
+            headerClassName: 'hide',
+            accessor: 'pts',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'fG3M',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'reb',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'ast',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'stl',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'blk',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'fgPct',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'ftPct',
+            className: "center"
+        }, {
+            headerClassName: 'hide',
+            accessor: 'tov',
+            className: "center"
+        }]
 
         //Send to the compare teams component once we have the leagueId
         var compareTeamsHTML = "";
         if (this.state.leagueId) {
             compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
                 playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent}
-                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} />
+                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} expandedColumnNames={expandedColumnNames} />
+
         }
 
+        //Update the switch stats button text on state change
         var showStatsText;
         if (!this.state.showBBMStats) {
             showStatsText = 'Use BasketballMonster Rankings';
@@ -637,10 +739,21 @@ export class BuildPlayers extends Component {
                                 id: 'overallRank',
                                 desc: false
                             }]}
+                            SubComponent={row => {
+                                return (
+                                    <ReactTable
+                                        data={[row.original]}
+                                        columns={expandedColumnNames}
+                                        showPagination={false}
+                                        defaultPageSize={1}
+                                        className="expandedRow"
+                                    />
+                                );
+                            }}
+
                         />
                     </div>
 
-                    {/* <h4 className="team-avg-header">Avg Season Rankings</h4> */}
                     <div className="team-avg-table">
                         <ReactTable
                             data={this.state.teamStatsSeasonAvg}
@@ -665,10 +778,20 @@ export class BuildPlayers extends Component {
                             id: 'overallRank',
                             desc: false
                         }]}
+                        SubComponent={row => {
+                            return (
+                                <ReactTable
+                                    data={[row.original]}
+                                    columns={expandedColumnNames}
+                                    showPagination={false}
+                                    defaultPageSize={1}
+                                    className="expandedRow"
+                                />
+                            );
+                        }}
                     />
                 </div>
 
-                {/*<h4 className="team-avg-header">Avg Last 2 Weeks Rankings</h4> */}
                 <div className="team-avg-table">
                     <ReactTable
                         data={this.state.teamStatsRecentAvg}
@@ -689,6 +812,17 @@ export class BuildPlayers extends Component {
                             id: 'overallRank',
                             desc: false
                         }]}
+                        SubComponent={row => {
+                            return (
+                                <ReactTable
+                                    data={[row.original]}
+                                    columns={expandedColumnNames}
+                                    showPagination={false}
+                                    defaultPageSize={1}
+                                    className="expandedRow"
+                                />
+                            );
+                        }}
                     />
                 </div>
                 <h3 className="team-table-header">Recent Potential Pickup Targets</h3>
@@ -703,6 +837,17 @@ export class BuildPlayers extends Component {
                             id: 'overallRank',
                             desc: false
                         }]}
+                        SubComponent={row => {
+                            return (
+                                <ReactTable
+                                    data={[row.original]}
+                                    columns={expandedColumnNames}
+                                    showPagination={false}
+                                    defaultPageSize={1}
+                                    className="expandedRow"
+                                />
+                            );
+                        }}
                     />
                 </div>
             </div>

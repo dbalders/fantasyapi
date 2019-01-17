@@ -476,7 +476,18 @@ exports.getBBMRankings = function () {
                     'blkRating': tableData[i]['bV_' + tableHeaderNumber],
                     'fgMixedRating': tableData[i]['fg%V_' + tableHeaderNumber],
                     'ftMixedRating': tableData[i]['ft%V_' + tableHeaderNumber],
-                    'toRating': tableData[i]['toV_' + tableHeaderNumber]
+                    'toRating': tableData[i]['toV_' + tableHeaderNumber],
+                    'fgPct': tableData[i]['fg%_' + tableHeaderNumber],
+                    'ftPct': tableData[i]['ft%_' + tableHeaderNumber],
+                    'fG3M': tableData[i]['3/g_' + tableHeaderNumber],
+                    'reb': tableData[i]['r/g_' + tableHeaderNumber],
+                    'ast': tableData[i]['a/g_' + tableHeaderNumber],
+                    'tov': tableData[i]['to/g_' + tableHeaderNumber],
+                    'stl': tableData[i]['s/g_' + tableHeaderNumber],
+                    'blk': tableData[i]['b/g_' + tableHeaderNumber],
+                    'pts': tableData[i]['p/g_' + tableHeaderNumber],
+                    'fta': tableData[i]['fta/g_' + tableHeaderNumber],
+                    'fga': tableData[i]['fga/g_' + tableHeaderNumber],
                 });
 
                 callback();
@@ -503,7 +514,18 @@ exports.getBBMRankings = function () {
                                 'blkRating': tableData[i]['bV_' + tableHeaderNumber],
                                 'fgMixedRating': tableData[i]['fg%V_' + tableHeaderNumber],
                                 'ftMixedRating': tableData[i]['ft%V_' + tableHeaderNumber],
-                                'toRating': tableData[i]['toV_' + tableHeaderNumber]
+                                'toRating': tableData[i]['toV_' + tableHeaderNumber],
+                                'fgPct': tableData[i]['fg%_' + tableHeaderNumber],
+                                'ftPct': tableData[i]['ft%_' + tableHeaderNumber],
+                                'fG3M': tableData[i]['3/g_' + tableHeaderNumber],
+                                'reb': tableData[i]['r/g_' + tableHeaderNumber],
+                                'ast': tableData[i]['a/g_' + tableHeaderNumber],
+                                'tov': tableData[i]['to/g_' + tableHeaderNumber],
+                                'stl': tableData[i]['s/g_' + tableHeaderNumber],
+                                'blk': tableData[i]['b/g_' + tableHeaderNumber],
+                                'pts': tableData[i]['p/g_' + tableHeaderNumber],
+                                'fta': tableData[i]['fta/g_' + tableHeaderNumber],
+                                'fga': tableData[i]['fga/g_' + tableHeaderNumber],
                             });
 
                             callback();
