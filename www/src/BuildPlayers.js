@@ -43,106 +43,149 @@ export class BuildPlayers extends Component {
         //Grab team and league ID from cookies
         var leagueId = Cookies.get('leagueId');
         var teamId = Cookies.get('teamId');
+        var today = new Date() + 1;
+        var expireDate = Cookies.get('dataExpireDate');
 
         if (leagueId) {
             this.setState({ leagueId: leagueId });
 
-            //Get all the league info from each api endpoint
-            callApi('/api/targets/recent/' + leagueId)
-                .then(results => {
-                    var playerData = results[0].players;
-                    this.setState({ playerTargetsLocalRecent: playerData }, function () {
-                        this.setState({ playerTargetsRecent: this.state.playerTargetsLocalRecent });
-                    });
-                })
-                .catch(err => console.log(err));
-
-            //Targets from season ranking
-            callApi('/api/targets/season/' + leagueId)
-                .then(results => {
-                    var playerData = results[0].players;
-                    this.setState({ playerTargetsLocalSeason: playerData }, function () {
-                        this.setState({ playerTargetsSeason: this.state.playerTargetsLocalSeason });
-                    });
-                })
-                .catch(err => console.log(err));
-
-            //Local rankings for the season
-            callApi('/api/player_data/season/')
-                .then(results => {
-                    var playerData = results;
-                    this.setState({ playerRankingsLocalSeason: playerData }, function () {
-                        this.setState({ playerRankingsSeason: this.state.playerRankingsLocalSeason });
-                    });
-                })
-                .catch(err => console.log(err));
-
-            //Local rankings for recent
-            callApi('/api/player_data/recent/')
-                .then(results => {
-                    var playerData = results;
-                    this.setState({ playerRankingsLocalRecent: playerData }, function () {
-                        this.setState({ playerRankingsRecent: this.state.playerRankingsLocalRecent });
-                    });
-                })
-                .catch(err => console.log(err));
-
-            //List of the teams in the league
-            callApi('/api/teams/' + leagueId)
-                .then(results => {
-                    var teams = results[0].teams;
-                    this.setState({ teams: teams });
-                })
-                .catch(err => console.log(err));
-
-            //BBM targets recent
-            callApi('/api/targets/bbm/recent/' + leagueId)
-                .then(results => {
-                    var playerData = results[0].players;
-                    this.setState({ playerTargetsBBMRecent: playerData });
-                })
-                .catch(err => console.log(err));
-
-            //BBM targets season
-            callApi('/api/targets/bbm/season/' + leagueId)
-                .then(results => {
-                    var playerData = results[0].players;
-                    this.setState({ playerTargetsBBMSeason: playerData });
-                })
-                .catch(err => console.log(err));
-
-            //BBM rankings season
-            callApi('/api/rankings/bbm/season/')
-                .then(results => {
-                    var playerData = results;
-                    this.setState({ playerRankingsBBMSeason: playerData });
-                })
-                .catch(err => console.log(err));
-
-            //BBM rankings recent
-            callApi('/api/rankings/bbm/recent/')
-                .then(results => {
-                    var playerData = results;
-                    this.setState({ playerRankingsBBMRecent: playerData });
-                })
-                .catch(err => console.log(err));
-
-            if (teamId) {
-                //Their team data
-                callApi('/api/teams/' + leagueId + '/' + teamId)
+            //If it is greater or equal to the day after the last time they got data, update
+            if (today >= expireDate) {
+                //Get all the league info from each api endpoint
+                callApi('/api/targets/recent/' + leagueId)
                     .then(results => {
-                        var playerData = results;
-                        //check if the data is there, and if not, add a 1 sec wait then send to the build function
-                        if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsRecent.length === 0) {
-                            setTimeout(function () {
-                                this.setState({ teamPlayers: playerData }, this.buildTeam);
-                            }.bind(this), 1000)
-                        } else {
-                            this.setState({ teamPlayers: playerData }, this.buildTeam).bind(this);
-                        }
+                        var playerData = results[0].players;
+                        this.setState({
+                            playerTargetsLocalRecent: playerData,
+                            playerTargetsRecent: playerData
+                        });
+                        localStorage.setItem('playerTargetsLocalRecent', JSON.stringify(playerData));
+                        localStorage.setItem('playerTargetsRecent', JSON.stringify(playerData));
                     })
                     .catch(err => console.log(err));
+
+                //Targets from season ranking
+                callApi('/api/targets/season/' + leagueId)
+                    .then(results => {
+                        var playerData = results[0].players;
+                        this.setState({
+                            playerTargetsLocalSeason: playerData,
+                            playerTargetsSeason: playerData
+                        });
+                        localStorage.setItem('playerTargetsLocalSeason', JSON.stringify(playerData));
+                        localStorage.setItem('playerTargetsSeason', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //Local rankings for the season
+                callApi('/api/player_data/season/')
+                    .then(results => {
+                        var playerData = results;
+                        this.setState({
+                            playerRankingsLocalSeason: playerData,
+                            playerRankingsSeason: playerData
+                        });
+                        localStorage.setItem('playerRankingsLocalSeason', JSON.stringify(playerData));
+                        localStorage.setItem('playerRankingsSeason', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //Local rankings for recent
+                callApi('/api/player_data/recent/')
+                    .then(results => {
+                        var playerData = results;
+                        this.setState({
+                            playerRankingsLocalRecent: playerData,
+                            playerRankingsRecent: playerData
+                        });
+                        localStorage.setItem('playerRankingsLocalRecent', JSON.stringify(playerData));
+                        localStorage.setItem('playerRankingsRecent', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //List of the teams in the league
+                callApi('/api/teams/' + leagueId)
+                    .then(results => {
+                        var teams = results[0].teams;
+                        this.setState({ teams: teams });
+                        localStorage.setItem('teams', JSON.stringify(teams));
+                    })
+                    .catch(err => console.log(err));
+
+                //BBM targets recent
+                callApi('/api/targets/bbm/recent/' + leagueId)
+                    .then(results => {
+                        var playerData = results[0].players;
+                        this.setState({ playerTargetsBBMRecent: playerData });
+                        localStorage.setItem('playerTargetsBBMRecent', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //BBM targets season
+                callApi('/api/targets/bbm/season/' + leagueId)
+                    .then(results => {
+                        var playerData = results[0].players;
+                        this.setState({ playerTargetsBBMSeason: playerData });
+                        localStorage.setItem('playerTargetsBBMSeason', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //BBM rankings season
+                callApi('/api/rankings/bbm/season/')
+                    .then(results => {
+                        var playerData = results;
+                        this.setState({ playerRankingsBBMSeason: playerData });
+                        localStorage.setItem('playerRankingsBBMSeason', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                //BBM rankings recent
+                callApi('/api/rankings/bbm/recent/')
+                    .then(results => {
+                        var playerData = results;
+                        this.setState({ playerRankingsBBMRecent: playerData });
+                        localStorage.setItem('playerRankingsBBMRecent', JSON.stringify(playerData));
+                    })
+                    .catch(err => console.log(err));
+
+                if (teamId) {
+                    //Their team data
+                    callApi('/api/teams/' + leagueId + '/' + teamId)
+                        .then(results => {
+                            var playerData = results;
+                            //check if the data is there, and if not, add a 1 sec wait then send to the build function
+                            if (this.state.playerRankingsSeason.length === 0 || this.state.playerRankingsRecent.length === 0) {
+                                setTimeout(function () {
+                                    localStorage.setItem('teamPlayers', JSON.stringify(playerData));
+                                    this.setState({ teamPlayers: playerData }, this.buildTeam);
+                                }.bind(this), 1000)
+                            } else {
+                                localStorage.setItem('teamPlayers', JSON.stringify(playerData));
+                                this.setState({ teamPlayers: playerData }, this.buildTeam);
+                            }
+                        })
+                        .catch(err => console.log(err));
+                }
+            } else {
+                //If it is the same day, then just load all the data from local storage
+                this.setState({
+                    playerTargetsLocalRecent: JSON.parse(localStorage.getItem('playerTargetsLocalRecent')),
+                    playerTargetsRecent: JSON.parse(localStorage.getItem('playerTargetsRecent')),
+                    playerTargetsLocalSeason: JSON.parse(localStorage.getItem('playerTargetsLocalSeason')),
+                    playerTargetsSeason: JSON.parse(localStorage.getItem('playerTargetsSeason')),
+                    playerRankingsLocalSeason: JSON.parse(localStorage.getItem('playerRankingsLocalSeason')),
+                    playerRankingsSeason: JSON.parse(localStorage.getItem('playerRankingsSeason')),
+                    playerRankingsLocalRecent: JSON.parse(localStorage.getItem('playerRankingsLocalRecent')),
+                    playerRankingsRecent: JSON.parse(localStorage.getItem('playerRankingsRecent')),
+                    teams: JSON.parse(localStorage.getItem('teams')),
+                    playerTargetsBBMRecent: JSON.parse(localStorage.getItem('playerTargetsBBMRecent')),
+                    playerTargetsBBMSeason: JSON.parse(localStorage.getItem('playerTargetsBBMSeason')),
+                    playerRankingsBBMSeason: JSON.parse(localStorage.getItem('playerRankingsBBMSeason')),
+                    playerRankingsBBMRecent: JSON.parse(localStorage.getItem('playerRankingsBBMRecent')),
+                    teamPlayers: JSON.parse(localStorage.getItem('teamPlayers'))
+                }, this.buildTeam);
             }
+
         }
     }
 
