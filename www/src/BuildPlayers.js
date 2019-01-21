@@ -43,14 +43,31 @@ export class BuildPlayers extends Component {
         //Grab team and league ID from cookies
         var leagueId = Cookies.get('leagueId');
         var teamId = Cookies.get('teamId');
-        var today = new Date() + 1;
+        var today = new Date();
         var expireDate = Cookies.get('dataExpireDate');
+        var allData = true;
+
+        //Go through each local storage needed and if they dont exist, just refresh all data
+        !(JSON.parse(localStorage.getItem('playerTargetsLocalRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerTargetsRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerTargetsLocalSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerTargetsSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsLocalSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsLocalRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('teams'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerTargetsBBMRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerTargetsBBMSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsBBMRecent'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('playerRankingsBBMSeason'))) ? allData = false : '';
+        !(JSON.parse(localStorage.getItem('teamPlayers'))) ? allData = false : '';
 
         if (leagueId) {
             this.setState({ leagueId: leagueId });
 
-            //If it is greater or equal to the day after the last time they got data, update
-            if (today >= expireDate) {
+            //If it is greater or equal to the day after the last time they got data, expire doesn't exist, or dont have all data, update all
+            if ((today >= expireDate) || (expireDate === undefined) || allData === false) {
                 //Get all the league info from each api endpoint
                 callApi('/api/targets/recent/' + leagueId)
                     .then(results => {
