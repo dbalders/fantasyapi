@@ -64,7 +64,7 @@ class App extends Component {
 
         navBar = <div className="navbar flex">
             <div className="nav-title">
-                <a href='/'>FantasyBasketball.io</a>
+                <Link to="/">FantasyBasketball.io</Link>
             </div>
             <div className="nav-sign-in flex">
                 <a className={`nav-sign-in-link ${this.state.isLoggedIn ? 'hide' : ''}`} href="/auth/yahoo">
@@ -72,7 +72,7 @@ class App extends Component {
                 </a>
 
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
-                    <a href='/trade'>Trade Analysis</a>
+                    <Link to="/trade">Trade Analysis</Link>
                 </div>
 
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
@@ -97,5 +97,4 @@ class App extends Component {
     }
 };
 
-// export default withRouter((App));
 export default App;
