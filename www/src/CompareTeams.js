@@ -3,6 +3,7 @@ import ReactTable from 'react-table';
 import Select from 'react-select';
 import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
+import { callApi } from './CallApi';
 
 export class CompareTeams extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export class CompareTeams extends Component {
     //On select change, get the new team's info from api and push it into the state and rebuild
     handleTeamChange = (teamSelected) => {
         this.setState({ teamSelected });
-        this.callApi('/api/teams/' + this.props.leagueId + '/' + teamSelected.value)
+        callApi('/api/teams/' + this.props.leagueId + '/' + teamSelected.value)
             .then(results => {
                 this.setState({showCompareTable: true});
                 this.setState({teamPlayers: results}, function() {
@@ -40,15 +41,6 @@ export class CompareTeams extends Component {
     }
 
     componentDidMount() {}
-
-    callApi = async (url) => {
-        const response = await fetch(url);
-        const body = await response.json();
-
-        if (response.status !== 200) throw Error(body.message);
-
-        return body;
-    };
 
     //Build the table based on the team data
     buildTeam(team) {

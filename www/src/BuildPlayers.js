@@ -4,6 +4,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
 import { CompareTeams } from './CompareTeams';
+import { callApi } from './CallApi';
 
 export class BuildPlayers extends Component {
     constructor(props) {
@@ -47,7 +48,7 @@ export class BuildPlayers extends Component {
             this.setState({ leagueId: leagueId });
 
             //Get all the league info from each api endpoint
-            this.callApi('/api/targets/recent/' + leagueId)
+            callApi('/api/targets/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
                     this.setState({ playerTargetsLocalRecent: playerData }, function () {
@@ -57,7 +58,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //Targets from season ranking
-            this.callApi('/api/targets/season/' + leagueId)
+            callApi('/api/targets/season/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
                     this.setState({ playerTargetsLocalSeason: playerData }, function () {
@@ -67,7 +68,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //Local rankings for the season
-            this.callApi('/api/player_data/season/')
+            callApi('/api/player_data/season/')
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsLocalSeason: playerData }, function () {
@@ -77,7 +78,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //Local rankings for recent
-            this.callApi('/api/player_data/recent/')
+            callApi('/api/player_data/recent/')
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsLocalRecent: playerData }, function () {
@@ -87,7 +88,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //List of the teams in the league
-            this.callApi('/api/teams/' + leagueId)
+            callApi('/api/teams/' + leagueId)
                 .then(results => {
                     var teams = results[0].teams;
                     this.setState({ teams: teams });
@@ -95,7 +96,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //BBM targets recent
-            this.callApi('/api/targets/bbm/recent/' + leagueId)
+            callApi('/api/targets/bbm/recent/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
                     this.setState({ playerTargetsBBMRecent: playerData });
@@ -103,7 +104,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //BBM targets season
-            this.callApi('/api/targets/bbm/season/' + leagueId)
+            callApi('/api/targets/bbm/season/' + leagueId)
                 .then(results => {
                     var playerData = results[0].players;
                     this.setState({ playerTargetsBBMSeason: playerData });
@@ -111,7 +112,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //BBM rankings season
-            this.callApi('/api/rankings/bbm/season/')
+            callApi('/api/rankings/bbm/season/')
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsBBMSeason: playerData });
@@ -119,7 +120,7 @@ export class BuildPlayers extends Component {
                 .catch(err => console.log(err));
 
             //BBM rankings recent
-            this.callApi('/api/rankings/bbm/recent/')
+            callApi('/api/rankings/bbm/recent/')
                 .then(results => {
                     var playerData = results;
                     this.setState({ playerRankingsBBMRecent: playerData });
@@ -128,7 +129,7 @@ export class BuildPlayers extends Component {
 
             if (teamId) {
                 //Their team data
-                this.callApi('/api/teams/' + leagueId + '/' + teamId)
+                callApi('/api/teams/' + leagueId + '/' + teamId)
                     .then(results => {
                         var playerData = results;
                         //check if the data is there, and if not, add a 1 sec wait then send to the build function
@@ -144,15 +145,6 @@ export class BuildPlayers extends Component {
             }
         }
     }
-
-    callApi = async (url) => {
-        const response = await fetch(url);
-        const body = await response.json();
-
-        if (response.status !== 200) throw Error(body.message);
-
-        return body;
-    };
 
     changeStats() {
         //Grab league ID
@@ -270,10 +262,15 @@ export class BuildPlayers extends Component {
             }
         }
 
-        this.setState({ teamStatsSeason: teamStatsSeason });
-        this.setState({ teamStatsRecent: teamStatsRecent });
-        this.setState({ playerPickupsSeason: playerPickupsSeason });
-        this.setState({ playerPickupsRecent: playerPickupsRecent });
+        this.setState({
+            teamStatsSeason: teamStatsSeason,
+            teamStatsRecent: teamStatsRecent,
+            playerPickupsSeason: playerPickupsSeason,
+            playerPickupsRecent: playerPickupsRecent
+        }, function () {
+            localStorage.setItem('teamStatsSeason', JSON.stringify(teamStatsSeason));
+            localStorage.setItem('teamStatsRecent', JSON.stringify(teamStatsRecent));
+        });
 
         //Divide averages total by the number of players they have to get avg number
         teamStatsSeasonAvg = {
@@ -302,8 +299,13 @@ export class BuildPlayers extends Component {
         }
 
         //Put the [] around the arrays so the table below can know its a single row
-        this.setState({ teamStatsSeasonAvg: [teamStatsSeasonAvg] });
-        this.setState({ teamStatsRecentAvg: [teamStatsRecentAvg] });
+        this.setState({
+            teamStatsSeasonAvg: [teamStatsSeasonAvg],
+            teamStatsRecentAvg: [teamStatsRecentAvg]
+        }, function () {
+            localStorage.setItem('teamStatsSeasonAvg', JSON.stringify(this.state.teamStatsSeasonAvg));
+            localStorage.setItem('teamStatsRecentAvg', JSON.stringify(this.state.teamStatsRecentAvg));
+        });
     }
 
     render() {

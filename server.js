@@ -40,45 +40,8 @@ mongoose.connect('mongodb://localhost/fantasydb');
 var routes = require('./api/routes/fantasyRoutes'); //importing route
 routes(app); //register the route
 
-//load the home page data
 app.get('/', function(req, res) {
-    var teamData;
-    var playerData;
-    var playerRankings;
-    var pickupTargets;
-    var playerRankingsRecent;
-    var pickupTargetsRecent;
-
-    //get the data from the session that is returned from yahoo
-    if (req.session.pickupTargets)
-        pickupTargets = req.session.pickupTargets;
-
-    if (req.session.pickupTargetsRecent)
-        pickupTargetsRecent = req.session.pickupTargetsRecent;
-
-    if (req.session.teamData)
-        teamData = JSON.stringify(req.session.teamData, null, 2);
-
-    if (req.session.playerData)
-        playerData = JSON.stringify(req.session.playerData);
-
-    if (req.session.playerRankings)
-        playerRankings = JSON.stringify(req.session.playerRankings);
-
-    if (req.session.playerRankingsRecent)
-        playerRankingsRecent = JSON.stringify(req.session.playerRankingsRecent);
     
-    //render the home page
-    res.render('home', {
-        title: 'Fantasy Pickups',
-        user: req.session.token,
-        teamData: teamData,
-        playerData: playerData,
-        playerRankings: playerRankings,
-        pickupTargets: pickupTargets,
-        playerRankingsRecent: playerRankingsRecent,
-        pickupTargetsRecent: pickupTargetsRecent
-    });
 });
 
 app.get('/logout', function(req, res) {
