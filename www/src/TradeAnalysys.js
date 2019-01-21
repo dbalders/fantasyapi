@@ -2,34 +2,48 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { CompareTeams } from './CompareTeams';
+import Cookies from 'js-cookie';
 
 export class TradeAnalysis extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            leagueId: [],
+            teamId: [],
+            teams: [],
             teamStatsSeason: [],
             teamStatsRecent: [],
             teamStatsSeasonAvg: [],
-            teamStatsRecentAvg: []
+            teamStatsRecentAvg: [],
+            playerRankingsSeason: [],
+            playerRankingsRecent: [],
+            updateCompareTable: false
         }
-
     }
 
     componentDidMount() {
+        var leagueId = Cookies.get('leagueId');
+        var teamId = Cookies.get('teamId');
         var seasonStats = JSON.parse(localStorage.getItem('teamStatsSeason'));
         var recentStats = JSON.parse(localStorage.getItem('teamStatsRecent'));
         var seasonAvg = JSON.parse(localStorage.getItem('teamStatsSeasonAvg'));
         var recentAvg = JSON.parse(localStorage.getItem('teamStatsRecentAvg'));
-        
+
+
         //If any of these do not exist somehow (not sure how, but still), redirect to home page to be rebuilt
-        if (seasonStats  === null || recentStats  === null || seasonAvg  === null || recentAvg  === null) {
+        if (seasonStats === null || recentStats === null || seasonAvg === null || recentAvg === null) {
             window.location = "/";
         } else {
             this.setState({
+                leagueId: leagueId,
+                teamId: teamId,
                 teamStatsSeason: seasonStats,
                 teamStatsRecent: recentStats,
                 teamStatsSeasonAvg: seasonAvg,
-                teamStatsRecentAvg: recentAvg
+                teamStatsRecentAvg: recentAvg,
+                playerRankingsSeason: JSON.parse(localStorage.getItem('playerRankingsSeason')),
+                playerRankingsRecent: JSON.parse(localStorage.getItem('playerRankingsRecent')),
+                teams: JSON.parse(localStorage.getItem('teams'))
             });
         }
     }
@@ -416,6 +430,15 @@ export class TradeAnalysis extends Component {
             className: "center"
         }]
 
+        var compareTeamsHTML = "";
+        if (this.state.leagueId) {
+            compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
+                playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent}
+                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} expandedColumnNames={expandedColumnNames} 
+                title="Team to trade with" />
+
+        }
+
         return (
             <div>
                 <div className="flex-vertical flex-one">
@@ -431,17 +454,17 @@ export class TradeAnalysis extends Component {
                         id: 'overallRank',
                         desc: false
                     }]}
-                SubComponent={row => {
-                    return (
-                        <ReactTable
-                            data={[row.original]}
-                            columns={expandedColumnNames}
-                            showPagination={false}
-                            defaultPageSize={1}
-                            className="expandedRow"
-                        />
-                    );
-                }}
+                    SubComponent={row => {
+                        return (
+                            <ReactTable
+                                data={[row.original]}
+                                columns={expandedColumnNames}
+                                showPagination={false}
+                                defaultPageSize={1}
+                                className="expandedRow"
+                            />
+                        );
+                    }}
 
                 />
                 <div className="team-avg-table">
@@ -452,6 +475,8 @@ export class TradeAnalysis extends Component {
                         minRows={0}
                     />
                 </div>
+
+                {compareTeamsHTML}
 
             </div>
         )
