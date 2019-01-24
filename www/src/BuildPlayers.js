@@ -48,20 +48,21 @@ export class BuildPlayers extends Component {
         var allData = true;
 
         //Go through each local storage needed and if they dont exist, just refresh all data
-        !(JSON.parse(localStorage.getItem('playerTargetsLocalRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerTargetsRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerTargetsLocalSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerTargetsSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsLocalSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsLocalRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('teams'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerTargetsBBMRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerTargetsBBMSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsBBMRecent'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('playerRankingsBBMSeason'))) ? allData = false : '';
-        !(JSON.parse(localStorage.getItem('teamPlayers'))) ? allData = false : '';
+        if (!(JSON.parse(localStorage.getItem('playerTargetsLocalRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerTargetsRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerTargetsLocalSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerTargetsSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsLocalSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsLocalRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('teams')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerTargetsBBMRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerTargetsBBMSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsBBMRecent')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('playerRankingsBBMSeason')))) allData = false;
+        if (!(JSON.parse(localStorage.getItem('teamPlayers')))) allData = false;
+
 
         if (leagueId) {
             this.setState({ leagueId: leagueId });

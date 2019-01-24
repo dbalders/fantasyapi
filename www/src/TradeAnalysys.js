@@ -57,8 +57,6 @@ export class TradeAnalysis extends Component {
             toRating: 0
         });
 
-        console.log(seasonAvg[0])
-
         teamTradeImprovement.push({
             name: 'Team values',
             overallRating: seasonAvg[0].overallRating,
@@ -72,8 +70,6 @@ export class TradeAnalysis extends Component {
             ftMixedRating: seasonAvg[0].ftMixedRating,
             toRating: seasonAvg[0].toRating
         })
-
-        console.log(teamTradeImprovement)
 
         //If any of these do not exist somehow (not sure how, but still), redirect to home page to be rebuilt
         if (seasonStats === null || recentStats === null || seasonAvg === null || recentAvg === null) {
@@ -247,7 +243,6 @@ export class TradeAnalysis extends Component {
         var teamTradeImprovementOrig = this.state.teamTradeImprovement;
 
         if ((add && ownedTeam) || (!add && !ownedTeam)) {
-            console.log(rowInfo.original)
             teamTradeImprovement.push({
                 name: 'Plus/Minus',
                 overallRating: Number(parseFloat(this.state.teamTradeImprovement[0].overallRating) - rowInfo.original.overallRating).toFixed(2),
