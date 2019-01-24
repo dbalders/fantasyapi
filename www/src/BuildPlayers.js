@@ -266,6 +266,7 @@ export class BuildPlayers extends Component {
                     teamStatsSeason.push(playerRankingsSeason[j]);
                     //Start calculating averages by adding them all up
                     teamStatsSeasonAvg = {
+                        overallRating: (teamStatsSeasonAvg.overallRating) ? (teamStatsSeasonAvg.overallRating + playerRankingsSeason[j].overallRating) : playerRankingsSeason[j].overallRating,
                         ptsRating: (teamStatsSeasonAvg.ptsRating) ? (teamStatsSeasonAvg.ptsRating + playerRankingsSeason[j].ptsRating) : playerRankingsSeason[j].ptsRating,
                         threeRating: (teamStatsSeasonAvg.threeRating) ? (teamStatsSeasonAvg.threeRating + playerRankingsSeason[j].threeRating) : playerRankingsSeason[j].threeRating,
                         astRating: (teamStatsSeasonAvg.astRating) ? (teamStatsSeasonAvg.astRating + playerRankingsSeason[j].astRating) : playerRankingsSeason[j].astRating,
@@ -286,6 +287,7 @@ export class BuildPlayers extends Component {
                 if (similarPlayerRecent > 0.7) {
                     teamStatsRecent.push(playerRankingsRecent[j]);
                     teamStatsRecentAvg = {
+                        overallRating: (teamStatsRecentAvg.overallRating) ? (teamStatsRecentAvg.overallRating + playerRankingsRecent[j].overallRating) : playerRankingsRecent[j].overallRating,
                         ptsRating: (teamStatsRecentAvg.ptsRating) ? (teamStatsRecentAvg.ptsRating + playerRankingsRecent[j].ptsRating) : playerRankingsRecent[j].ptsRating,
                         threeRating: (teamStatsRecentAvg.threeRating) ? (teamStatsRecentAvg.threeRating + playerRankingsRecent[j].threeRating) : playerRankingsRecent[j].threeRating,
                         astRating: (teamStatsRecentAvg.astRating) ? (teamStatsRecentAvg.astRating + playerRankingsRecent[j].astRating) : playerRankingsRecent[j].astRating,
@@ -334,6 +336,7 @@ export class BuildPlayers extends Component {
 
         //Divide averages total by the number of players they have to get avg number
         teamStatsSeasonAvg = {
+            overallRating: Number(teamStatsSeasonAvg.overallRating / teamStatsSeason.length).toFixed(2),
             ptsRating: Number(teamStatsSeasonAvg.ptsRating / teamStatsSeason.length).toFixed(2),
             threeRating: Number(teamStatsSeasonAvg.threeRating / teamStatsSeason.length).toFixed(2),
             astRating: Number(teamStatsSeasonAvg.astRating / teamStatsSeason.length).toFixed(2),
@@ -347,6 +350,7 @@ export class BuildPlayers extends Component {
 
 
         teamStatsRecentAvg = {
+            overallRating: Number(teamStatsRecentAvg.overallRating / teamStatsRecent.length).toFixed(2),
             ptsRating: Number(teamStatsRecentAvg.ptsRating / teamStatsRecent.length).toFixed(2),
             threeRating: Number(teamStatsRecentAvg.threeRating / teamStatsRecent.length).toFixed(2),
             astRating: Number(teamStatsRecentAvg.astRating / teamStatsRecent.length).toFixed(2),

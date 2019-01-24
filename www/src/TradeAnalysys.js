@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import { TradeTeams } from './TradeTeams';
 import Cookies from 'js-cookie';
 import Select from 'react-select';
 import stringSimilarity from 'string-similarity';
@@ -25,6 +24,11 @@ export class TradeAnalysis extends Component {
             teamSelected: [],
             teamPlayers: [],
             showCompareTable: false,
+            teamTradeStatsSeason: [],
+            oppTeamTradeStatsSeason: [],
+            teamTradeImprovement: [],
+            selected: [],
+            selectedOpp: [],
             updateCompareTable: false
         }
         this.hideCompareTable = this.hideCompareTable.bind(this);
@@ -38,6 +42,38 @@ export class TradeAnalysis extends Component {
         var seasonAvg = JSON.parse(localStorage.getItem('teamStatsSeasonAvg'));
         var recentAvg = JSON.parse(localStorage.getItem('teamStatsRecentAvg'));
 
+        var teamTradeImprovement = []
+        teamTradeImprovement.push({
+            name: 'Plus/Minus',
+            overallRating: 0,
+            ptsRating: 0,
+            threeRating: 0,
+            astRating: 0,
+            rebRating: 0,
+            stlRating: 0,
+            blkRating: 0,
+            fgMixedRating: 0,
+            ftMixedRating: 0,
+            toRating: 0
+        });
+
+        console.log(seasonAvg[0])
+
+        teamTradeImprovement.push({
+            name: 'Team values',
+            overallRating: seasonAvg[0].overallRating,
+            ptsRating: seasonAvg[0].ptsRating,
+            threeRating: seasonAvg[0].threeRating,
+            astRating: seasonAvg[0].astRating,
+            rebRating: seasonAvg[0].rebRating,
+            stlRating: seasonAvg[0].stlRating,
+            blkRating: seasonAvg[0].blkRating,
+            fgMixedRating: seasonAvg[0].fgMixedRating,
+            ftMixedRating: seasonAvg[0].ftMixedRating,
+            toRating: seasonAvg[0].toRating
+        })
+
+        console.log(teamTradeImprovement)
 
         //If any of these do not exist somehow (not sure how, but still), redirect to home page to be rebuilt
         if (seasonStats === null || recentStats === null || seasonAvg === null || recentAvg === null) {
@@ -52,7 +88,8 @@ export class TradeAnalysis extends Component {
                 teamStatsRecentAvg: recentAvg,
                 playerRankingsSeason: JSON.parse(localStorage.getItem('playerRankingsSeason')),
                 playerRankingsRecent: JSON.parse(localStorage.getItem('playerRankingsRecent')),
-                teams: JSON.parse(localStorage.getItem('teams'))
+                teams: JSON.parse(localStorage.getItem('teams')),
+                teamTradeImprovement: teamTradeImprovement
             });
         }
     }
@@ -61,8 +98,8 @@ export class TradeAnalysis extends Component {
         this.setState({ teamSelected });
         callApi('/api/teams/' + this.state.leagueId + '/' + teamSelected.value)
             .then(results => {
-                this.setState({showCompareTable: true});
-                this.setState({teamPlayers: results}, function() {
+                this.setState({ showCompareTable: true });
+                this.setState({ teamPlayers: results }, function () {
                     this.buildTradeTeam(this.state.teamPlayers);
                 })
             })
@@ -71,7 +108,7 @@ export class TradeAnalysis extends Component {
 
     //hide the compare table when clicked
     hideCompareTable() {
-        this.setState({showCompareTable: false})
+        this.setState({ showCompareTable: false })
     }
 
     buildTradeTeam(team) {
@@ -92,6 +129,7 @@ export class TradeAnalysis extends Component {
                     teamStatsSeason.push(playerRankingsSeason[j]);
                     //Start calculating averages by adding them all up
                     teamStatsSeasonAvg = {
+                        overallRating: (teamStatsSeasonAvg.overallRating) ? (teamStatsSeasonAvg.overallRating + playerRankingsSeason[j].overallRating) : playerRankingsSeason[j].overallRating,
                         ptsRating: (teamStatsSeasonAvg.ptsRating) ? (teamStatsSeasonAvg.ptsRating + playerRankingsSeason[j].ptsRating) : playerRankingsSeason[j].ptsRating,
                         threeRating: (teamStatsSeasonAvg.threeRating) ? (teamStatsSeasonAvg.threeRating + playerRankingsSeason[j].threeRating) : playerRankingsSeason[j].threeRating,
                         astRating: (teamStatsSeasonAvg.astRating) ? (teamStatsSeasonAvg.astRating + playerRankingsSeason[j].astRating) : playerRankingsSeason[j].astRating,
@@ -112,6 +150,7 @@ export class TradeAnalysis extends Component {
                 if (similarPlayerRecent > 0.7) {
                     teamStatsRecent.push(playerRankingsRecent[j]);
                     teamStatsRecentAvg = {
+                        overallRating: (teamStatsRecentAvg.overallRating) ? (teamStatsRecentAvg.overallRating + playerRankingsRecent[j].overallRating) : playerRankingsRecent[j].overallRating,
                         ptsRating: (teamStatsRecentAvg.ptsRating) ? (teamStatsRecentAvg.ptsRating + playerRankingsRecent[j].ptsRating) : playerRankingsRecent[j].ptsRating,
                         threeRating: (teamStatsRecentAvg.threeRating) ? (teamStatsRecentAvg.threeRating + playerRankingsRecent[j].threeRating) : playerRankingsRecent[j].threeRating,
                         astRating: (teamStatsRecentAvg.astRating) ? (teamStatsRecentAvg.astRating + playerRankingsRecent[j].astRating) : playerRankingsRecent[j].astRating,
@@ -126,12 +165,13 @@ export class TradeAnalysis extends Component {
                 }
             }
         }
-        
+
         this.setState({ compareStatsSeason: teamStatsSeason });
         this.setState({ compareStatsRecent: teamStatsRecent });
 
         //Divide averages total by the number of players they have to get avg number
         teamStatsSeasonAvg = {
+            overallRating: Number(teamStatsSeasonAvg.overallRating / teamStatsSeason.length).toFixed(2),
             ptsRating: Number(teamStatsSeasonAvg.ptsRating / teamStatsSeason.length).toFixed(2),
             threeRating: Number(teamStatsSeasonAvg.threeRating / teamStatsSeason.length).toFixed(2),
             astRating: Number(teamStatsSeasonAvg.astRating / teamStatsSeason.length).toFixed(2),
@@ -145,6 +185,7 @@ export class TradeAnalysis extends Component {
 
 
         teamStatsRecentAvg = {
+            overallRating: Number(teamStatsRecentAvg.overallRating / teamStatsRecent.length).toFixed(2),
             ptsRating: Number(teamStatsRecentAvg.ptsRating / teamStatsRecent.length).toFixed(2),
             threeRating: Number(teamStatsRecentAvg.threeRating / teamStatsRecent.length).toFixed(2),
             astRating: Number(teamStatsRecentAvg.astRating / teamStatsRecent.length).toFixed(2),
@@ -159,6 +200,113 @@ export class TradeAnalysis extends Component {
         //Put the [] around the arrays so the table below can know its a single row
         this.setState({ compareStatsSeasonAvg: [teamStatsSeasonAvg] });
         this.setState({ compareStatsRecentAvg: [teamStatsRecentAvg] });
+    }
+
+    addToTeamTrade(rowInfo) {
+        var teamTradeArray = this.state.teamTradeStatsSeason;
+        teamTradeArray.push(rowInfo.original);
+        this.setState({ teamTradeStatsSeason: teamTradeArray });
+        this.updateImprovementTable(rowInfo, true, true);
+    }
+
+    removeFromTeamTrade(rowInfo) {
+        var playerId = rowInfo.original._id;
+        var teamTradeArray = this.state.teamTradeStatsSeason;
+        for (var i = 0; i < teamTradeArray.length; i++) {
+            if (rowInfo.original._id === teamTradeArray[i]._id) {
+                teamTradeArray.splice(i, 1);
+            }
+        }
+
+        this.setState({ teamTradeStatsSeason: teamTradeArray });
+        this.updateImprovementTable(rowInfo, false, true);
+    }
+
+    addToOppTeamTrade(rowInfo) {
+        var teamTradeArray = this.state.oppTeamTradeStatsSeason;
+        teamTradeArray.push(rowInfo.original);
+        this.setState({ oppTeamTradeStatsSeason: teamTradeArray });
+        this.updateImprovementTable(rowInfo, true, false);
+    }
+
+    removeFromOppTeamTrade(rowInfo) {
+        var playerId = rowInfo.original._id;
+        var teamTradeArray = this.state.oppTeamTradeStatsSeason;
+        for (var i = 0; i < teamTradeArray.length; i++) {
+            if (rowInfo.original._id === teamTradeArray[i]._id) {
+                teamTradeArray.splice(i, 1);
+            }
+        }
+
+        this.setState({ oppTeamTradeStatsSeason: teamTradeArray });
+        this.updateImprovementTable(rowInfo, false, false);
+    }
+
+    updateImprovementTable(rowInfo, add, ownedTeam) {
+        var teamTradeImprovement = [];
+        var teamTradeImprovementOrig = this.state.teamTradeImprovement;
+
+        if ((add && ownedTeam) || (!add && !ownedTeam)) {
+            console.log(rowInfo.original)
+            teamTradeImprovement.push({
+                name: 'Plus/Minus',
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[0].overallRating) - rowInfo.original.overallRating).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[0].ptsRating) - rowInfo.original.ptsRating).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[0].threeRating) - rowInfo.original.threeRating).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[0].astRating) - rowInfo.original.astRating).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[0].rebRating) - rowInfo.original.rebRating).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[0].stlRating) - rowInfo.original.stlRating).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[0].blkRating) - rowInfo.original.blkRating).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[0].fgMixedRating) - rowInfo.original.fgMixedRating).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[0].ftMixedRating) - rowInfo.original.ftMixedRating).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[0].toRating) - rowInfo.original.toRating).toFixed(2)
+            });
+
+            teamTradeImprovement.push({
+                name: 'Team values',
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) - rowInfo.original.overallRating).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) - rowInfo.original.ptsRating).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) - rowInfo.original.threeRating).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) - rowInfo.original.astRating).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) - rowInfo.original.rebRating).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) - rowInfo.original.stlRating).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) - rowInfo.original.blkRating).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) - rowInfo.original.fgMixedRating).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) - rowInfo.original.ftMixedRating).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) - rowInfo.original.toRating).toFixed(2)
+            })
+        } else {
+            teamTradeImprovement.push({
+                name: 'Plus/Minus',
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[0].overallRating) + rowInfo.original.overallRating).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[0].ptsRating) + rowInfo.original.ptsRating).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[0].threeRating) + rowInfo.original.threeRating).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[0].astRating) + rowInfo.original.astRating).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[0].rebRating) + rowInfo.original.rebRating).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[0].stlRating) + rowInfo.original.stlRating).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[0].blkRating) + rowInfo.original.blkRating).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[0].fgMixedRating) + rowInfo.original.fgMixedRating).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[0].ftMixedRating) + rowInfo.original.ftMixedRating).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[0].toRating) + rowInfo.original.toRating).toFixed(2)
+            });
+
+            teamTradeImprovement.push({
+                name: 'Team values',
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) + rowInfo.original.overallRating).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) + rowInfo.original.ptsRating).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) + rowInfo.original.threeRating).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) + rowInfo.original.astRating).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) + rowInfo.original.rebRating).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) + rowInfo.original.stlRating).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) + rowInfo.original.blkRating).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) + rowInfo.original.fgMixedRating).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) + rowInfo.original.ftMixedRating).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) + rowInfo.original.toRating).toFixed(2)
+            })
+        }
+
+        this.setState({ teamTradeImprovement, teamTradeImprovement });
+
     }
 
     render() {
@@ -357,6 +505,26 @@ export class TradeAnalysis extends Component {
 
         //column names for the average tables
         const columnNamesAvg = [{
+            Header: '',
+            accessor: 'name',
+            className: "center"
+        }, {
+            Header: 'Overall Value',
+            accessor: ratingHeader,
+            className: "center",
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: rowInfo && rowInfo.row[ptsHeader] > 1 ? brightGreen :
+                            rowInfo.row[ptsHeader] > .5 ? mediumGreen :
+                                rowInfo.row[ptsHeader] >= .25 ? lightGreen :
+                                    rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -0.25 ? lightRed :
+                                        rowInfo.row[ptsHeader] < -0.25 && rowInfo.row[ptsHeader] > -1 ? mediumRed :
+                                            rowInfo.row[ptsHeader] <= -1 ? brightRed : null,
+                    },
+                };
+            },
+        }, {
             Header: 'Points',
             accessor: ptsHeader,
             className: "center",
@@ -557,21 +725,52 @@ export class TradeAnalysis extends Component {
             className: "center"
         }]
 
-        var tradeTeamsHTML = "";
-        if (this.state.leagueId) {
-            tradeTeamsHTML = <TradeTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
-                playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent}
-                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} expandedColumnNames={expandedColumnNames} 
-                title="Team to trade with" />
-
-        }
-
         return (
             <div>
                 <div className="flex-vertical flex-one">
                     <p>Trade Analysis</p>
                 </div>
+                <h3>Your Team</h3>
                 <ReactTable
+                    data={this.state.teamTradeStatsSeason}
+                    columns={columnNames}
+                    showPagination={false}
+                    minRows={0}
+                    defaultSortDesc={true}
+                    defaultSorted={[{
+                        id: 'overallRank',
+                        desc: false
+                    }]}
+
+                />
+
+                <h3>Their Team</h3>
+                <ReactTable
+                    data={this.state.oppTeamTradeStatsSeason}
+                    columns={columnNames}
+                    showPagination={false}
+                    minRows={0}
+                    defaultSortDesc={true}
+                    defaultSorted={[{
+                        id: 'overallRank',
+                        desc: false
+                    }]}
+
+                />
+
+                <h3>Improvement</h3>
+                <ReactTable
+                    data={this.state.teamTradeImprovement}
+                    columns={columnNamesAvg}
+                    showPagination={false}
+                    minRows={0}
+
+                />
+
+                <h3></h3>
+
+                <ReactTable
+                    key="teamTable"
                     data={this.state.teamStatsSeason}
                     columns={columnNames}
                     showPagination={false}
@@ -581,16 +780,42 @@ export class TradeAnalysis extends Component {
                         id: 'overallRank',
                         desc: false
                     }]}
-                    SubComponent={row => {
-                        return (
-                            <ReactTable
-                                data={[row.original]}
-                                columns={expandedColumnNames}
-                                showPagination={false}
-                                defaultPageSize={1}
-                                className="expandedRow"
-                            />
-                        );
+                    // SubComponent={row => {
+                    //     return (
+                    //         <ReactTable
+                    //             data={[row.original]}
+                    //             columns={expandedColumnNames}
+                    //             showPagination={false}
+                    //             defaultPageSize={1}
+                    //             className="expandedRow"
+                    //         />
+                    //     );
+                    // }}
+                    getTrProps={(state, rowInfo) => {
+                        if (rowInfo && rowInfo.row) {
+                            return {
+                                onClick: (e) => {
+                                    if (this.state.selected.indexOf(rowInfo.original._id) >= 0) {
+                                        var selected = this.state.selected;
+                                        selected.splice(selected.indexOf(rowInfo.original._id), 1);
+                                        this.setState({ selected: selected });
+                                        this.removeFromTeamTrade(rowInfo);
+                                    } else {
+                                        var selected = this.state.selected;
+                                        selected.push(rowInfo.original._id);
+                                        this.setState({ selected: selected });
+                                        this.addToTeamTrade(rowInfo);
+                                    }
+
+                                },
+                                style: {
+                                    background: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
+                                    color: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
+                                }
+                            }
+                        } else {
+                            return {}
+                        }
                     }}
 
                 />
@@ -604,55 +829,74 @@ export class TradeAnalysis extends Component {
                 </div>
 
                 <div className={`table-group ${this.state.showCompareTable ? 'compare-table-group' : ''}`}>
-                
-                <h3 className="team-table-header compare-header">Trade with team</h3>
-                <div className="flex">
-                    <div className="team-select">
-                        <Select
-                            value={teamSelected}
-                            onChange={this.handleTeamChange}
-                            options={teamSelect}
-                        />
+
+                    <h3 className="team-table-header compare-header">Trade with team</h3>
+                    <div className="flex">
+                        <div className="team-select">
+                            <Select
+                                value={teamSelected}
+                                onChange={this.handleTeamChange}
+                                options={teamSelect}
+                            />
+                        </div>
+                        <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick={this.hideCompareTable}>
+                            Hide Comparison
                     </div>
-                    <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick = {this.hideCompareTable}>
-                        Hide Comparison
+                    </div>
+                    <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
+                        <div className="team-table">
+                            <ReactTable
+                                key="compareTable"
+                                data={this.state.compareStatsSeason}
+                                columns={columnNames}
+                                showPagination={false}
+                                minRows={0}
+                                defaultSortDesc={true}
+                                defaultSorted={[{
+                                    id: 'overallRank',
+                                    desc: false
+                                }]}
+                                // SubComponent={row => {
+                                //     return (
+                                //         <ReactTable
+                                //             data={[row.original]}
+                                //             columns={expandedColumnNames}
+                                //             showPagination={false}
+                                //             defaultPageSize={1}
+                                //             className="expandedRow"
+                                //         />
+                                //     );
+                                // }}
+                                getTrProps={(state, rowInfo) => {
+                                    if (rowInfo && rowInfo.row) {
+                                        return {
+                                            onClick: (e) => {
+                                                if (this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0) {
+                                                    var selectedOpp = this.state.selectedOpp;
+                                                    selectedOpp.splice(selectedOpp.indexOf(rowInfo.original._id), 1);
+                                                    this.setState({ selectedOpp: selectedOpp });
+                                                    this.removeFromOppTeamTrade(rowInfo);
+                                                } else {
+                                                    var selectedOpp = this.state.selected;
+                                                    selectedOpp.push(rowInfo.original._id);
+                                                    this.setState({ selectedOpp: selectedOpp });
+                                                    this.addToOppTeamTrade(rowInfo);
+                                                }
+
+                                            },
+                                            style: {
+                                                background: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
+                                                color: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
+                                            }
+                                        }
+                                    } else {
+                                        return {}
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
-                <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
-                    {/* <div className="team-avg-table">
-                      <ReactTable
-                        data={this.state.compareStatsSeasonAvg}
-                        columns={this.props.columnNamesAvg}
-                        showPagination={false}
-                        minRows={0}
-                      />
-                    </div> */}
-                    <div className="team-table">
-                      <ReactTable
-                        data={this.state.compareStatsSeason}
-                        columns={columnNames}
-                        showPagination={false}
-                        minRows={0}
-                        defaultSortDesc={true}
-                        defaultSorted={[{
-                            id: 'overallRank',
-                            desc: false
-                        }]}
-                        SubComponent={row => {
-                            return (
-                                <ReactTable
-                                    data={[row.original]}
-                                    columns={expandedColumnNames}
-                                    showPagination={false}
-                                    defaultPageSize={1}
-                                    className="expandedRow"
-                                />
-                            );
-                        }}
-                      />
-                    </div>
-                </div>
-            </div>
 
             </div>
         )
