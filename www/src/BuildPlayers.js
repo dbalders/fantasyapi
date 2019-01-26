@@ -208,8 +208,6 @@ export class BuildPlayers extends Component {
     }
 
     changeStats() {
-        //Grab league ID
-        var leagueId = Cookies.get('leagueId');
         //Toggle the state to show BBM stats or local
         this.setState({ showBBMStats: !this.state.showBBMStats }, () => {
             //If BBM stats is true, load in their data
@@ -283,7 +281,7 @@ export class BuildPlayers extends Component {
             }
 
             //Same here for recent data
-            for (var j = 0; j < playerRankingsRecent.length; j++) {
+            for (j = 0; j < playerRankingsRecent.length; j++) {
                 var similarPlayerRecent = stringSimilarity.compareTwoStrings(teamPlayers[i].full, playerRankingsRecent[j].playerName);
                 if (similarPlayerRecent > 0.7) {
                     teamStatsRecent.push(playerRankingsRecent[j]);
@@ -305,8 +303,8 @@ export class BuildPlayers extends Component {
         }
 
         //Do the same for the pickup targets to get their data
-        for (var i = 0; i < playerPickupsSeason.length; i++) {
-            for (var j = 0; j < playerRankingsSeason.length; j++) {
+        for (i = 0; i < playerPickupsSeason.length; i++) {
+            for (j = 0; j < playerRankingsSeason.length; j++) {
                 var similarTargetsSeason = stringSimilarity.compareTwoStrings(playerPickupsSeason[i].playerName, playerRankingsSeason[j].playerName);
                 if (similarTargetsSeason > 0.7) {
                     teamPickupsSeason.push(playerRankingsSeason[j]);
@@ -315,8 +313,8 @@ export class BuildPlayers extends Component {
             }
         }
 
-        for (var i = 0; i < playerPickupsRecent.length; i++) {
-            for (var j = 0; j < playerRankingsRecent.length; j++) {
+        for (i = 0; i < playerPickupsRecent.length; i++) {
+            for (j = 0; j < playerRankingsRecent.length; j++) {
                 var similarTargetsRecent = stringSimilarity.compareTwoStrings(playerPickupsRecent[i].playerName, playerRankingsRecent[j].playerName);
                 if (similarTargetsRecent > 0.7) {
                     teamPickupsRecent.push(playerRankingsRecent[j]);
@@ -374,7 +372,6 @@ export class BuildPlayers extends Component {
     }
 
     render() {
-        const { teamSelected } = this.state;
         const brightGreen = '#3ffc3f';
         const mediumGreen = '#85fc85';
         const lightGreen = '#b9ffb9';

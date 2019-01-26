@@ -68,7 +68,7 @@ class App extends Component {
             </div>
             <div className="nav-sign-in flex">
                 <a className={`nav-sign-in-link ${this.state.isLoggedIn ? 'hide' : ''}`} href="/auth/yahoo">
-                    <img src={YahooSigninImage} />
+                    <img alt="yahoo-login" src={YahooSigninImage} />
                 </a>
 
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>

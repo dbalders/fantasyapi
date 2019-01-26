@@ -286,6 +286,11 @@ code {
     min-height: 35px;
 }
 
+.selected.rt-tr {
+    font-style: italic;
+    font-weight: 600;
+}
+
 /****************************Universal CSS Classes***********************/
 
 .flex-wrapper {
