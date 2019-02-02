@@ -426,8 +426,10 @@ exports.getEspnData = function (espnId, res) {
 exports.refreshYahooData = function (leagueId, res, accessToken) {
     yf.setUserToken(accessToken);
     var players = [];
+    var teamPlayers = [];
     var playerNames = [];
     var loginExpired = false;
+    
     yf.league.teams(leagueId,
         function cb(err, data) {
             if (err) {
@@ -443,7 +445,6 @@ exports.refreshYahooData = function (leagueId, res, accessToken) {
                             if (err) {
                                 console.log(err)
                             } else {
-                                var teamPlayers = [];
                                 //After having their roster, store each player into a single player array
                                 async.forEachOf(playersData.roster, function (value, playerKey, callback) {
                                     playerObject = {

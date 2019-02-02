@@ -37,10 +37,12 @@ export class TradeAnalysis extends Component {
             selected: [],
             selectedOpp: [],
             updateCompareTable: false,
-            showBBMStats: false
+            showBBMStats: false,
+            showRecentStats: false
         }
         this.hideCompareTable = this.hideCompareTable.bind(this);
-        this.changeStats = this.changeStats.bind(this);
+        this.changeBBMStats = this.changeBBMStats.bind(this);
+        this.changeRecentStats = this.changeRecentStats.bind(this);
     }
 
     componentDidMount() {
@@ -49,7 +51,7 @@ export class TradeAnalysis extends Component {
         var seasonStats = JSON.parse(localStorage.getItem('teamStatsSeason'));
         var recentStats = JSON.parse(localStorage.getItem('teamStatsRecent'));
         var seasonAvg = JSON.parse(localStorage.getItem('teamStatsSeasonAvg'));
-        
+
         var recentAvg = JSON.parse(localStorage.getItem('teamStatsRecentAvg'));
         this.setState({
             teamStatsSeasonOrig: seasonAvg,
@@ -149,6 +151,10 @@ export class TradeAnalysis extends Component {
         var playerRankingsSeason = this.state.playerRankingsSeason;
         var playerRankingsRecent = this.state.playerRankingsRecent;
 
+        if (this.state.showRecentStats) {
+            playerRankingsSeason = playerRankingsRecent;
+        }
+
         //for each player on the team, if string similarity > .7 in the player rankings, then add that player to the array
         for (var i = 0; i < teamPlayers.length; i++) {
             for (var j = 0; j < playerRankingsSeason.length; j++) {
@@ -222,20 +228,74 @@ export class TradeAnalysis extends Component {
             toRating: Number(teamStatsRecentAvg.toRating / teamStatsRecent.length).toFixed(2)
         }
 
-        var teamTradeImprovement = []
-        teamTradeImprovement.push({
-            name: 'Gain/Loss',
-            overallRating: 0,
-            ptsRating: 0,
-            threeRating: 0,
-            astRating: 0,
-            rebRating: 0,
-            stlRating: 0,
-            blkRating: 0,
-            fgMixedRating: 0,
-            ftMixedRating: 0,
-            toRating: 0
-        });
+        var teamTradeImprovement = [];
+
+        if ((this.state.teamTradeStatsSeason.length === 0) && (this.state.oppTeamTradeStatsSeason.length === 0)) {
+            teamTradeImprovement.push({
+                name: 'Gain/Loss',
+                overallRating: 0,
+                ptsRating: 0,
+                threeRating: 0,
+                astRating: 0,
+                rebRating: 0,
+                stlRating: 0,
+                blkRating: 0,
+                fgMixedRating: 0,
+                ftMixedRating: 0,
+                toRating: 0
+            });
+        } else {
+            var overallRating = 0;
+            var ptsRating = 0;
+            var threeRating = 0;
+            var astRating = 0;
+            var rebRating = 0;
+            var stlRating = 0;
+            var blkRating = 0;
+            var fgMixedRating = 0;
+            var ftMixedRating = 0;
+            var toRating = 0;
+
+            for (var i = 0; i < this.state.teamTradeStatsSeason.length; i++) {
+                overallRating = Number(overallRating - this.state.teamTradeStatsSeason[i].overallRating).toFixed(2);
+                ptsRating = Number(ptsRating - this.state.teamTradeStatsSeason[i].ptsRating).toFixed(2);
+                threeRating = Number(threeRating - this.state.teamTradeStatsSeason[i].threeRating).toFixed(2);
+                astRating = Number(astRating - this.state.teamTradeStatsSeason[i].astRating).toFixed(2);
+                rebRating = Number(rebRating - this.state.teamTradeStatsSeason[i].rebRating).toFixed(2);
+                stlRating = Number(stlRating - this.state.teamTradeStatsSeason[i].stlRating).toFixed(2);
+                blkRating = Number(blkRating - this.state.teamTradeStatsSeason[i].blkRating).toFixed(2);
+                fgMixedRating = Number(fgMixedRating - this.state.teamTradeStatsSeason[i].fgMixedRating).toFixed(2);
+                ftMixedRating = Number(ftMixedRating - this.state.teamTradeStatsSeason[i].ftMixedRating).toFixed(2);
+                toRating = Number(toRating - this.state.teamTradeStatsSeason[i].toRating).toFixed(2);
+            }
+
+            for (var j = 0; j < this.state.oppTeamTradeStatsSeason.length; j++) {
+                overallRating = Number(parseFloat(overallRating) + this.state.oppTeamTradeStatsSeason[j].overallRating).toFixed(2);
+                ptsRating = Number(parseFloat(ptsRating) + this.state.oppTeamTradeStatsSeason[j].ptsRating).toFixed(2);
+                threeRating = Number(parseFloat(threeRating) + this.state.oppTeamTradeStatsSeason[j].threeRating).toFixed(2);
+                astRating = Number(parseFloat(astRating) + this.state.oppTeamTradeStatsSeason[j].astRating).toFixed(2);
+                rebRating = Number(parseFloat(rebRating) + this.state.oppTeamTradeStatsSeason[j].rebRating).toFixed(2);
+                stlRating = Number(parseFloat(stlRating) + this.state.oppTeamTradeStatsSeason[j].stlRating).toFixed(2);
+                blkRating = Number(parseFloat(blkRating) + this.state.oppTeamTradeStatsSeason[j].blkRating).toFixed(2);
+                fgMixedRating = Number(parseFloat(fgMixedRating) + this.state.oppTeamTradeStatsSeason[j].fgMixedRating).toFixed(2);
+                ftMixedRating = Number(parseFloat(ftMixedRating) + this.state.oppTeamTradeStatsSeason[j].ftMixedRating).toFixed(2);
+                toRating = Number(parseFloat(toRating) + this.state.oppTeamTradeStatsSeason[j].toRating).toFixed(2);
+            }
+            teamTradeImprovement.push({
+                name: 'Gain/Loss',
+                overallRating: overallRating,
+                ptsRating: ptsRating,
+                threeRating: threeRating,
+                astRating: astRating,
+                rebRating: rebRating,
+                stlRating: stlRating,
+                blkRating: blkRating,
+                fgMixedRating: fgMixedRating,
+                ftMixedRating: ftMixedRating,
+                toRating: toRating
+            });
+        }
+        
 
         teamTradeImprovement.push({
             name: 'Current team',
@@ -280,6 +340,11 @@ export class TradeAnalysis extends Component {
         var teamPlayersTrade = team;
         var playerRankingsSeason = this.state.playerRankingsSeason;
         var playerRankingsRecent = this.state.playerRankingsRecent;
+        var playerRankings = [];
+
+        if (this.state.showRecentStats) {
+            playerRankingsSeason = playerRankingsRecent;
+        }
 
         //for each player on the team, if string similarity > .7 in the player rankings, then add that player to the array
         for (var i = 0; i < teamPlayersTrade.length; i++) {
@@ -495,7 +560,7 @@ export class TradeAnalysis extends Component {
 
     }
 
-    changeStats() {
+    changeBBMStats() {
         //Toggle the state to show BBM stats or local
         this.setState({ showBBMStats: !this.state.showBBMStats }, () => {
             //If BBM stats is true, load in their data
@@ -510,6 +575,7 @@ export class TradeAnalysis extends Component {
                     this.buildTeam();
                     //set this state back to false to stop the constant re-render of compare table
                     this.setState({ updateCompareTable: false })
+                    this.changeTradeStats();
                 })
             } else {
                 //If local stats is true, load the local data
@@ -523,14 +589,90 @@ export class TradeAnalysis extends Component {
                     this.buildTeam();
                     //set this state back to false to stop the constant re-render of compare table
                     this.setState({ updateCompareTable: false });
+                    this.changeTradeStats();
                 })
             }
         })
     }
 
     changeTradeStats() {
-        //here update the players that are in the trade stats
-        
+        var teamTradeUpdate = [];
+        var teamTradeOppUpdate = [];
+
+
+        if (!this.state.showRecentStats) {
+            for (var i = 0; i < this.state.teamTradeStatsSeason.length; i++) {
+                var index = this.state.playerRankingsSeason.findIndex(player => player.playerName === this.state.teamTradeStatsSeason[i].playerName)
+                if (index !== -1) {
+                    teamTradeUpdate.push(this.state.playerRankingsSeason[index]);
+                }
+            }
+
+            for (var i = 0; i < this.state.oppTeamTradeStatsSeason.length; i++) {
+                var index = this.state.playerRankingsSeason.findIndex(player => player.playerName === this.state.oppTeamTradeStatsSeason[i].playerName)
+                if (index !== -1) {
+                    teamTradeOppUpdate.push(this.state.playerRankingsSeason[index]);
+                }
+            }
+        } else {
+            for (var i = 0; i < this.state.teamTradeStatsSeason.length; i++) {
+                var index = this.state.playerRankingsRecent.findIndex(player => player.playerName === this.state.teamTradeStatsSeason[i].playerName)
+                if (index !== -1) {
+                    teamTradeUpdate.push(this.state.playerRankingsRecent[index]);
+                }
+            }
+
+            for (var i = 0; i < this.state.oppTeamTradeStatsSeason.length; i++) {
+                var index = this.state.playerRankingsRecent.findIndex(player => player.playerName === this.state.oppTeamTradeStatsSeason[i].playerName)
+                if (index !== -1) {
+                    teamTradeOppUpdate.push(this.state.playerRankingsRecent[index]);
+                }
+            }
+        }
+
+
+        this.setState({
+            teamTradeStatsSeason: teamTradeUpdate,
+            oppTeamTradeStatsSeason: teamTradeOppUpdate
+        }, function() {
+            this.buildTeam();
+        });
+
+    }
+
+    changeRecentStats() {
+        this.setState({ showRecentStats: !this.state.showRecentStats }, () => {
+            if (this.state.showRecentStats) {
+                // this.setState({
+                //     playerRankingsSeason: this.state.playerRankingsBBMSeason,
+                //     playerRankingsRecent: this.state.playerRankingsBBMRecent,
+                //     updateCompareTable: true
+                // }, function () {
+                //Rebuild page with new data
+                this.buildTradeTeam(this.state.teamPlayersTrade)
+                // this.buildTeam();
+                this.changeTradeStats();
+                //set this state back to false to stop the constant re-render of compare table
+                // this.setState({ updateCompareTable: false })
+                // this.changeTradeStats();
+                // })
+            } else {
+                //If local stats is true, load the local data
+                // this.setState({
+                //     playerRankingsSeason: this.state.playerRankingsLocalSeason,
+                //     playerRankingsRecent: this.state.playerRankingsLocalRecent,
+                //     updateCompareTable: true
+                // }, function () {
+                //     //Rebuild Team with new data
+                this.buildTradeTeam(this.state.teamPlayersTrade);
+                // this.buildTeam();
+                this.changeTradeStats();
+                // //set this state back to false to stop the constant re-render of compare table
+                // this.setState({ updateCompareTable: false });
+                // this.changeTradeStats();
+                // })
+            }
+        })
     }
 
     render() {
@@ -895,10 +1037,35 @@ export class TradeAnalysis extends Component {
 
         //Update the switch stats button text on state change
         var showStatsText;
+        var showRecentText;
         if (!this.state.showBBMStats) {
             showStatsText = 'Use BasketballMonster Rankings';
         } else {
             showStatsText = 'Use FantasyBasketball.io Rankings';
+        }
+
+        var teamTradeStatsSeason;
+        var oppTeamTradeStatsSeason;
+        var teamTradeImprovement;
+        var teamStatsSeason;
+        var teamStatsSeasonAvg;
+        var compareStatsSeason;
+        if (!this.state.showRecentStats) {
+            showRecentText = 'Use Recent Rankings';
+            teamTradeStatsSeason = this.state.teamTradeStatsSeason;
+            oppTeamTradeStatsSeason = this.state.oppTeamTradeStatsSeason;
+            teamTradeImprovement = this.state.teamTradeImprovement;
+            teamStatsSeason = this.state.teamStatsSeason;
+            teamStatsSeasonAvg = this.state.teamStatsSeasonAvg;
+            compareStatsSeason = this.state.compareStatsSeason;
+        } else {
+            showRecentText = 'Use Season Rankings';
+            teamTradeStatsSeason = this.state.teamTradeStatsSeason;
+            oppTeamTradeStatsSeason = this.state.oppTeamTradeStatsSeason;
+            teamTradeImprovement = this.state.teamTradeImprovement;
+            teamStatsSeason = this.state.teamStatsRecent;
+            teamStatsSeasonAvg = this.state.teamStatsRecentAvg;
+            compareStatsSeason = this.state.compareStatsRecent;
         }
 
         return (
@@ -907,11 +1074,14 @@ export class TradeAnalysis extends Component {
                     <p>Trade Analysis</p>
                 </div>
                 <div className="flex center">
-                    <div className="change-stats-btn" onClick={this.changeStats}>{showStatsText}</div>
+                    <div className="change-stats-btn" onClick={this.changeBBMStats}>{showStatsText}</div>
+                </div>
+                <div className="flex center">
+                    <div className="change-stats-btn" onClick={this.changeRecentStats}>{showRecentText}</div>
                 </div>
                 <h3>Your Team</h3>
                 <ReactTable
-                    data={this.state.teamTradeStatsSeason}
+                    data={teamTradeStatsSeason}
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
@@ -925,7 +1095,7 @@ export class TradeAnalysis extends Component {
 
                 <h3>Their Team</h3>
                 <ReactTable
-                    data={this.state.oppTeamTradeStatsSeason}
+                    data={oppTeamTradeStatsSeason}
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
@@ -939,7 +1109,7 @@ export class TradeAnalysis extends Component {
 
                 <h3>Improvement</h3>
                 <ReactTable
-                    data={this.state.teamTradeImprovement}
+                    data={teamTradeImprovement}
                     columns={columnNamesAvg}
                     showPagination={false}
                     minRows={0}
@@ -948,7 +1118,7 @@ export class TradeAnalysis extends Component {
 
                 <ReactTable
                     key="teamTable"
-                    data={this.state.teamStatsSeason}
+                    data={teamStatsSeason}
                     columns={columnNames}
                     showPagination={false}
                     minRows={0}
@@ -972,20 +1142,20 @@ export class TradeAnalysis extends Component {
                         if (rowInfo && rowInfo.row) {
                             return {
                                 onClick: (e) => {
-                                    if (this.state.selected.indexOf(rowInfo.original._id) >= 0) {
+                                    if (this.state.selected.indexOf(rowInfo.original.playerName) >= 0) {
                                         var selected = this.state.selected;
-                                        selected.splice(selected.indexOf(rowInfo.original._id), 1);
+                                        selected.splice(selected.indexOf(rowInfo.original.playerName), 1);
                                         this.setState({ selected: selected });
                                         this.removeFromTeamTrade(rowInfo);
                                     } else {
                                         var selected = this.state.selected;
-                                        selected.push(rowInfo.original._id);
+                                        selected.push(rowInfo.original.playerName);
                                         this.setState({ selected: selected });
                                         this.addToTeamTrade(rowInfo);
                                     }
 
                                 },
-                                className: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'selected' : '',
+                                className: this.state.selected.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
                                 style: {
                                     // background: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
                                     // color: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
@@ -999,7 +1169,7 @@ export class TradeAnalysis extends Component {
                 />
                 <div className="team-avg-table">
                     <ReactTable
-                        data={this.state.teamStatsSeasonAvg}
+                        data={teamStatsSeasonAvg}
                         columns={columnNamesAvg}
                         showPagination={false}
                         minRows={0}
@@ -1025,7 +1195,7 @@ export class TradeAnalysis extends Component {
                         <div className="team-table">
                             <ReactTable
                                 key="compareTable"
-                                data={this.state.compareStatsSeason}
+                                data={compareStatsSeason}
                                 columns={columnNames}
                                 showPagination={false}
                                 minRows={0}
@@ -1049,20 +1219,20 @@ export class TradeAnalysis extends Component {
                                     if (rowInfo && rowInfo.row) {
                                         return {
                                             onClick: (e) => {
-                                                if (this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0) {
+                                                if (this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0) {
                                                     var selectedOpp = this.state.selectedOpp;
-                                                    selectedOpp.splice(selectedOpp.indexOf(rowInfo.original._id), 1);
+                                                    selectedOpp.splice(selectedOpp.indexOf(rowInfo.original.playerName), 1);
                                                     this.setState({ selectedOpp: selectedOpp });
                                                     this.removeFromOppTeamTrade(rowInfo);
                                                 } else {
                                                     var selectedOpp = this.state.selected;
-                                                    selectedOpp.push(rowInfo.original._id);
+                                                    selectedOpp.push(rowInfo.original.playerName);
                                                     this.setState({ selectedOpp: selectedOpp });
                                                     this.addToOppTeamTrade(rowInfo);
                                                 }
 
                                             },
-                                            className: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'selected' : '',
+                                            className: this.state.selected.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
                                             style: {
                                                 // background: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
                                                 // color: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'

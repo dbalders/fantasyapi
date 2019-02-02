@@ -41,6 +41,7 @@ class App extends Component {
         callApi('/api/refresh_yahoo_data/')
             .then(results => {
                 //Change the key to re-render the components
+                localStorage.removeItem('teamPlayers');
                 this.setState({ key: this.state.key + 1 })
                 this.forceUpdate();
             })
