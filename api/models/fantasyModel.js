@@ -264,6 +264,15 @@ var PlayerRecentDataSchema = new Schema({
     overallRank: Number
 })
 
+var PaymentSchema = new Schema ({
+    email: String,
+    leauges: Array,
+    paid: Boolean,
+    paymentDate: Date,
+    paymentAmount: Number,
+    seasonId: Number
+})
+
 module.exports = mongoose.model('Players', PlayersSchema);
 module.exports = mongoose.model('Teams', TeamsSchema);
 module.exports = mongoose.model('BBMRankingsSeason', BBMRankingsSeasonSchema);

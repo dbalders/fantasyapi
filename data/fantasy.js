@@ -27,7 +27,6 @@ exports.getYahooData = function (req, res, options) {
         if (err)
             console.log(err);
         else {
-
             var teams = [];
             var players = [];
             var playerNames = [];
@@ -61,7 +60,10 @@ exports.getYahooData = function (req, res, options) {
                             if (err) {
                                 return
                             }
-                            leagueId = data[0].game_key;
+
+                            //Get the email and info to add login to database
+                            //Currently not working cause of bug in yf
+                            getLoginInfo(leagueId);
 
                             //Now that we have overall ID, get user specific league ID
                             yf.user.game_leagues(leagueId, function cb(err, data) {
@@ -494,4 +496,17 @@ exports.refreshYahooData = function (leagueId, res, accessToken) {
                 });
             }
         });
+}
+
+function getLoginInfo(gameKey) {
+    console.log(gameKey)
+    // yf.user.game_teams(
+    //     gameKey, 
+    //     function(err, data) {
+    //       if (err)
+    //         // handle error
+       
+    //       console.log(data)
+    //     }
+    //   );
 }

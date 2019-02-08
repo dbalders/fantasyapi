@@ -21,6 +21,7 @@
     "request": "^2.75.0",
     "stats-lite": "^2.2.0",
     "string-similarity": "^2.0.0",
+    "stripe": "^6.23.1",
     "table-scraper": "^0.1.0",
     "yahoo-fantasy": "^3.0.4"
   },

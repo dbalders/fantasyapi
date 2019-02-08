@@ -15,57 +15,59 @@ var mongoose = require('mongoose'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
     PlayerRecentData = mongoose.model('PlayerRecentData');
 
-exports.list_all_players = function(req, res) {
-    Players.find({ leagueId: req.params.leagueId }, function(err, players) {
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY || require('../../conf.js').STRIPE_SECRET_KEY);
+
+exports.list_all_players = function (req, res) {
+    Players.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_season_pickups = function(req, res) {
-    PickupTargetsSeason.find({ leagueId: req.params.leagueId }, function(err, players) {
+exports.list_season_pickups = function (req, res) {
+    PickupTargetsSeason.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_recent_pickups = function(req, res) {
-    PickupTargetsRecent.find({ leagueId: req.params.leagueId }, function(err, players) {
+exports.list_recent_pickups = function (req, res) {
+    PickupTargetsRecent.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_season_bbm_pickups = function(req, res) {
-    BBMPickupTargetsSeason.find({ leagueId: req.params.leagueId }, function(err, players) {
+exports.list_season_bbm_pickups = function (req, res) {
+    BBMPickupTargetsSeason.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_recent_bbm_pickups = function(req, res) {
-    BBMPickupTargetsRecent.find({ leagueId: req.params.leagueId }, function(err, players) {
+exports.list_recent_bbm_pickups = function (req, res) {
+    BBMPickupTargetsRecent.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_teams = function(req, res) {
-    Teams.find({ leagueId: req.params.leagueId }, function(err, teams) {
+exports.list_teams = function (req, res) {
+    Teams.find({ leagueId: req.params.leagueId }, function (err, teams) {
         if (err)
             res.send(err);
         res.json(teams);
     });
 };
 
-exports.list_teams_players = function(req, res) {
+exports.list_teams_players = function (req, res) {
     var teamKey = req.params.leagueId + '.t.' + req.params.teamKey;
-    Players.find({ leagueId: req.params.leagueId }, function(err, players) {
+    Players.find({ leagueId: req.params.leagueId }, function (err, players) {
         if (err)
             res.send(err);
 
@@ -81,102 +83,102 @@ exports.list_teams_players = function(req, res) {
     });
 };
 
-exports.list_season_rankings = function(req, res) {
-    PlayerSeasonData.find({}, function(err, players) {
-        if (err)
-            res.send(err);
-        res.json(players);
-    });
-}; 
-
-exports.list_recent_rankings = function(req, res) {
-    PlayerRecentData.find({}, function(err, players) {
+exports.list_season_rankings = function (req, res) {
+    PlayerSeasonData.find({}, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.list_season_bbm_rankings = function(req, res) {
-    BBMRankingsSeason.find({}, function(err, players) {
-        if (err)
-            res.send(err);
-        res.json(players);
-    });
-}; 
-
-exports.list_recent_bbm_rankings = function(req, res) {
-    BBMRankingsRecent.find({}, function(err, players) {
+exports.list_recent_rankings = function (req, res) {
+    PlayerRecentData.find({}, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 };
 
-exports.erase_current_data = function(req, res) {
-    BBMRankingsSeason.remove({}, function(err, task) {
+exports.list_season_bbm_rankings = function (req, res) {
+    BBMRankingsSeason.find({}, function (err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+};
+
+exports.list_recent_bbm_rankings = function (req, res) {
+    BBMRankingsRecent.find({}, function (err, players) {
+        if (err)
+            res.send(err);
+        res.json(players);
+    });
+};
+
+exports.erase_current_data = function (req, res) {
+    BBMRankingsSeason.remove({}, function (err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    BBMRankingsRecent.remove({}, function(err, task) {
+    BBMRankingsRecent.remove({}, function (err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    Teams.remove({}, function(err, task) {
+    Teams.remove({}, function (err, task) {
         if (err)
             res.send(err);
         // res.json({ message: 'All teams successfully deleted' });
     });
-    PickupTargetsSeason.remove({}, function(err, task) {
+    PickupTargetsSeason.remove({}, function (err, task) {
         if (err)
             res.send(err);
     });
 
-    PickupTargetsTwoWeeks.remove({}, function(err, task) {
+    PickupTargetsTwoWeeks.remove({}, function (err, task) {
         if (err)
             res.send(err);
     });
-    Teams.remove({}, function(err, task) {
+    Teams.remove({}, function (err, task) {
         if (err)
             res.send(err);
     });
-    Players.remove({}, function(err, task) {
+    Players.remove({}, function (err, task) {
         if (err)
             res.send(err);
         res.json({ message: 'All players successfully deleted' });
     });
 };
 
-exports.get_rankings = function(req, res) {
+exports.get_rankings = function (req, res) {
     rankings.getRankings(req, res);
-    rankings.getBBMRankings(req,res);
+    rankings.getBBMRankings(req, res);
     res.json("Rankings Completed");
 }
 
-exports.get_player_season_data = function(req, res) {
-    PlayerSeasonData.find({}, function(err, players) {
+exports.get_player_season_data = function (req, res) {
+    PlayerSeasonData.find({}, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 }
 
-exports.get_player_recent_data = function(req, res) {
-    PlayerRecentData.find({}, function(err, players) {
+exports.get_player_recent_data = function (req, res) {
+    PlayerRecentData.find({}, function (err, players) {
         if (err)
             res.send(err);
         res.json(players);
     });
 }
 
-exports.get_espn_data = function(req, res) {
+exports.get_espn_data = function (req, res) {
     fantasy.getEspnData(req.params.espnId, res);
     // res.json(req.params.espnId);
 }
 
-exports.refresh_yahoo_data = function(req, res) {
+exports.refresh_yahoo_data = function (req, res) {
     var cookies = req.headers.cookie;
     var cookies = cookies.split("; ")
 
@@ -194,3 +196,26 @@ exports.refresh_yahoo_data = function(req, res) {
 
     fantasy.refreshYahooData(leagueId, res, yahooAccessToken)
 }
+
+exports.payment_get = function (req, res) {
+    res.send({
+        message: "Hello Stripe checkout server!",
+        timestamp: new Date().toISOString()
+    });
+}
+exports.payment_post = function (req, res) {
+    const body = {
+        source: req.body.token.id,
+        amount: req.body.amount,
+        currency: "usd"
+    };
+    stripe.charges.create(body, stripeChargeCallback(res));
+}
+
+const stripeChargeCallback = res => (stripeErr, stripeRes) => {
+    if (stripeErr) {
+        res.status(500).send({ error: stripeErr });
+    } else {
+        res.status(200).send({ success: stripeRes });
+    }
+};
