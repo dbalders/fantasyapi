@@ -61,9 +61,11 @@ exports.getYahooData = function (req, res, options) {
                                 return
                             }
 
+                            leagueId = data[0].game_key;
+
                             //Get the email and info to add login to database
                             //Currently not working cause of bug in yf
-                            getLoginInfo(leagueId);
+                            // getLoginInfo(leagueId);
 
                             //Now that we have overall ID, get user specific league ID
                             yf.user.game_leagues(leagueId, function cb(err, data) {
