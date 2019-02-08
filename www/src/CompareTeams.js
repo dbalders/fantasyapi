@@ -4,6 +4,7 @@ import Select from 'react-select';
 import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
 import { callApi } from './CallApi';
+import Cookies from 'js-cookie';
 
 export class CompareTeams extends Component {
     constructor(props) {
@@ -27,9 +28,11 @@ export class CompareTeams extends Component {
         this.setState({ teamSelected });
         callApi('/api/teams/' + this.props.leagueId + '/' + teamSelected.value)
             .then(results => {
-                this.setState({showCompareTable: true});
-                this.setState({teamPlayers: results}, function() {
+                this.setState({ showCompareTable: true });
+                this.setState({ teamPlayers: results }, function () {
                     this.buildTeam(this.state.teamPlayers);
+                    Cookies.set('teamSelectedValue', teamSelected.value);
+                    Cookies.set('teamSelectedLabel', teamSelected.label);
                 })
             })
             .catch(err => console.log(err));
@@ -37,10 +40,24 @@ export class CompareTeams extends Component {
 
     //hide the compare table when clicked
     hideCompareTable() {
-        this.setState({showCompareTable: false})
+        this.setState({ showCompareTable: false });
+        Cookies.remove('teamSelectedValue');
+        Cookies.remove('teamSelectedLabel');
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        var compareTeam = Cookies.get('teamSelectedValue');
+
+        if (compareTeam) {
+
+            var teamSelected = {
+                value: compareTeam,
+                label: Cookies.get('teamSelectedLabel')
+            };
+
+            this.handleTeamChange(teamSelected)
+        }
+    }
 
     //Build the table based on the team data
     buildTeam(team) {
@@ -146,7 +163,7 @@ export class CompareTeams extends Component {
 
         return (
             <div className={`table-group ${this.state.showCompareTable ? 'compare-table-group' : ''}`}>
-                
+
                 <h3 className="team-table-header compare-header">{this.props.title}</h3>
                 <div className="flex">
                     <div className="team-select">
@@ -156,42 +173,42 @@ export class CompareTeams extends Component {
                             options={teamSelect}
                         />
                     </div>
-                    <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick = {this.hideCompareTable}>
+                    <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick={this.hideCompareTable}>
                         Hide Comparison
                     </div>
                 </div>
                 <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
                     <div className="team-avg-table">
-                      <ReactTable
-                        data={this.state.compareStatsSeasonAvg}
-                        columns={this.props.columnNamesAvg}
-                        showPagination={false}
-                        minRows={0}
-                      />
+                        <ReactTable
+                            data={this.state.compareStatsSeasonAvg}
+                            columns={this.props.columnNamesAvg}
+                            showPagination={false}
+                            minRows={0}
+                        />
                     </div>
                     <div className="team-table">
-                      <ReactTable
-                        data={this.state.compareStatsSeason}
-                        columns={this.props.columnNames}
-                        showPagination={false}
-                        minRows={0}
-                        defaultSortDesc={true}
-                        defaultSorted={[{
-                            id: 'overallRank',
-                            desc: false
-                        }]}
-                        SubComponent={row => {
-                            return (
-                                <ReactTable
-                                    data={[row.original]}
-                                    columns={this.props.expandedColumnNames}
-                                    showPagination={false}
-                                    defaultPageSize={1}
-                                    className="expandedRow"
-                                />
-                            );
-                        }}
-                      />
+                        <ReactTable
+                            data={this.state.compareStatsSeason}
+                            columns={this.props.columnNames}
+                            showPagination={false}
+                            minRows={0}
+                            defaultSortDesc={true}
+                            defaultSorted={[{
+                                id: 'overallRank',
+                                desc: false
+                            }]}
+                            SubComponent={row => {
+                                return (
+                                    <ReactTable
+                                        data={[row.original]}
+                                        columns={this.props.expandedColumnNames}
+                                        showPagination={false}
+                                        defaultPageSize={1}
+                                        className="expandedRow"
+                                    />
+                                );
+                            }}
+                        />
                     </div>
                 </div>
             </div>

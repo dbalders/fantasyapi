@@ -101,6 +101,24 @@ export class TradeAnalysis extends Component {
             toRating: seasonAvg[0].toRating
         });
 
+        var teamTradeStatsSeason = JSON.parse(localStorage.getItem('teamTradeStatsSeason'));
+        if (teamTradeStatsSeason) {
+            this.setState({ teamTradeStatsSeason: teamTradeStatsSeason });
+            var selected = JSON.parse(localStorage.getItem('selected'));
+            if (selected) {
+                this.setState({ selected: selected });
+            }
+        }
+
+        var oppTeamTradeStatsSeason = JSON.parse(localStorage.getItem('oppTeamTradeStatsSeason'));
+        if (oppTeamTradeStatsSeason) {
+            this.setState({ oppTeamTradeStatsSeason: oppTeamTradeStatsSeason })
+            var selectedOpp = JSON.parse(localStorage.getItem('selectedOpp'));
+            if (selectedOpp) {
+                this.setState({ selectedOpp: selectedOpp });
+            }
+        }
+
         //If any of these do not exist somehow (not sure how, but still), redirect to home page to be rebuilt
         if (seasonStats === null || recentStats === null || seasonAvg === null || recentAvg === null) {
             window.location = "/";
@@ -121,6 +139,16 @@ export class TradeAnalysis extends Component {
                 teams: JSON.parse(localStorage.getItem('teams')),
                 teamPlayers: JSON.parse(localStorage.getItem('teamPlayers')),
                 teamTradeImprovement: teamTradeImprovement
+            }, function () {
+                var compareTeam = Cookies.get('teamTradeSelectedValue');
+                if (compareTeam) {
+                    var teamTradeSelected = {
+                        value: compareTeam,
+                        label: Cookies.get('teamTradeSelectedLabel')
+                    };
+
+                    this.handleTeamChange(teamTradeSelected)
+                }
             });
         }
     }
@@ -132,6 +160,8 @@ export class TradeAnalysis extends Component {
                 this.setState({ showCompareTable: true });
                 this.setState({ teamPlayersTrade: results }, function () {
                     this.buildTradeTeam(this.state.teamPlayersTrade);
+                    Cookies.set('teamTradeSelectedValue', teamSelected.value);
+                    Cookies.set('teamTradeSelectedLabel', teamSelected.label);
                 })
             })
             .catch(err => console.log(err));
@@ -139,7 +169,9 @@ export class TradeAnalysis extends Component {
 
     //hide the compare table when clicked
     hideCompareTable() {
-        this.setState({ showCompareTable: false })
+        this.setState({ showCompareTable: false });
+        Cookies.remove('teamTradeSelectedValue');
+        Cookies.remove('teamTradeSelectedLabel');
     }
 
     buildTeam() {
@@ -295,7 +327,7 @@ export class TradeAnalysis extends Component {
                 toRating: toRating
             });
         }
-        
+
 
         teamTradeImprovement.push({
             name: 'Current team',
@@ -431,7 +463,10 @@ export class TradeAnalysis extends Component {
     addToTeamTrade(rowInfo) {
         var teamTradeArray = this.state.teamTradeStatsSeason;
         teamTradeArray.push(rowInfo.original);
-        this.setState({ teamTradeStatsSeason: teamTradeArray });
+        this.setState({ teamTradeStatsSeason: teamTradeArray }, function () {
+            localStorage.setItem('teamTradeStatsSeason', JSON.stringify(teamTradeArray));
+        });
+
         this.updateImprovementTable(rowInfo, true, true);
     }
 
@@ -444,6 +479,7 @@ export class TradeAnalysis extends Component {
         }
 
         this.setState({ teamTradeStatsSeason: teamTradeArray });
+        localStorage.setItem('teamTradeStatsSeason', JSON.stringify(teamTradeArray));
         this.updateImprovementTable(rowInfo, false, true);
     }
 
@@ -451,6 +487,7 @@ export class TradeAnalysis extends Component {
         var teamTradeArray = this.state.oppTeamTradeStatsSeason;
         teamTradeArray.push(rowInfo.original);
         this.setState({ oppTeamTradeStatsSeason: teamTradeArray });
+        localStorage.setItem('oppTeamTradeStatsSeason', JSON.stringify(teamTradeArray));
         this.updateImprovementTable(rowInfo, true, false);
     }
 
@@ -463,6 +500,7 @@ export class TradeAnalysis extends Component {
         }
 
         this.setState({ oppTeamTradeStatsSeason: teamTradeArray });
+        localStorage.setItem('oppTeamTradeStatsSeason', JSON.stringify(teamTradeArray));
         this.updateImprovementTable(rowInfo, false, false);
     }
 
@@ -555,9 +593,7 @@ export class TradeAnalysis extends Component {
                 toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) + rowInfo.original.toRating).toFixed(2)
             })
         }
-
         this.setState({ teamTradeImprovement, teamTradeImprovement });
-
     }
 
     changeBBMStats() {
@@ -630,14 +666,12 @@ export class TradeAnalysis extends Component {
             }
         }
 
-
         this.setState({
             teamTradeStatsSeason: teamTradeUpdate,
             oppTeamTradeStatsSeason: teamTradeOppUpdate
-        }, function() {
+        }, function () {
             this.buildTeam();
         });
-
     }
 
     changeRecentStats() {
@@ -1146,11 +1180,13 @@ export class TradeAnalysis extends Component {
                                         var selected = this.state.selected;
                                         selected.splice(selected.indexOf(rowInfo.original.playerName), 1);
                                         this.setState({ selected: selected });
+                                        localStorage.setItem('selected', JSON.stringify(selected));
                                         this.removeFromTeamTrade(rowInfo);
                                     } else {
                                         var selected = this.state.selected;
                                         selected.push(rowInfo.original.playerName);
                                         this.setState({ selected: selected });
+                                        localStorage.setItem('selected', JSON.stringify(selected));
                                         this.addToTeamTrade(rowInfo);
                                     }
 
@@ -1223,16 +1259,17 @@ export class TradeAnalysis extends Component {
                                                     var selectedOpp = this.state.selectedOpp;
                                                     selectedOpp.splice(selectedOpp.indexOf(rowInfo.original.playerName), 1);
                                                     this.setState({ selectedOpp: selectedOpp });
+                                                    localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
                                                     this.removeFromOppTeamTrade(rowInfo);
                                                 } else {
-                                                    var selectedOpp = this.state.selected;
+                                                    var selectedOpp = this.state.selectedOpp;
                                                     selectedOpp.push(rowInfo.original.playerName);
                                                     this.setState({ selectedOpp: selectedOpp });
+                                                    localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
                                                     this.addToOppTeamTrade(rowInfo);
                                                 }
-
                                             },
-                                            className: this.state.selected.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
+                                            className: this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
                                             style: {
                                                 // background: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
                                                 // color: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
@@ -1246,7 +1283,6 @@ export class TradeAnalysis extends Component {
                         </div>
                     </div>
                 </div>
-
             </div>
         )
     }
