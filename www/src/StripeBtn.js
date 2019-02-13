@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const stripeBtn = () => {
     const publishableKey = "pk_test_J9A4W2CFQsPDfvmWJYDTCnAc";
@@ -8,12 +9,12 @@ const stripeBtn = () => {
     const onToken = token => {
         const body = {
             amount: 999,
-            token: token
+            token: token,
+            yahooEmail: Cookies.get('yahooEmail')
         };
         axios
             .post("/api/payment", body)
             .then(response => {
-                console.log(response);
                 alert("Payment Success");
             })
             .catch(error => {

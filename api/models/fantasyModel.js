@@ -265,8 +265,9 @@ var PlayerRecentDataSchema = new Schema({
 })
 
 var PaymentSchema = new Schema ({
+    yahooEmail: String,
     email: String,
-    leauges: Array,
+    leagues: Array,
     paid: Boolean,
     paymentDate: Date,
     paymentAmount: Number,
@@ -283,3 +284,4 @@ module.exports = mongoose.model('BBMPickupTargetsSeason', BBMPickupTargetsSeason
 module.exports = mongoose.model('BBMPickupTargetsRecent', BBMPickupTargetsRecentSchema);
 module.exports = mongoose.model('PlayerSeasonData', PlayerSeasonDataSchema);
 module.exports = mongoose.model('PlayerRecentData', PlayerRecentDataSchema);
+module.exports = mongoose.model('Payment', PaymentSchema);

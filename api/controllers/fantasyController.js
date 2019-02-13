@@ -13,7 +13,8 @@ var mongoose = require('mongoose'),
     BBMPickupTargetsSeason = mongoose.model('BBMPickupTargetsSeason'),
     BBMPickupTargetsRecent = mongoose.model('BBMPickupTargetsRecent'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
-    PlayerRecentData = mongoose.model('PlayerRecentData');
+    PlayerRecentData = mongoose.model('PlayerRecentData'),
+    Payment = mongoose.model('Payment');
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY || require('../../conf.js').STRIPE_SECRET_KEY);
 
@@ -116,39 +117,45 @@ exports.list_recent_bbm_rankings = function (req, res) {
 };
 
 exports.erase_current_data = function (req, res) {
-    BBMRankingsSeason.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-        // res.json({ message: 'All teams successfully deleted' });
-    });
-    BBMRankingsRecent.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-        // res.json({ message: 'All teams successfully deleted' });
-    });
-    Teams.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-        // res.json({ message: 'All teams successfully deleted' });
-    });
-    PickupTargetsSeason.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-    });
+    // BBMRankingsSeason.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     // res.json({ message: 'All teams successfully deleted' });
+    // });
+    // BBMRankingsRecent.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     // res.json({ message: 'All teams successfully deleted' });
+    // });
+    // Teams.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     // res.json({ message: 'All teams successfully deleted' });
+    // });
+    // PickupTargetsSeason.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    // });
 
-    PickupTargetsTwoWeeks.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-    });
-    Teams.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-    });
-    Players.remove({}, function (err, task) {
-        if (err)
-            res.send(err);
-        res.json({ message: 'All players successfully deleted' });
-    });
+    // PickupTargetsTwoWeeks.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    // });
+    // Teams.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    // });
+    // Players.remove({}, function (err, task) {
+    //     if (err)
+    //         res.send(err);
+    //     res.json({ message: 'All players successfully deleted' });
+    // });
+
+    Payment.remove({}, function (err, task) {
+            if (err)
+                res.send(err);
+            res.json({ message: 'All players successfully deleted' });
+        });
 };
 
 exports.get_rankings = function (req, res) {
@@ -198,24 +205,37 @@ exports.refresh_yahoo_data = function (req, res) {
 }
 
 exports.payment_get = function (req, res) {
-    res.send({
-        message: "Hello Stripe checkout server!",
-        timestamp: new Date().toISOString()
+    Payment.find({}, function (err, payments) {
+        if (err)
+            res.send(err);
+        res.json(payments);
     });
 }
 exports.payment_post = function (req, res) {
+    var status;
     const body = {
         source: req.body.token.id,
         amount: req.body.amount,
         currency: "usd"
     };
-    stripe.charges.create(body, stripeChargeCallback(res));
+    stripe.charges.create(body, stripeChargeCallback(res, req));
 }
 
-const stripeChargeCallback = res => (stripeErr, stripeRes) => {
+const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
     if (stripeErr) {
         res.status(500).send({ error: stripeErr });
     } else {
         res.status(200).send({ success: stripeRes });
+        Payment.findOneAndUpdate({
+            yahooEmail: req.body.yahooEmail
+        }, {
+                email: req.body.email,
+                paymentAmount: req.body.amount,
+                yahooEmail: req.body.yahooEmail,
+                paid: true,
+                paymentDate: new Date(),
+            }, {
+                upsert: true
+            })
     }
 };
