@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import YahooSigninImage from './images/yahoo-signin.png'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { callApi } from './CallApi';
-import StripeBtn from "./StripeBtn";
+import { StripeBtn } from "./StripeBtn";
 
 class App extends Component {
     constructor(props) {
@@ -80,13 +80,14 @@ class App extends Component {
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
                     <a>Refresh Yahoo Data</a>
                 </div>
-                <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
+                <div className={`nav-refresh ${this.state.isLoggedIn ? 'no-margin' : 'hide'}`}>
                     <StripeBtn />
                 </div>
+                <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>
+                    <a href="/logout">Logout</a>
+                </div>
             </div>
-            <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>
-                <a href="/logout">Logout</a>
-            </div>
+
         </div>
 
         return (

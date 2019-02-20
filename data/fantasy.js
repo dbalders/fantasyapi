@@ -88,19 +88,23 @@ exports.getYahooData = function (req, res, options) {
 
                             Payment.findOne({
                                 yahooEmail: email
-                            }, function(error, result) {
-                                if (error)
+                            }, function (error, result) {
+                                if (error) {
                                     console.log(err)
-                                
-                                if (!result) {
-                                    Payment.create({
-                                        'paymentAmount': 0,
-                                        'yahooEmail': email,
-                                        'leagues': [{leagueId}],
-                                        'paid': false,
-                                        'seasonId': leagueIdShort,
-                                        'email': ''
-                                    })
+                                } else {
+                                    if (result) {
+                                        res.cookie('paid', true);
+                                    } else {
+                                        Payment.create({
+                                            'paymentAmount': 0,
+                                            'yahooEmail': email,
+                                            'leagues': [{ leagueId }],
+                                            'paid': false,
+                                            'seasonId': leagueIdShort,
+                                            'email': ''
+                                        })
+                                        res.cookie('paid', false);
+                                    }
                                 }
                             })
                             callback();

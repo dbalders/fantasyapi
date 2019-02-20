@@ -355,6 +355,10 @@ code {
     display: none !important;
 }
 
+.no-margin {
+    margin: 0;
+}
+
 .table-container {
     margin: auto;
 }

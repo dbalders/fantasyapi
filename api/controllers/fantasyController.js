@@ -225,7 +225,6 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
     if (stripeErr) {
         res.status(500).send({ error: stripeErr });
     } else {
-        res.status(200).send({ success: stripeRes });
         Payment.findOneAndUpdate({
             yahooEmail: req.body.yahooEmail
         }, {
@@ -237,5 +236,7 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
             }, {
                 upsert: true
             })
+        res.cookie('paid', true);
+        res.status(200).send({ success: stripeRes });
     }
 };
