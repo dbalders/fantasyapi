@@ -90,10 +90,14 @@ exports.getYahooData = function (req, res, options) {
                                 yahooEmail: email
                             }, function (error, result) {
                                 if (error) {
-                                    console.log(err)
+                                    console.log(error)
                                 } else {
                                     if (result) {
-                                        res.cookie('paid', true);
+                                        if (result.paid) {
+                                            res.cookie('paid', true);
+                                        } else {
+                                            res.cookie('paid', false);
+                                        }
                                     } else {
                                         Payment.create({
                                             'paymentAmount': 0,

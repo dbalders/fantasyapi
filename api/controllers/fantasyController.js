@@ -152,10 +152,10 @@ exports.erase_current_data = function (req, res) {
     // });
 
     Payment.remove({}, function (err, task) {
-            if (err)
-                res.send(err);
-            res.json({ message: 'All players successfully deleted' });
-        });
+        if (err)
+            res.send(err);
+        res.json({ message: 'All players successfully deleted' });
+    });
 };
 
 exports.get_rankings = function (req, res) {
@@ -187,7 +187,7 @@ exports.get_espn_data = function (req, res) {
 
 exports.refresh_yahoo_data = function (req, res) {
     var cookies = req.headers.cookie;
-    var cookies = cookies.split("; ")
+    cookies = cookies.split("; ")
 
     for (var i = 0; i < cookies.length; i++) {
         var cookieName = cookies[i].split('=')[0];
@@ -225,18 +225,71 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
     if (stripeErr) {
         res.status(500).send({ error: stripeErr });
     } else {
-        Payment.findOneAndUpdate({
-            yahooEmail: req.body.yahooEmail
-        }, {
-                email: req.body.email,
-                paymentAmount: req.body.amount,
-                yahooEmail: req.body.yahooEmail,
-                paid: true,
-                paymentDate: new Date(),
-            }, {
-                upsert: true
-            })
-        res.cookie('paid', true);
+        var cookies = req.headers.cookie;
+        cookies = cookies.split("; ")
+        for (var i = 0; i < cookies.length; i++) {
+            var cookieName = cookies[i].split('=')[0];
+            var cookieValue = cookies[i].split('=')[1];
+
+            if (cookieName === "fantasyPlatform") {
+                if (cookieValue === 'espn') {
+                    Payment.findOneAndUpdate({
+                        espnLeagueId: req.body.espnLeagueId,
+                        espnTeamId: req.body.espnTeamId
+                    }, {
+                            espnLeagueId: req.body.espnLeagueId,
+                            espnTeamId: req.body.espnTeamId,
+                            email: req.body.token.email,
+                            paymentAmount: req.body.amount,
+                            paid: true,
+                            paymentDate: new Date(),
+                        }, {
+                            upsert: true
+                        }, function (error, response) {
+                        })
+                    res.cookie('paid', true);
+                } else {
+                    Payment.findOneAndUpdate({
+                        yahooEmail: req.body.yahooEmail
+                    }, {
+                            email: req.body.token.email,
+                            paymentAmount: req.body.amount,
+                            yahooEmail: req.body.yahooEmail,
+                            paid: true,
+                            paymentDate: new Date(),
+                        }, {
+                            upsert: true
+                        }, function(error, response) {
+                        })
+                    res.cookie('paid', true);
+                }
+            }
+        }
+
         res.status(200).send({ success: stripeRes });
     }
 };
+
+exports.create_espn_user = function (req, res) {
+    Payment.findOne({
+        espnLeagueId: req.params.espnLeagueId,
+        espnTeamId: req.params.espnTeamId
+    }, function (error, result) {
+        if (error) {
+            console.log(error)
+        } else {
+            if (!result) {
+                Payment.create({
+                    'espnLeagueId': req.params.espnLeagueId,
+                    'espnTeamId': req.params.espnTeamId,
+                    'paid': false
+                })
+                res.cookie('paid', false);
+                res.status(200).send({ success: 'creation success' });
+            } else {
+                res.cookie('paid', result.paid)
+                res.status(200).send({ success: 'found success' });
+            }
+        }
+    })
+}

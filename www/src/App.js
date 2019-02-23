@@ -30,6 +30,7 @@ class App extends Component {
             this.setState({ isLoggedIn: true });
         } else {
             this.setState({ navText: 'Sign in with Yahoo' });
+            window.localStorage.clear();
         }
 
         var fantasyPlatform = Cookies.get('fantasyPlatform');

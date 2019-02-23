@@ -17,20 +17,33 @@ export class StripeBtn extends Component {
     }
 
     getPaid() {
-        if (Cookies.get('paid')) {
+        var paid = Cookies.get('paid');
+        if (paid === 'true') {
             this.setState({ 'paid': true });
         }
     }
 
     render() {
         const publishableKey = "pk_test_J9A4W2CFQsPDfvmWJYDTCnAc";
+        var body;
 
         const onToken = token => {
-            const body = {
-                amount: 999,
-                token: token,
-                yahooEmail: Cookies.get('yahooEmail')
-            };
+            var fantasyPlatform = Cookies.get('fantasyPlatform');
+            if (fantasyPlatform === 'yahoo') {
+                body = {
+                    amount: 999,
+                    token: token,
+                    yahooEmail: Cookies.get('yahooEmail')
+                };
+            } else {
+                body = {
+                    amount: 999,
+                    token: token,
+                    espnLeagueId: Cookies.get('leagueId'),
+                    espnTeamId: Cookies.get('teamId')
+                };
+            }
+            
             axios
                 .post("/api/payment", body)
                 .then(response => {
@@ -38,7 +51,6 @@ export class StripeBtn extends Component {
                     alert("Payment Success");
                 })
                 .catch(error => {
-                    console.log("Payment Error: ", error);
                     alert("Payment Error");
                 });
         };
@@ -55,7 +67,6 @@ export class StripeBtn extends Component {
                 stripeKey={publishableKey}
                 billingAddress={false}
             />
-
         }
 
         return returnHTML;

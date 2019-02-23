@@ -271,7 +271,9 @@ var PaymentSchema = new Schema ({
     paid: Boolean,
     paymentDate: Date,
     paymentAmount: Number,
-    seasonId: Number
+    seasonId: Number,
+    espnTeamId: Number,
+    espnLeagueId: Number
 })
 
 module.exports = mongoose.model('Players', PlayersSchema);
