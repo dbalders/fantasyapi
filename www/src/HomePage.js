@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import Select from 'react-select';
 import { EspnInput } from './EspnInput';
+import { EspnModal } from './EspnModal';
 
 export class HomePage extends Component {
     constructor(props) {
@@ -78,7 +79,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-actions flex-vertical">
                         <div className="landing-text">Enter ESPN League Id
-                            <div className="landing-text-small">(How to find id?)</div>
+                            <EspnModal />
                         </div>
 
                         <div className="landing-buttons flex">

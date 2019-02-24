@@ -191,6 +191,7 @@ code {
     font-size: 1rem;
     text-align: center;
     font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
 }
 
 .landing-buttons {
@@ -289,6 +290,14 @@ code {
 .selected.rt-tr {
     font-style: italic;
     font-weight: 600;
+}
+
+/****************************Modal CSS Classes***********************/
+
+.espn-modal-container {
+    color: black;
+    font-size: 1.5rem;
+    height: 100%;
 }
 
 /****************************Universal CSS Classes***********************/
