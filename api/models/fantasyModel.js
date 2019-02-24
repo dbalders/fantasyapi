@@ -264,6 +264,18 @@ var PlayerRecentDataSchema = new Schema({
     overallRank: Number
 })
 
+var PaymentSchema = new Schema ({
+    yahooEmail: String,
+    email: String,
+    leagues: Array,
+    paid: Boolean,
+    paymentDate: Date,
+    paymentAmount: Number,
+    seasonId: Number,
+    espnTeamId: Number,
+    espnLeagueId: Number
+})
+
 module.exports = mongoose.model('Players', PlayersSchema);
 module.exports = mongoose.model('Teams', TeamsSchema);
 module.exports = mongoose.model('BBMRankingsSeason', BBMRankingsSeasonSchema);
@@ -274,3 +286,4 @@ module.exports = mongoose.model('BBMPickupTargetsSeason', BBMPickupTargetsSeason
 module.exports = mongoose.model('BBMPickupTargetsRecent', BBMPickupTargetsRecentSchema);
 module.exports = mongoose.model('PlayerSeasonData', PlayerSeasonDataSchema);
 module.exports = mongoose.model('PlayerRecentData', PlayerRecentDataSchema);
+module.exports = mongoose.model('Payment', PaymentSchema);

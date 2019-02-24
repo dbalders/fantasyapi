@@ -50,6 +50,18 @@ app.get('/logout', function(req, res) {
     res.clearCookie("teamId");
     res.clearCookie("fantasyPlatform");
     res.clearCookie("yahooAccessToken");
+    res.clearCookie("teamSelected");
+    res.clearCookie("teamSelectedLabel");
+    res.clearCookie("teamSelectedValue");
+    res.clearCookie("yahooAccessToken");
+    res.clearCookie("teamStatsRecentAvg");
+    res.clearCookie("teamStatsSeasonAvg");
+    res.clearCookie("teamTradeSelectedLabel");
+    res.clearCookie("teamTradeSelectedValue");
+    res.clearCookie("yahooEmail");
+    res.clearCookie("paid");
+    res.clearCookie("dataExpireDate");
+    res.clearCookie("teamTradeStatsSeason");
     res.redirect('/');
 });
 

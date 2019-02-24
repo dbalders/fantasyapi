@@ -13,7 +13,8 @@ var mongoose = require('mongoose'),
     PlayerSeasonData = mongoose.model('PlayerSeasonData'),
     PlayerRecentData = mongoose.model('PlayerRecentData'),
     BBMRankingsSeason = mongoose.model('BBMRankingsSeason'),
-    BBMRankingsRecent = mongoose.model('BBMRankingsRecent');
+    BBMRankingsRecent = mongoose.model('BBMRankingsRecent'),
+    Payment = mongoose.model('Payment');
 
 var clientId = process.env.APP_CLIENT_ID || require('../conf.js').APP_CLIENT_ID;
 var clientSecret = process.env.APP_CLIENT_SECRET || require('../conf.js').APP_CLIENT_SECRET;
@@ -27,13 +28,14 @@ exports.getYahooData = function (req, res, options) {
         if (err)
             console.log(err);
         else {
-
             var teams = [];
             var players = [];
             var playerNames = [];
             var playersDone = false;
             var accessToken = body.access_token;
+            var leagueIdShort;
             var leagueId;
+            var email;
 
             //Get either current year or last year for when season rolls into the new year
             var currentYear = (new Date());
@@ -61,10 +63,11 @@ exports.getYahooData = function (req, res, options) {
                             if (err) {
                                 return
                             }
-                            leagueId = data[0].game_key;
+
+                            leagueIdShort = data[0].game_key;
 
                             //Now that we have overall ID, get user specific league ID
-                            yf.user.game_leagues(leagueId, function cb(err, data) {
+                            yf.user.game_leagues(leagueIdShort, function cb(err, data) {
                                 leagueId = data.games[0].leagues[0][0].league_key;
                                 res.cookie('leagueId', leagueId);
                                 res.cookie('fantasyPlatform', 'yahoo');
@@ -72,6 +75,45 @@ exports.getYahooData = function (req, res, options) {
                                 callback(null, 1);
                             })
                         })
+                },
+                function (callback) {
+                    //Find the users Email address, and then create a db entry for them to track future payments
+                    yf.user.game_teams(
+                        leagueIdShort,
+                        function cb(err, data) {
+                            if (err)
+                                console.log(err);
+                            email = data.teams[0].teams[0].managers[0].email;
+                            res.cookie('yahooEmail', email);
+
+                            Payment.findOne({
+                                yahooEmail: email
+                            }, function (error, result) {
+                                if (error) {
+                                    console.log(error)
+                                } else {
+                                    if (result) {
+                                        if (result.paid) {
+                                            res.cookie('paid', true);
+                                        } else {
+                                            res.cookie('paid', false);
+                                        }
+                                    } else {
+                                        Payment.create({
+                                            'paymentAmount': 0,
+                                            'yahooEmail': email,
+                                            'leagues': [{ leagueId }],
+                                            'paid': false,
+                                            'seasonId': leagueIdShort,
+                                            'email': ''
+                                        })
+                                        res.cookie('paid', false);
+                                    }
+                                }
+                            })
+                            callback();
+                        }
+                    );
                 },
                 function (callback) {
                     //Use the league ID to get a list of all the teams and their players
@@ -302,7 +344,7 @@ function getPickups(leagueId, playerNames) {
         async.forEachOf(players, function (value, i, callback) {
 
             var similarPlayer = stringSimilarity.findBestMatch(players[i].playerName, playerNames);
-            var similarPlayerRating = similarPlayer.bestMatch.rating; 
+            var similarPlayerRating = similarPlayer.bestMatch.rating;
 
             if (similarPlayerRating < 0.7) {
                 pickupTargets.push(players[i]);
@@ -429,7 +471,7 @@ exports.refreshYahooData = function (leagueId, res, accessToken) {
     var teamPlayers = [];
     var playerNames = [];
     var loginExpired = false;
-    
+
     yf.league.teams(leagueId,
         function cb(err, data) {
             if (err) {

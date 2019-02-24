@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = function (app) {
     var fantasy = require('../controllers/fantasyController');
 
@@ -57,4 +58,12 @@ module.exports = function (app) {
 
     app.route('/api/player_data/recent/')
         .get(fantasy.get_player_recent_data)
+
+    app.route('/api/payment/espn/:espnLeagueId/:espnTeamId')
+        .post(fantasy.create_espn_user)
+        .get(fantasy.create_espn_user)
+
+    app.route('/api/payment')
+        .get(fantasy.payment_get)
+        .post(fantasy.payment_post)
 };

@@ -34,14 +34,14 @@ export class HomePage extends Component {
     }
 
     espnIdError = (error) => {
-        this.setState({espnIdError: error});
+        this.setState({ espnIdError: error });
 
         if (error === 'Not Found') {
-            this.setState({espnIdError: 'ESPN league is not found'});
+            this.setState({ espnIdError: 'ESPN league is not found' });
         }
 
         if (error === 'You are not authorized to view this League.') {
-            this.setState({espnIdError: 'This league is private, it has to be made public.'});
+            this.setState({ espnIdError: 'This league is private, it has to be made public.' });
         }
     }
 
@@ -49,7 +49,13 @@ export class HomePage extends Component {
         Cookies.set('leagueId', this.state.espnId);
         Cookies.set('teamId', espnTeamSelected.value);
         Cookies.set('fantasyPlatform', 'espn');
-        window.location.reload();
+
+        var url = '/api/payment/espn/' + this.state.espnId + '/' + espnTeamSelected.value;
+        fetch(url)
+            .then(res => res.text())
+            .then(function() {
+                window.location.reload()
+            });
     }
 
     render() {
@@ -74,7 +80,7 @@ export class HomePage extends Component {
                         <div className="landing-text">Enter ESPN League Id
                             <div className="landing-text-small">(How to find id?)</div>
                         </div>
-                        
+
                         <div className="landing-buttons flex">
                             <EspnInput showEspnTeamInput={this.showEspnTeamInput} espnIdError={this.espnIdError} />
                         </div>
