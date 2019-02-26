@@ -51,6 +51,7 @@ export class TradeAnalysis extends Component {
         var seasonStats = JSON.parse(localStorage.getItem('teamStatsSeason'));
         var recentStats = JSON.parse(localStorage.getItem('teamStatsRecent'));
         var seasonAvg = JSON.parse(localStorage.getItem('teamStatsSeasonAvg'));
+        var teamTradeImprovement = [];
 
         var recentAvg = JSON.parse(localStorage.getItem('teamStatsRecentAvg'));
         this.setState({
@@ -58,65 +59,140 @@ export class TradeAnalysis extends Component {
             teamStatsRecentOrig: recentAvg
         })
 
-        var teamTradeImprovement = []
-        teamTradeImprovement.push({
-            name: 'Gain/Loss',
-            overallRating: 0,
-            ptsRating: 0,
-            threeRating: 0,
-            astRating: 0,
-            rebRating: 0,
-            stlRating: 0,
-            blkRating: 0,
-            fgMixedRating: 0,
-            ftMixedRating: 0,
-            toRating: 0
-        });
-
-        teamTradeImprovement.push({
-            name: 'Current team',
-            overallRating: seasonAvg[0].overallRating,
-            ptsRating: seasonAvg[0].ptsRating,
-            threeRating: seasonAvg[0].threeRating,
-            astRating: seasonAvg[0].astRating,
-            rebRating: seasonAvg[0].rebRating,
-            stlRating: seasonAvg[0].stlRating,
-            blkRating: seasonAvg[0].blkRating,
-            fgMixedRating: seasonAvg[0].fgMixedRating,
-            ftMixedRating: seasonAvg[0].ftMixedRating,
-            toRating: seasonAvg[0].toRating
-        });
-
-        teamTradeImprovement.push({
-            name: 'Team after trade',
-            overallRating: seasonAvg[0].overallRating,
-            ptsRating: seasonAvg[0].ptsRating,
-            threeRating: seasonAvg[0].threeRating,
-            astRating: seasonAvg[0].astRating,
-            rebRating: seasonAvg[0].rebRating,
-            stlRating: seasonAvg[0].stlRating,
-            blkRating: seasonAvg[0].blkRating,
-            fgMixedRating: seasonAvg[0].fgMixedRating,
-            ftMixedRating: seasonAvg[0].ftMixedRating,
-            toRating: seasonAvg[0].toRating
-        });
-
         var teamTradeStatsSeason = JSON.parse(localStorage.getItem('teamTradeStatsSeason'));
-        if (teamTradeStatsSeason) {
-            this.setState({ teamTradeStatsSeason: teamTradeStatsSeason });
-            var selected = JSON.parse(localStorage.getItem('selected'));
-            if (selected) {
-                this.setState({ selected: selected });
-            }
-        }
-
         var oppTeamTradeStatsSeason = JSON.parse(localStorage.getItem('oppTeamTradeStatsSeason'));
-        if (oppTeamTradeStatsSeason) {
-            this.setState({ oppTeamTradeStatsSeason: oppTeamTradeStatsSeason })
+
+        if (teamTradeStatsSeason || oppTeamTradeStatsSeason) {
+            var selected = JSON.parse(localStorage.getItem('selected'));
             var selectedOpp = JSON.parse(localStorage.getItem('selectedOpp'));
-            if (selectedOpp) {
-                this.setState({ selectedOpp: selectedOpp });
+            var overallRating = 0;
+            var ptsRating = 0;
+            var threeRating = 0;
+            var astRating = 0;
+            var rebRating = 0;
+            var stlRating = 0;
+            var blkRating = 0;
+            var fgMixedRating = 0;
+            var ftMixedRating = 0;
+            var toRating = 0;
+
+            this.setState({
+                teamTradeStatsSeason: teamTradeStatsSeason,
+                oppTeamTradeStatsSeason: oppTeamTradeStatsSeason,
+                selected: selected,
+                selectedOpp: selectedOpp
+            })
+
+            for (var i = 0; i < teamTradeStatsSeason.length; i++) {
+                overallRating = Number(parseFloat(overallRating) - parseFloat(teamTradeStatsSeason[i].overallRating)).toFixed(2);
+                ptsRating = Number(parseFloat(ptsRating) - parseFloat(teamTradeStatsSeason[i].ptsRating)).toFixed(2);
+                threeRating = Number(parseFloat(threeRating) - parseFloat(teamTradeStatsSeason[i].threeRating)).toFixed(2);
+                astRating = Number(parseFloat(astRating) - parseFloat(teamTradeStatsSeason[i].astRating)).toFixed(2);
+                rebRating = Number(parseFloat(rebRating) - parseFloat(teamTradeStatsSeason[i].rebRating)).toFixed(2);
+                stlRating = Number(parseFloat(stlRating) - parseFloat(teamTradeStatsSeason[i].stlRating)).toFixed(2);
+                blkRating = Number(parseFloat(blkRating) - parseFloat(teamTradeStatsSeason[i].blkRating)).toFixed(2);
+                fgMixedRating = Number(parseFloat(fgMixedRating) - parseFloat(teamTradeStatsSeason[i].fgMixedRating)).toFixed(2);
+                ftMixedRating = Number(parseFloat(ftMixedRating) - parseFloat(teamTradeStatsSeason[i].ftMixedRating)).toFixed(2);
+                toRating = Number(parseFloat(toRating) - parseFloat(teamTradeStatsSeason[i].toRating)).toFixed(2);
             }
+
+            for (i = 0; i < oppTeamTradeStatsSeason.length; i++) {
+                overallRating = Number(parseFloat(overallRating) + parseFloat(oppTeamTradeStatsSeason[i].overallRating)).toFixed(2);
+                ptsRating = Number(parseFloat(ptsRating) + parseFloat(oppTeamTradeStatsSeason[i].ptsRating)).toFixed(2);
+                threeRating = Number(parseFloat(threeRating) + parseFloat(oppTeamTradeStatsSeason[i].threeRating)).toFixed(2);
+                astRating = Number(parseFloat(astRating) + parseFloat(oppTeamTradeStatsSeason[i].astRating)).toFixed(2);
+                rebRating = Number(parseFloat(rebRating) + parseFloat(oppTeamTradeStatsSeason[i].rebRating)).toFixed(2);
+                stlRating = Number(parseFloat(stlRating) + parseFloat(oppTeamTradeStatsSeason[i].stlRating)).toFixed(2);
+                blkRating = Number(parseFloat(blkRating) + parseFloat(oppTeamTradeStatsSeason[i].blkRating)).toFixed(2);
+                fgMixedRating = Number(parseFloat(fgMixedRating) + parseFloat(oppTeamTradeStatsSeason[i].fgMixedRating)).toFixed(2);
+                ftMixedRating = Number(parseFloat(ftMixedRating) + parseFloat(oppTeamTradeStatsSeason[i].ftMixedRating)).toFixed(2);
+                toRating = Number(parseFloat(toRating) + parseFloat(oppTeamTradeStatsSeason[i].toRating)).toFixed(2);
+            }
+
+            teamTradeImprovement.push({
+                name: 'Gain/Loss',
+                overallRating: overallRating,
+                ptsRating: ptsRating,
+                threeRating: threeRating,
+                astRating: astRating,
+                rebRating: rebRating,
+                stlRating: stlRating,
+                blkRating: blkRating,
+                fgMixedRating: fgMixedRating,
+                ftMixedRating: ftMixedRating,
+                toRating: toRating
+            });
+
+            teamTradeImprovement.push({
+                name: 'Current team',
+                overallRating: seasonAvg[0].overallRating,
+                ptsRating: seasonAvg[0].ptsRating,
+                threeRating: seasonAvg[0].threeRating,
+                astRating: seasonAvg[0].astRating,
+                rebRating: seasonAvg[0].rebRating,
+                stlRating: seasonAvg[0].stlRating,
+                blkRating: seasonAvg[0].blkRating,
+                fgMixedRating: seasonAvg[0].fgMixedRating,
+                ftMixedRating: seasonAvg[0].ftMixedRating,
+                toRating: seasonAvg[0].toRating
+            });
+
+            teamTradeImprovement.push({
+                name: 'Team after trade',
+                overallRating: Number(parseFloat(seasonAvg[0].overallRating) + parseFloat(overallRating)).toFixed(2),
+                ptsRating: Number(parseFloat(seasonAvg[0].ptsRating) + parseFloat(ptsRating)).toFixed(2),
+                threeRating: Number(parseFloat(seasonAvg[0].threeRating) + parseFloat(threeRating)).toFixed(2),
+                astRating: Number(parseFloat(seasonAvg[0].astRating) + parseFloat(astRating)).toFixed(2),
+                rebRating: Number(parseFloat(seasonAvg[0].rebRating) + parseFloat(rebRating)).toFixed(2),
+                stlRating: Number(parseFloat(seasonAvg[0].stlRating) + parseFloat(stlRating)).toFixed(2),
+                blkRating: Number(parseFloat(seasonAvg[0].blkRating) + parseFloat(blkRating)).toFixed(2),
+                fgMixedRating: Number(parseFloat(seasonAvg[0].fgMixedRating) + parseFloat(fgMixedRating)).toFixed(2),
+                ftMixedRating: Number(parseFloat(seasonAvg[0].ftMixedRating) + parseFloat(ftMixedRating)).toFixed(2),
+                toRating: Number(parseFloat(seasonAvg[0].toRating) + parseFloat(toRating)).toFixed(2)
+            });
+
+        } else {
+            teamTradeImprovement.push({
+                name: 'Gain/Loss',
+                overallRating: 0,
+                ptsRating: 0,
+                threeRating: 0,
+                astRating: 0,
+                rebRating: 0,
+                stlRating: 0,
+                blkRating: 0,
+                fgMixedRating: 0,
+                ftMixedRating: 0,
+                toRating: 0
+            });
+
+            teamTradeImprovement.push({
+                name: 'Current team',
+                overallRating: seasonAvg[0].overallRating,
+                ptsRating: seasonAvg[0].ptsRating,
+                threeRating: seasonAvg[0].threeRating,
+                astRating: seasonAvg[0].astRating,
+                rebRating: seasonAvg[0].rebRating,
+                stlRating: seasonAvg[0].stlRating,
+                blkRating: seasonAvg[0].blkRating,
+                fgMixedRating: seasonAvg[0].fgMixedRating,
+                ftMixedRating: seasonAvg[0].ftMixedRating,
+                toRating: seasonAvg[0].toRating
+            });
+
+            teamTradeImprovement.push({
+                name: 'Team after trade',
+                overallRating: seasonAvg[0].overallRating,
+                ptsRating: seasonAvg[0].ptsRating,
+                threeRating: seasonAvg[0].threeRating,
+                astRating: seasonAvg[0].astRating,
+                rebRating: seasonAvg[0].rebRating,
+                stlRating: seasonAvg[0].stlRating,
+                blkRating: seasonAvg[0].blkRating,
+                fgMixedRating: seasonAvg[0].fgMixedRating,
+                ftMixedRating: seasonAvg[0].ftMixedRating,
+                toRating: seasonAvg[0].toRating
+            });
         }
 
         //If any of these do not exist somehow (not sure how, but still), redirect to home page to be rebuilt
@@ -288,7 +364,7 @@ export class TradeAnalysis extends Component {
             var ftMixedRating = 0;
             var toRating = 0;
 
-            for (var i = 0; i < this.state.teamTradeStatsSeason.length; i++) {
+            for (i = 0; i < this.state.teamTradeStatsSeason.length; i++) {
                 overallRating = Number(overallRating - this.state.teamTradeStatsSeason[i].overallRating).toFixed(2);
                 ptsRating = Number(ptsRating - this.state.teamTradeStatsSeason[i].ptsRating).toFixed(2);
                 threeRating = Number(threeRating - this.state.teamTradeStatsSeason[i].threeRating).toFixed(2);
@@ -301,7 +377,7 @@ export class TradeAnalysis extends Component {
                 toRating = Number(toRating - this.state.teamTradeStatsSeason[i].toRating).toFixed(2);
             }
 
-            for (var j = 0; j < this.state.oppTeamTradeStatsSeason.length; j++) {
+            for (j = 0; j < this.state.oppTeamTradeStatsSeason.length; j++) {
                 overallRating = Number(parseFloat(overallRating) + this.state.oppTeamTradeStatsSeason[j].overallRating).toFixed(2);
                 ptsRating = Number(parseFloat(ptsRating) + this.state.oppTeamTradeStatsSeason[j].ptsRating).toFixed(2);
                 threeRating = Number(parseFloat(threeRating) + this.state.oppTeamTradeStatsSeason[j].threeRating).toFixed(2);
@@ -372,7 +448,6 @@ export class TradeAnalysis extends Component {
         var teamPlayersTrade = team;
         var playerRankingsSeason = this.state.playerRankingsSeason;
         var playerRankingsRecent = this.state.playerRankingsRecent;
-        var playerRankings = [];
 
         if (this.state.showRecentStats) {
             playerRankingsSeason = playerRankingsRecent;
@@ -506,7 +581,12 @@ export class TradeAnalysis extends Component {
 
     updateImprovementTable(rowInfo, add, ownedTeam) {
         var teamTradeImprovement = [];
-        var seasonAvg = this.state.teamStatsSeasonAvg;
+        var seasonAvg;
+        if (!this.state.showRecentStats) {
+            seasonAvg = this.state.teamStatsSeasonAvg;
+        } else {
+            seasonAvg = this.state.teamStatsRecentAvg;
+        }
 
         if ((add && ownedTeam) || (!add && !ownedTeam)) {
             teamTradeImprovement.push({
@@ -539,16 +619,16 @@ export class TradeAnalysis extends Component {
 
             teamTradeImprovement.push({
                 name: 'Team after trade',
-                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) - rowInfo.original.overallRating).toFixed(2),
-                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) - rowInfo.original.ptsRating).toFixed(2),
-                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) - rowInfo.original.threeRating).toFixed(2),
-                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) - rowInfo.original.astRating).toFixed(2),
-                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) - rowInfo.original.rebRating).toFixed(2),
-                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) - rowInfo.original.stlRating).toFixed(2),
-                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) - rowInfo.original.blkRating).toFixed(2),
-                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) - rowInfo.original.fgMixedRating).toFixed(2),
-                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) - rowInfo.original.ftMixedRating).toFixed(2),
-                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) - rowInfo.original.toRating).toFixed(2)
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) + parseFloat(teamTradeImprovement[0].overallRating)).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) + parseFloat(teamTradeImprovement[0].ptsRating)).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) + parseFloat(teamTradeImprovement[0].threeRating)).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) + parseFloat(teamTradeImprovement[0].astRating)).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) + parseFloat(teamTradeImprovement[0].rebRating)).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) + parseFloat(teamTradeImprovement[0].stlRating)).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) + parseFloat(teamTradeImprovement[0].blkRating)).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) + parseFloat(teamTradeImprovement[0].fgMixedRating)).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) + parseFloat(teamTradeImprovement[0].ftMixedRating)).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) + parseFloat(teamTradeImprovement[0].toRating)).toFixed(2)
             })
         } else {
             teamTradeImprovement.push({
@@ -581,16 +661,16 @@ export class TradeAnalysis extends Component {
 
             teamTradeImprovement.push({
                 name: 'Team after trade',
-                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) + rowInfo.original.overallRating).toFixed(2),
-                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) + rowInfo.original.ptsRating).toFixed(2),
-                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) + rowInfo.original.threeRating).toFixed(2),
-                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) + rowInfo.original.astRating).toFixed(2),
-                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) + rowInfo.original.rebRating).toFixed(2),
-                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) + rowInfo.original.stlRating).toFixed(2),
-                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) + rowInfo.original.blkRating).toFixed(2),
-                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) + rowInfo.original.fgMixedRating).toFixed(2),
-                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) + rowInfo.original.ftMixedRating).toFixed(2),
-                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) + rowInfo.original.toRating).toFixed(2)
+                overallRating: Number(parseFloat(this.state.teamTradeImprovement[1].overallRating) + parseFloat(teamTradeImprovement[0].overallRating)).toFixed(2),
+                ptsRating: Number(parseFloat(this.state.teamTradeImprovement[1].ptsRating) + parseFloat(teamTradeImprovement[0].ptsRating)).toFixed(2),
+                threeRating: Number(parseFloat(this.state.teamTradeImprovement[1].threeRating) + parseFloat(teamTradeImprovement[0].threeRating)).toFixed(2),
+                astRating: Number(parseFloat(this.state.teamTradeImprovement[1].astRating) + parseFloat(teamTradeImprovement[0].astRating)).toFixed(2),
+                rebRating: Number(parseFloat(this.state.teamTradeImprovement[1].rebRating) + parseFloat(teamTradeImprovement[0].rebRating)).toFixed(2),
+                stlRating: Number(parseFloat(this.state.teamTradeImprovement[1].stlRating) + parseFloat(teamTradeImprovement[0].stlRating)).toFixed(2),
+                blkRating: Number(parseFloat(this.state.teamTradeImprovement[1].blkRating) + parseFloat(teamTradeImprovement[0].blkRating)).toFixed(2),
+                fgMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].fgMixedRating) + parseFloat(teamTradeImprovement[0].fgMixedRating)).toFixed(2),
+                ftMixedRating: Number(parseFloat(this.state.teamTradeImprovement[1].ftMixedRating) + parseFloat(teamTradeImprovement[0].ftMixedRating)).toFixed(2),
+                toRating: Number(parseFloat(this.state.teamTradeImprovement[1].toRating) + parseFloat(teamTradeImprovement[0].toRating)).toFixed(2)
             })
         }
         this.setState({ teamTradeImprovement, teamTradeImprovement });
@@ -677,34 +757,12 @@ export class TradeAnalysis extends Component {
     changeRecentStats() {
         this.setState({ showRecentStats: !this.state.showRecentStats }, () => {
             if (this.state.showRecentStats) {
-                // this.setState({
-                //     playerRankingsSeason: this.state.playerRankingsBBMSeason,
-                //     playerRankingsRecent: this.state.playerRankingsBBMRecent,
-                //     updateCompareTable: true
-                // }, function () {
                 //Rebuild page with new data
                 this.buildTradeTeam(this.state.teamPlayersTrade)
-                // this.buildTeam();
                 this.changeTradeStats();
-                //set this state back to false to stop the constant re-render of compare table
-                // this.setState({ updateCompareTable: false })
-                // this.changeTradeStats();
-                // })
             } else {
-                //If local stats is true, load the local data
-                // this.setState({
-                //     playerRankingsSeason: this.state.playerRankingsLocalSeason,
-                //     playerRankingsRecent: this.state.playerRankingsLocalRecent,
-                //     updateCompareTable: true
-                // }, function () {
-                //     //Rebuild Team with new data
                 this.buildTradeTeam(this.state.teamPlayersTrade);
-                // this.buildTeam();
                 this.changeTradeStats();
-                // //set this state back to false to stop the constant re-render of compare table
-                // this.setState({ updateCompareTable: false });
-                // this.changeTradeStats();
-                // })
             }
         })
     }

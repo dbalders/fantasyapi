@@ -30,7 +30,7 @@ export class EspnModal extends Component {
                         <div>Log into your ESPN fantasy league.</div>
                         <div>Look at the web URL. Near the end, it will say <span>LeagueId=12345678</span>.</div>
                         <div>Copy the numbers and paste into the box and hit Enter.</div>
-                        <a style="margin: auto auto 15px"href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
+                        <a href="javascript:void(0);" onClick={() => this.closeModal()}>Close</a>
                     </div>
                 </Modal>
             </section>
