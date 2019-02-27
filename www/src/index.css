@@ -13,23 +13,11 @@ code {
         monospace;
 }
 
-.navbar {
-    height: 75px;
-    background-color: white;
-    width: 100%;
-}
-
 .site-container {
     min-height: 100vh;
 }
 
-.nav-title {
-    font-size: 2rem;
-    font-weight: 400;
-    margin: auto auto auto 25px;
-    font-family: Verdana, Geneva, sans-serif;
-    letter-spacing: .25px;
-}
+/****************************Homepage CSS Classes***********************/
 
 .sign-in {
     margin: auto 15px auto auto;
@@ -51,6 +39,200 @@ code {
     font-weight: 400;
 }
 
+.landing-container {
+    margin: auto;
+    width: 100%;
+}
+
+.landing-top-background {
+    width: 100%;
+    background-image: url("/images/basketballcourt.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center 70%;
+}
+
+.landing-top-container {
+    margin: auto;
+    width: 80%;
+    padding-bottom: 100px;
+    color: white;
+}
+
+.landing-site {
+    font-size: 2rem;
+    font-family: Verdana, Geneva, sans-serif;
+    /* color: white; */
+    text-align: center;
+    margin: 50px auto 50px 0px;
+}
+
+.landing-site-title {
+    margin: auto auto 25px;
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: .5px;
+}
+
+.landing-site-desc {
+    margin: auto;
+    font-size: 1.25rem;
+    width: 30%;
+    text-align: center;
+    line-height: 2rem;
+}
+
+.landing-laptop-img {
+    width: 50%;
+    margin: 50px auto auto;
+}
+
+.landing-laptop-img img {
+    width: 100%;
+}
+
+.landing-actions-container {
+    flex: 2;
+    -webkit-flex: 2;
+    padding: 75px 0 100px;
+}
+
+.landing-background-image {
+    /* background-image: url("/images/basketballcourt.jpg");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: center top; */
+    /* background-attachment: fixed; */
+    /* min-height: 100vh; */
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+    left: 0;
+    top: 0;
+    opacity: 0.5;
+}
+.landing-background-color {
+    /* background-color: black; */
+    min-height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: -2;
+    left: 0;
+    top: 0;
+}
+.landing-actions {
+    width: 30%;
+    border: 1px solid black;
+    max-width: 700px;
+    padding: 25px 0 50px;
+}
+
+#landing-actions-left {
+    margin: auto 0 auto auto;
+    border-right: 0;
+}
+
+#landing-actions-right {
+    margin: auto auto auto 0;
+}
+
+.landing-img {
+    width: 100%;
+    min-height: 150px;
+}
+
+.landing-img img {
+    width: 80%;
+    margin: auto;
+    display: block;
+}
+
+#landing-espn-img {
+    margin-top: 20px;
+}
+
+.landing-text {
+    margin: 75px auto 15px;
+    font-size: 2rem;
+    font-family: Verdana, Geneva, sans-serif;
+    text-align: center;
+    height: 60px;
+}
+
+.landing-text-small {
+    font-size: 1rem;
+    text-align: center;
+    font-family: Verdana, Geneva, sans-serif;
+    cursor: pointer;
+}
+
+.landing-buttons {
+    margin: auto auto;
+    height: 73px;
+}
+
+.espn-id-input {
+    font-size: 1.5rem;
+    padding: 20px;
+}
+
+.team-select {
+    width: 350px;
+    margin: auto;
+    color: black;
+    font-size: 1.25rem;
+    padding: 5px;
+}
+
+.espn-dropdown-items__menu {
+    font-size: 1rem;
+}
+
+.landing-features-container {
+    width: 70%;
+    margin: 75px auto;
+}
+.landing-features {
+    width: 30%;
+    margin: auto;
+    text-align: center;
+}
+
+.landing-features-title {
+    font-size: 1.5rem;
+}
+
+.landing-features-desc {
+    margin: 20px auto auto;
+    width: 70%;
+    line-height: 1.25rem;
+}
+
+.landing-features-img {
+    width: 100%;
+}
+
+.landing-features-img img {
+    width: 100%;
+}
+
+/****************************Logged in CSS Classes***********************/
+
+.navbar {
+    height: 75px;
+    background-color: white;
+    width: 100%;
+}
+
+.nav-title {
+    font-size: 2rem;
+    font-weight: 400;
+    margin: auto auto auto 25px;
+    font-family: Verdana, Geneva, sans-serif;
+    letter-spacing: .25px;
+}
+
 .nav-sign-in {
     margin: auto 15px auto auto;
     border: 0;
@@ -58,7 +240,7 @@ code {
     text-decoration: none;
 }
 
-.nav-sign-in a {
+/* .nav-sign-in a {
     text-decoration: none;
     color: white;
     display: inline-block;
@@ -82,7 +264,7 @@ code {
 
 .nav-sign-in-link img {
     height: 100%;
-}
+} */
 
 .nav-refresh {
     margin: auto 15px auto auto;
@@ -126,76 +308,6 @@ code {
     height: 100%;
     padding: 15px;
     letter-spacing: .25px;
-}
-
-.landing-container {
-    margin: auto;
-}
-
-.landing-site-title {
-    font-size: 5rem;
-    font-family: Verdana, Geneva, sans-serif;
-    color: white;
-    text-align: center;
-    margin: auto;
-    margin-bottom: auto;
-    margin-top: 50px;
-    text-shadow: 2px 2px black;
-}
-
-.landing-actions-container {
-    flex: 2;
-    -webkit-flex: 2;
-}
-
-.landing-background-image {
-    background-image: url("./images/basketball.jpg");
-    background-size: cover;
-    min-height: 100vh;
-    position: absolute;
-    width: 100%;
-    z-index: -1;
-    left: 0;
-    top: 0;
-    opacity: 0.5;
-}
-.landing-background-color {
-    background-color: black;
-    min-height: 100vh;
-    position: absolute;
-    width: 100%;
-    z-index: -2;
-    left: 0;
-    top: 0;
-}
-.landing-actions {
-    background-color: rgba(0, 0, 0, 0.5);
-    height: 300px;
-    width: 500px;
-    color: white;
-    border-radius: 25px;
-    border: 1px solid white;
-    margin: 10px auto auto;
-    max-width: 700px;
-}
-
-.landing-text {
-    margin: 75px auto auto;
-    font-size: 2rem;
-    font-family: Verdana, Geneva, sans-serif;
-    text-align: center;
-    height: 60px;
-}
-
-.landing-text-small {
-    font-size: 1rem;
-    text-align: center;
-    font-family: Verdana, Geneva, sans-serif;
-    cursor: pointer;
-}
-
-.landing-buttons {
-    margin: auto auto;
 }
 
 .table-container {
@@ -255,23 +367,6 @@ code {
     padding: 10px 25px;
 }
 
-.espn-id-input {
-    font-size: 1.5rem;
-    padding: 20px;
-}
-
-.team-select {
-    width: 350px;
-    margin: auto;
-    color: black;
-    font-size: 1.25rem;
-    padding: 5px;
-}
-
-.espn-dropdown-items__menu {
-    font-size: 1rem;
-}
-
 .change-stats-btn {
     margin: auto;
     background-color: #74b9ff;
@@ -298,6 +393,37 @@ code {
     color: black;
     font-size: 1.5rem;
     height: 100%;
+}
+
+/****************************Footer CSS Classes***********************/
+
+.footer {
+    width: 100%;
+    padding: 15px 0;
+    background: #AC8269;
+    color: white;
+}
+
+.footer-info {
+    margin: auto 25px auto auto;
+    text-align: right;
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.footer-info a {
+    text-decoration: none;
+    color: white;
+}
+
+.footer-twitter img {
+    width: 35px;
+    height: 35px;
+    padding-left: 5px;
+}
+
+#footer-created-by {
+    padding-right: 4px;
 }
 
 /****************************Universal CSS Classes***********************/
@@ -358,6 +484,11 @@ code {
     margin: auto;
     justify-content: center;
     flex-direction: column;
+}
+
+.flex-reverse {
+    flex-direction: row-reverse;
+    -webkit-flex-direction: row-reverse;
 }
 
 .hide {

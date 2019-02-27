@@ -24,7 +24,7 @@ export class EspnModal extends Component {
     render() {
         return (
             <section>
-                <div className="landing-text-small" onClick={() => this.openModal()}>How to find league ID?</div>
+                <div className="landing-text-small" onClick={() => this.openModal()}>(How to find league ID?)</div>
                 <Modal visible={this.state.visible} width="50%" height="50%" effect="fadeInUp" onClickAway={() => this.closeModal()}>
                     <div className="espn-modal-container flex-vertical">
                         <div>Log into your ESPN fantasy league.</div>

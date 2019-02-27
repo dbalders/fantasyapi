@@ -3,7 +3,7 @@ import { BuildPlayers } from './BuildPlayers';
 import { HomePage } from './HomePage';
 import { TradeAnalysis } from './TradeAnalysys';
 import Cookies from 'js-cookie';
-import YahooSigninImage from './images/yahoo-signin.png'
+// import YahooSigninImage from './images/yahoo-signin.png'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { callApi } from './CallApi';
 import { StripeBtn } from "./StripeBtn";
@@ -65,15 +65,11 @@ class App extends Component {
             homePage = <BuildPlayers key={this.state.key} />;
         }
 
-        navBar = <div className="navbar flex">
+        navBar = <div className={`navbar flex ${this.state.isLoggedIn ? '' : 'hide'}`}>
             <div className="nav-title">
                 <Link to="/">FantasyBasketball.io</Link>
             </div>
             <div className="nav-sign-in flex">
-                <a className={`nav-sign-in-link ${this.state.isLoggedIn ? 'hide' : ''}`} href="/auth/yahoo">
-                    <img alt="yahoo-login" src={YahooSigninImage} />
-                </a>
-
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
                     <Link to="/trade">Trade Analysis</Link>
                 </div>
@@ -89,6 +85,20 @@ class App extends Component {
                 </div>
             </div>
 
+        </div>
+
+        footer = <div className="footer">
+            <div className="footer-info-container flex">
+                <div className="footer-info flex">
+                    <div id="footer-created-by">Created by </div>
+                    <div>
+                        <a href="https://twitter.com/davidbalderston">David Balderston</a>
+                    </div>
+                    <a className="footer-twitter flex" href="https://twitter.com/davidbalderston">
+                        <img src="/images/twitterlogo.png" />
+                    </a>
+                </div>
+            </div>
         </div>
 
         return (
