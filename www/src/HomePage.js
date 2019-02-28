@@ -67,13 +67,11 @@ export class HomePage extends Component {
             <div className="landing-container flex-vertical flex-one">
                 <div className="landing-top-background">
                     <div className="landing-top-container flex-vertical">
-                        <div className="landing-background-color"></div>
-                        <div className="landing-background-image"></div>
                         <div className="landing-site">FantasyBasketball.io</div>
                         <div className="landing-site-title">Insights into your fantasy league</div>
                         <div className="landing-site-desc">Get analytical data on your team, compare it to the rest of the league, see who to pick up, analyse trades, and more.</div>
                         <div className="landing-laptop-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_homepage.png" />
                         </div>
                     </div>
                 </div>
@@ -122,7 +120,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-features flex-vertical">
                         <div className="landing-features-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_homepage_small.png" />
                         </div>
                     </div>
                 </div>
@@ -133,7 +131,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-features flex-vertical">
                         <div className="landing-features-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_pickups.png" />
                         </div>
                     </div>
                 </div>
@@ -144,7 +142,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-features flex-vertical">
                         <div className="landing-features-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_compare.png" />
                         </div>
                     </div>
                 </div>
@@ -155,7 +153,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-features flex-vertical">
                         <div className="landing-features-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_trade.png" />
                         </div>
                     </div>
                 </div>
@@ -166,7 +164,7 @@ export class HomePage extends Component {
                     </div>
                     <div className="landing-features flex-vertical">
                         <div className="landing-features-img">
-                            <img src="/images/macbookmockup.png" />
+                            <img src="/images/fantasy_next.png" />
                         </div>
                     </div>
                 </div>

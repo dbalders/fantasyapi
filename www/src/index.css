@@ -69,7 +69,7 @@ code {
 
 .landing-site-title {
     margin: auto auto 25px;
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 500;
     letter-spacing: .5px;
 }
@@ -77,9 +77,10 @@ code {
 .landing-site-desc {
     margin: auto;
     font-size: 1.25rem;
-    width: 30%;
+    width: 35%;
     text-align: center;
     line-height: 2rem;
+    font-weight: 500;
 }
 
 .landing-laptop-img {
@@ -194,13 +195,13 @@ code {
     margin: 75px auto;
 }
 .landing-features {
-    width: 30%;
+    width: 40%;
     margin: auto;
     text-align: center;
 }
 
 .landing-features-title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
 }
 
 .landing-features-desc {
@@ -226,7 +227,7 @@ code {
 }
 
 .nav-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 400;
     margin: auto auto auto 25px;
     font-family: Verdana, Geneva, sans-serif;
@@ -236,6 +237,7 @@ code {
 .nav-title a {
     text-decoration: none;
     color: black;
+    letter-spacing: .5px;
 }
 
 .nav-sign-in {
@@ -381,6 +383,10 @@ code {
 .ReactTable .rt-noData {
     top: 75%;
     padding: 0;
+}
+
+.ReactTable .rt-tr {
+    cursor: pointer;
 }
 
 .hide-button {

@@ -786,6 +786,7 @@ export class TradeAnalysis extends Component {
         const lightRed = '#ffdfdf';
         const mediumRed = '#ffb8b8';
         const brightRed = '#ff8282';
+        const white = '#ffffff'
 
         const { teamSelected } = this.state;
         const teamSelect = [];
@@ -826,9 +827,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[ptsHeader] > 2 ? brightGreen :
                             rowInfo.row[ptsHeader] > 1 ? mediumGreen :
                                 rowInfo.row[ptsHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -1 ? lightRed :
-                                        rowInfo.row[ptsHeader] <= -1 && rowInfo.row[ptsHeader] > -2 ? mediumRed :
-                                            rowInfo.row[ptsHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[ptsHeader] >= 0 ? white :
+                                        rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -1 ? lightRed :
+                                            rowInfo.row[ptsHeader] <= -1 && rowInfo.row[ptsHeader] > -2 ? mediumRed :
+                                                rowInfo.row[ptsHeader] <= -2 ? brightRed : null,
                     }
                 };
             },
@@ -844,9 +846,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[threesHeader] > 2 ? brightGreen :
                             rowInfo.row[threesHeader] > 1 ? mediumGreen :
                                 rowInfo.row[threesHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -1 ? lightRed :
-                                        rowInfo.row[threesHeader] <= -1 && rowInfo.row[threesHeader] > -2 ? mediumRed :
-                                            rowInfo.row[threesHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[threesHeader] >= 0 ? white :
+                                        rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -1 ? lightRed :
+                                            rowInfo.row[threesHeader] <= -1 && rowInfo.row[threesHeader] > -2 ? mediumRed :
+                                                rowInfo.row[threesHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -861,9 +864,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[rebHeader] > 2 ? brightGreen :
                             rowInfo.row[rebHeader] > 1 ? mediumGreen :
                                 rowInfo.row[rebHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -1 ? lightRed :
-                                        rowInfo.row[rebHeader] <= -1 && rowInfo.row[rebHeader] > -2 ? mediumRed :
-                                            rowInfo.row[rebHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[rebHeader] >= 0 ? white :
+                                        rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -1 ? lightRed :
+                                            rowInfo.row[rebHeader] <= -1 && rowInfo.row[rebHeader] > -2 ? mediumRed :
+                                                rowInfo.row[rebHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -878,9 +882,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[astHeader] > 2 ? brightGreen :
                             rowInfo.row[astHeader] > 1 ? mediumGreen :
                                 rowInfo.row[astHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -1 ? lightRed :
-                                        rowInfo.row[astHeader] <= -1 && rowInfo.row[astHeader] > -2 ? mediumRed :
-                                            rowInfo.row[astHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[astHeader] >= 0 ? white :
+                                        rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -1 ? lightRed :
+                                            rowInfo.row[astHeader] <= -1 && rowInfo.row[astHeader] > -2 ? mediumRed :
+                                                rowInfo.row[astHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -895,9 +900,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[stlHeader] > 2 ? brightGreen :
                             rowInfo.row[stlHeader] > 1 ? mediumGreen :
                                 rowInfo.row[stlHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -1 ? lightRed :
-                                        rowInfo.row[stlHeader] <= -1 && rowInfo.row[stlHeader] > -2 ? mediumRed :
-                                            rowInfo.row[stlHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[stlHeader] >= 0 ? white :
+                                        rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -1 ? lightRed :
+                                            rowInfo.row[stlHeader] <= -1 && rowInfo.row[stlHeader] > -2 ? mediumRed :
+                                                rowInfo.row[stlHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -912,9 +918,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[blkHeader] > 2 ? brightGreen :
                             rowInfo.row[blkHeader] > 1 ? mediumGreen :
                                 rowInfo.row[blkHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -1 ? lightRed :
-                                        rowInfo.row[blkHeader] <= -1 && rowInfo.row[blkHeader] > -2 ? mediumRed :
-                                            rowInfo.row[blkHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[blkHeader] >= 0 ? white :
+                                        rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -1 ? lightRed :
+                                            rowInfo.row[blkHeader] <= -1 && rowInfo.row[blkHeader] > -2 ? mediumRed :
+                                                rowInfo.row[blkHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -929,9 +936,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[fgHeader] > 2 ? brightGreen :
                             rowInfo.row[fgHeader] > 1 ? mediumGreen :
                                 rowInfo.row[fgHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -1 ? lightRed :
-                                        rowInfo.row[fgHeader] <= -1 && rowInfo.row[fgHeader] > -2 ? mediumRed :
-                                            rowInfo.row[fgHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[fgHeader] >= 0 ? white :
+                                        rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -1 ? lightRed :
+                                            rowInfo.row[fgHeader] <= -1 && rowInfo.row[fgHeader] > -2 ? mediumRed :
+                                                rowInfo.row[fgHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -946,9 +954,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[ftHeader] > 2 ? brightGreen :
                             rowInfo.row[ftHeader] > 1 ? mediumGreen :
                                 rowInfo.row[ftHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -1 ? lightRed :
-                                        rowInfo.row[ftHeader] <= -1 && rowInfo.row[ftHeader] > -2 ? mediumRed :
-                                            rowInfo.row[ftHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[ftHeader] >= 0 ? white :
+                                        rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -1 ? lightRed :
+                                            rowInfo.row[ftHeader] <= -1 && rowInfo.row[ftHeader] > -2 ? mediumRed :
+                                                rowInfo.row[ftHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -963,9 +972,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[toHeader] > 2 ? brightGreen :
                             rowInfo.row[toHeader] > 1 ? mediumGreen :
                                 rowInfo.row[toHeader] >= .5 ? lightGreen :
-                                    rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -1 ? lightRed :
-                                        rowInfo.row[toHeader] <= -1 && rowInfo.row[toHeader] > -2 ? mediumRed :
-                                            rowInfo.row[toHeader] <= -2 ? brightRed : null,
+                                    rowInfo.row[toHeader] >= 0 ? white :
+                                        rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -1 ? lightRed :
+                                            rowInfo.row[toHeader] <= -1 && rowInfo.row[toHeader] > -2 ? mediumRed :
+                                                rowInfo.row[toHeader] <= -2 ? brightRed : null,
                     },
                 };
             },
@@ -976,7 +986,14 @@ export class TradeAnalysis extends Component {
             Header: '',
             accessor: 'name',
             minWidth: 32,
-            className: "center"
+            className: "center",
+            getProps: (state, rowInfo, column) => {
+                return {
+                    style: {
+                        backgroundColor: white
+                    },
+                };
+            }
         }, {
             Header: 'Overall Value',
             accessor: ratingHeader,
@@ -988,9 +1005,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[ratingHeader] > 1 ? brightGreen :
                             rowInfo.row[ratingHeader] > .5 ? mediumGreen :
                                 rowInfo.row[ratingHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[ratingHeader] < 0 && rowInfo.row[ratingHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[ratingHeader] < -0.25 && rowInfo.row[ratingHeader] > -1 ? mediumRed :
-                                            rowInfo.row[ratingHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[ratingHeader] >= 0 ? white :
+                                        rowInfo.row[ratingHeader] < 0 && rowInfo.row[ratingHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[ratingHeader] < -0.25 && rowInfo.row[ratingHeader] > -1 ? mediumRed :
+                                                rowInfo.row[ratingHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1005,9 +1023,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[ptsHeader] > 1 ? brightGreen :
                             rowInfo.row[ptsHeader] > .5 ? mediumGreen :
                                 rowInfo.row[ptsHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[ptsHeader] < -0.25 && rowInfo.row[ptsHeader] > -1 ? mediumRed :
-                                            rowInfo.row[ptsHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[ptsHeader] >= 0 ? white :
+                                        rowInfo.row[ptsHeader] < 0 && rowInfo.row[ptsHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[ptsHeader] < -0.25 && rowInfo.row[ptsHeader] > -1 ? mediumRed :
+                                                rowInfo.row[ptsHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1022,9 +1041,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[threesHeader] > 1 ? brightGreen :
                             rowInfo.row[threesHeader] > .5 ? mediumGreen :
                                 rowInfo.row[threesHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[threesHeader] < -0.25 && rowInfo.row[threesHeader] > -1 ? mediumRed :
-                                            rowInfo.row[threesHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[threesHeader] >= 0 ? white :
+                                        rowInfo.row[threesHeader] < 0 && rowInfo.row[threesHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[threesHeader] < -0.25 && rowInfo.row[threesHeader] > -1 ? mediumRed :
+                                                rowInfo.row[threesHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1039,9 +1059,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[rebHeader] > 1 ? brightGreen :
                             rowInfo.row[rebHeader] > .5 ? mediumGreen :
                                 rowInfo.row[rebHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[rebHeader] < -0.25 && rowInfo.row[rebHeader] > -1 ? mediumRed :
-                                            rowInfo.row[rebHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[rebHeader] >= 0 ? white :
+                                        rowInfo.row[rebHeader] < 0 && rowInfo.row[rebHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[rebHeader] < -0.25 && rowInfo.row[rebHeader] > -1 ? mediumRed :
+                                                rowInfo.row[rebHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1056,9 +1077,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[astHeader] > 1 ? brightGreen :
                             rowInfo.row[astHeader] > .5 ? mediumGreen :
                                 rowInfo.row[astHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[astHeader] < -0.25 && rowInfo.row[astHeader] > -1 ? mediumRed :
-                                            rowInfo.row[astHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[astHeader] >= 0 ? white :
+                                        rowInfo.row[astHeader] < 0 && rowInfo.row[astHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[astHeader] < -0.25 && rowInfo.row[astHeader] > -1 ? mediumRed :
+                                                rowInfo.row[astHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1073,9 +1095,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[stlHeader] > 1 ? brightGreen :
                             rowInfo.row[stlHeader] > .5 ? mediumGreen :
                                 rowInfo.row[stlHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[stlHeader] < -0.25 && rowInfo.row[stlHeader] > -1 ? mediumRed :
-                                            rowInfo.row[stlHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[stlHeader] >= 0 ? white :
+                                        rowInfo.row[stlHeader] < 0 && rowInfo.row[stlHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[stlHeader] < -0.25 && rowInfo.row[stlHeader] > -1 ? mediumRed :
+                                                rowInfo.row[stlHeader] <= -1 ? brightRed : null,
                     },
                 };
             },
@@ -1090,9 +1113,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[blkHeader] > 1 ? brightGreen :
                             rowInfo.row[blkHeader] > .5 ? mediumGreen :
                                 rowInfo.row[blkHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[blkHeader] < -0.25 && rowInfo.row[blkHeader] > -1 ? mediumRed :
-                                            rowInfo.row[blkHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[blkHeader] >= 0 ? white :
+                                        rowInfo.row[blkHeader] < 0 && rowInfo.row[blkHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[blkHeader] < -0.25 && rowInfo.row[blkHeader] > -1 ? mediumRed :
+                                                rowInfo.row[blkHeader] <= -1 ? brightRed : null,
                     }
                 };
             }
@@ -1107,9 +1131,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[fgHeader] > 1 ? brightGreen :
                             rowInfo.row[fgHeader] > .5 ? mediumGreen :
                                 rowInfo.row[fgHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[fgHeader] < -0.25 && rowInfo.row[fgHeader] > -1 ? mediumRed :
-                                            rowInfo.row[fgHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[fgHeader] >= 0 ? white :
+                                        rowInfo.row[fgHeader] < 0 && rowInfo.row[fgHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[fgHeader] < -0.25 && rowInfo.row[fgHeader] > -1 ? mediumRed :
+                                                rowInfo.row[fgHeader] <= -1 ? brightRed : null,
                     }
                 };
             }
@@ -1124,9 +1149,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[ftHeader] > 1 ? brightGreen :
                             rowInfo.row[ftHeader] > .5 ? mediumGreen :
                                 rowInfo.row[ftHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[ftHeader] < -0.25 && rowInfo.row[ftHeader] > -1 ? mediumRed :
-                                            rowInfo.row[ftHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[ftHeader] >= 0 ? white :
+                                        rowInfo.row[ftHeader] < 0 && rowInfo.row[ftHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[ftHeader] < -0.25 && rowInfo.row[ftHeader] > -1 ? mediumRed :
+                                                rowInfo.row[ftHeader] <= -1 ? brightRed : null,
                     }
                 };
             }
@@ -1141,9 +1167,10 @@ export class TradeAnalysis extends Component {
                         backgroundColor: rowInfo && rowInfo.row[toHeader] > 1 ? brightGreen :
                             rowInfo.row[toHeader] > .5 ? mediumGreen :
                                 rowInfo.row[toHeader] >= .25 ? lightGreen :
-                                    rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -0.25 ? lightRed :
-                                        rowInfo.row[toHeader] < -0.25 && rowInfo.row[toHeader] > -1 ? mediumRed :
-                                            rowInfo.row[toHeader] <= -1 ? brightRed : null,
+                                    rowInfo.row[toHeader] >= 0 ? white :
+                                        rowInfo.row[toHeader] < 0 && rowInfo.row[toHeader] > -0.25 ? lightRed :
+                                            rowInfo.row[toHeader] < -0.25 && rowInfo.row[toHeader] > -1 ? mediumRed :
+                                                rowInfo.row[toHeader] <= -1 ? brightRed : null,
                     }
                 };
             }
@@ -1197,6 +1224,7 @@ export class TradeAnalysis extends Component {
                                 columns={columnNames}
                                 showPagination={false}
                                 minRows={0}
+                                className="-highlight"
                                 defaultSortDesc={true}
                                 defaultSorted={[{
                                     id: 'overallRank',
@@ -1211,6 +1239,7 @@ export class TradeAnalysis extends Component {
                                 columns={columnNames}
                                 showPagination={false}
                                 minRows={0}
+                                className="-highlight"
                                 defaultSortDesc={true}
                                 defaultSorted={[{
                                     id: 'overallRank',
@@ -1224,6 +1253,7 @@ export class TradeAnalysis extends Component {
                                 data={teamTradeImprovement}
                                 columns={columnNamesAvg}
                                 showPagination={false}
+                                className="-highlight"
                                 minRows={0}
 
                             />
@@ -1236,6 +1266,7 @@ export class TradeAnalysis extends Component {
                                     showPagination={false}
                                     minRows={0}
                                     defaultSortDesc={true}
+                                    className="-highlight"
                                     defaultSorted={[{
                                         id: 'overallRank',
                                         desc: false
@@ -1318,6 +1349,7 @@ export class TradeAnalysis extends Component {
                                             showPagination={false}
                                             minRows={0}
                                             defaultSortDesc={true}
+                                            className="-highlight"
                                             defaultSorted={[{
                                                 id: 'overallRank',
                                                 desc: false
