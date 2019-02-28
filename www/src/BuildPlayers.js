@@ -33,10 +33,12 @@ export class BuildPlayers extends Component {
             teamSelected: null,
             leagueId: null,
             showBBMStats: false,
+            showRecentRankings: false,
             statsHeaders: [],
             updateCompareTable: false
         }
         this.changeStats = this.changeStats.bind(this);
+        this.changeRankings = this.changeRankings.bind(this);
     }
 
     componentDidMount() {
@@ -243,6 +245,10 @@ export class BuildPlayers extends Component {
         })
     }
 
+    changeRankings() {
+        this.setState({ showRecentRankings: !this.state.showRecentRankings })
+    }
+
     buildTeam() {
         var teamStatsSeason = [];
         var teamStatsRecent = [];
@@ -409,10 +415,12 @@ export class BuildPlayers extends Component {
         const columnNames = [{
             Header: 'Rank',
             accessor: rankHeader,
+            minWidth: 32,
             className: "center"
         }, {
             Header: 'Value',
             accessor: ratingHeader,
+            minWidth: 32,
             className: "center"
         }, {
             Header: 'Name',
@@ -422,6 +430,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Points',
             accessor: ptsHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -439,6 +448,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: '3s',
             accessor: threesHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -456,6 +466,7 @@ export class BuildPlayers extends Component {
             Header: 'Rebounds',
             accessor: rebHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -472,6 +483,7 @@ export class BuildPlayers extends Component {
             Header: 'Assists',
             accessor: astHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -488,6 +500,7 @@ export class BuildPlayers extends Component {
             Header: 'Steals',
             accessor: stlHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -504,6 +517,7 @@ export class BuildPlayers extends Component {
             Header: 'Blocks',
             accessor: blkHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -520,6 +534,7 @@ export class BuildPlayers extends Component {
             Header: 'FG%',
             accessor: fgHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -536,6 +551,7 @@ export class BuildPlayers extends Component {
             Header: 'FT%',
             accessor: ftHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -552,6 +568,7 @@ export class BuildPlayers extends Component {
             Header: 'Turnovers',
             accessor: toHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -571,6 +588,7 @@ export class BuildPlayers extends Component {
             Header: 'Points',
             accessor: ptsHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -587,6 +605,7 @@ export class BuildPlayers extends Component {
             Header: '3s',
             accessor: threesHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -603,6 +622,7 @@ export class BuildPlayers extends Component {
             Header: 'Rebounds',
             accessor: rebHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -619,6 +639,7 @@ export class BuildPlayers extends Component {
             Header: 'Assists',
             accessor: astHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -635,6 +656,7 @@ export class BuildPlayers extends Component {
             Header: 'Steals',
             accessor: stlHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -651,6 +673,7 @@ export class BuildPlayers extends Component {
             Header: 'Blocks',
             accessor: blkHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -667,6 +690,7 @@ export class BuildPlayers extends Component {
             Header: 'FG%',
             accessor: fgHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -683,6 +707,7 @@ export class BuildPlayers extends Component {
             Header: 'FT%',
             accessor: ftHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -699,6 +724,7 @@ export class BuildPlayers extends Component {
             Header: 'Turnovers',
             accessor: toHeader,
             className: "center",
+            minWidth: 32,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -719,9 +745,11 @@ export class BuildPlayers extends Component {
             className: "center"
         }, {
             headerClassName: 'hide',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
@@ -732,49 +760,59 @@ export class BuildPlayers extends Component {
             )
         }, {
             headerClassName: 'hide',
+            minWidth: 32,
             accessor: 'pts',
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'fG3M',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'reb',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'ast',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'stl',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'blk',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'fgPct',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'ftPct',
+            minWidth: 32,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'tov',
+            minWidth: 32,
             className: "center"
         }]
 
         //Send to the compare teams component once we have the leagueId
         var compareTeamsHTML = "";
-        if (this.state.leagueId) {
+        
+        if (this.state.leagueId && this.state.playerRankingsSeason) {
             compareTeamsHTML = <CompareTeams leagueId={this.state.leagueId} teams={this.state.teams} columnNames={columnNames}
                 playerRankingsSeason={this.state.playerRankingsSeason} playerRankingsRecent={this.state.playerRankingsRecent}
-                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} expandedColumnNames={expandedColumnNames} 
-                title="Compare to other teams" />
+                columnNamesAvg={columnNamesAvg} updateCompareTable={this.state.updateCompareTable} expandedColumnNames={expandedColumnNames}
+                title="Compare to league teams" showRecentRankings={this.state.showRecentRankings} />
 
         }
 
@@ -786,134 +824,156 @@ export class BuildPlayers extends Component {
             showStatsText = 'Use FantasyBasketball.io Rankings';
         }
 
+        var showRankingsText;
+        if (!this.state.showRecentRankings) {
+            showRankingsText = 'Show Recent Data';
+        } else {
+            showRankingsText = 'Show Season Data';
+        }
+
         return (
             <div className="table-container flex-vertical">
-                <div className="flex center">
-                    <div className="change-stats-btn" onClick={this.changeStats}>{showStatsText}</div>
-                </div>
-                <div className="table-group">
-                    <h3 className="team-table-header">Teams Season Rankings</h3>
-                    <div className="team-table">
-                        <ReactTable
-                            data={this.state.teamStatsSeason}
-                            columns={columnNames}
-                            showPagination={false}
-                            minRows={0}
-                            defaultSortDesc={true}
-                            defaultSorted={[{
-                                id: 'overallRank',
-                                desc: false
-                            }]}
-                            SubComponent={row => {
-                                return (
+                <div className="table-info-container flex-vertical">
+                    <div className="table-info-headers flex">
+                        <div className="table-info-header" onClick={this.changeRankings}>{showRankingsText}</div>
+                        <div className="table-info-header" onClick={this.changeStats}>{showStatsText}</div>
+                    </div>
+                    <div className="table-info-tables">
+                        <div className="table-group">
+                            <div className={`team-table-container ${this.state.showRecentRankings ? 'hide' : ''}`}>
+                                <h3 className="team-table-header">Team Rankings</h3>
+                                <div className="team-avg-table">
                                     <ReactTable
-                                        data={[row.original]}
-                                        columns={expandedColumnNames}
+                                        data={this.state.teamStatsSeasonAvg}
+                                        columns={columnNamesAvg}
                                         showPagination={false}
-                                        defaultPageSize={1}
-                                        className="expandedRow"
+                                        minRows={0}
                                     />
-                                );
-                            }}
+                                </div>
+                                <div className="team-table">
+                                    <ReactTable
+                                        data={this.state.teamStatsSeason}
+                                        columns={columnNames}
+                                        showPagination={false}
+                                        minRows={0}
+                                        defaultSortDesc={true}
+                                        defaultSorted={[{
+                                            id: 'overallRank',
+                                            desc: false
+                                        }]}
+                                        SubComponent={row => {
+                                            return (
+                                                <ReactTable
+                                                    data={[row.original]}
+                                                    columns={expandedColumnNames}
+                                                    showPagination={false}
+                                                    defaultPageSize={1}
+                                                    className="expandedRow"
+                                                />
+                                            );
+                                        }}
 
-                        />
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`team-table-container ${this.state.showRecentRankings ? '' : 'hide'}`}>
+                            <h3 className="team-table-header">Team Rankings</h3>
+                            <div className="team-table">
+                                <ReactTable
+                                    data={this.state.teamStatsRecent}
+                                    columns={columnNames}
+                                    showPagination={false}
+                                    minRows={0}
+                                    defaultSortDesc={true}
+                                    defaultSorted={[{
+                                        id: 'overallRank',
+                                        desc: false
+                                    }]}
+                                    SubComponent={row => {
+                                        return (
+                                            <ReactTable
+                                                data={[row.original]}
+                                                columns={expandedColumnNames}
+                                                showPagination={false}
+                                                defaultPageSize={1}
+                                                className="expandedRow"
+                                            />
+                                        );
+                                    }}
+                                />
+                            </div>
+
+                            <div className="team-avg-table">
+                                <ReactTable
+                                    data={this.state.teamStatsRecentAvg}
+                                    columns={columnNamesAvg}
+                                    showPagination={false}
+                                    minRows={0}
+                                />
+                            </div>
+                        </div>
+
+                        {compareTeamsHTML}
+
+                        <div className={`team-table-container ${this.state.showRecentRankings ? 'hide' : ''}`}>
+                            <h3 className="team-table-header">Potential Pickup Targets</h3>
+                            <div className="team-table">
+                                <ReactTable
+                                    data={this.state.playerPickupsSeason}
+                                    columns={columnNames}
+                                    showPagination={false}
+                                    minRows={0}
+                                    defaultSortDesc={true}
+                                    defaultSorted={[{
+                                        id: 'overallRank',
+                                        desc: false
+                                    }]}
+                                    SubComponent={row => {
+                                        return (
+                                            <ReactTable
+                                                data={[row.original]}
+                                                columns={expandedColumnNames}
+                                                showPagination={false}
+                                                defaultPageSize={1}
+                                                className="expandedRow"
+                                            />
+                                        );
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className={`team-table-container ${this.state.showRecentRankings ? '' : 'hide'}`}>
+                            <h3 className="team-table-header">Potential Pickup Targets</h3>
+                            <div className="team-table">
+                                <ReactTable
+                                    data={this.state.playerPickupsRecent}
+                                    columns={columnNames}
+                                    showPagination={false}
+                                    minRows={0}
+                                    defaultSortDesc={true}
+                                    defaultSorted={[{
+                                        id: 'overallRank',
+                                        desc: false
+                                    }]}
+                                    SubComponent={row => {
+                                        return (
+                                            <ReactTable
+                                                data={[row.original]}
+                                                columns={expandedColumnNames}
+                                                showPagination={false}
+                                                defaultPageSize={1}
+                                                className="expandedRow"
+                                            />
+                                        );
+                                    }}
+                                />
+                            </div>
+                        </div>
+
                     </div>
-
-                    <div className="team-avg-table">
-                        <ReactTable
-                            data={this.state.teamStatsSeasonAvg}
-                            columns={columnNamesAvg}
-                            showPagination={false}
-                            minRows={0}
-                        />
-                    </div>
-                </div>
-
-                {compareTeamsHTML}
-
-                <h3 className="team-table-header">Teams Recent Rankings</h3>
-                <div className="team-table">
-                    <ReactTable
-                        data={this.state.teamStatsRecent}
-                        columns={columnNames}
-                        showPagination={false}
-                        minRows={0}
-                        defaultSortDesc={true}
-                        defaultSorted={[{
-                            id: 'overallRank',
-                            desc: false
-                        }]}
-                        SubComponent={row => {
-                            return (
-                                <ReactTable
-                                    data={[row.original]}
-                                    columns={expandedColumnNames}
-                                    showPagination={false}
-                                    defaultPageSize={1}
-                                    className="expandedRow"
-                                />
-                            );
-                        }}
-                    />
-                </div>
-
-                <div className="team-avg-table">
-                    <ReactTable
-                        data={this.state.teamStatsRecentAvg}
-                        columns={columnNamesAvg}
-                        showPagination={false}
-                        minRows={0}
-                    />
-                </div>
-                <h3 className="team-table-header">Season Potential Pickup Targets</h3>
-                <div className="team-table">
-                    <ReactTable
-                        data={this.state.playerPickupsSeason}
-                        columns={columnNames}
-                        showPagination={false}
-                        minRows={0}
-                        defaultSortDesc={true}
-                        defaultSorted={[{
-                            id: 'overallRank',
-                            desc: false
-                        }]}
-                        SubComponent={row => {
-                            return (
-                                <ReactTable
-                                    data={[row.original]}
-                                    columns={expandedColumnNames}
-                                    showPagination={false}
-                                    defaultPageSize={1}
-                                    className="expandedRow"
-                                />
-                            );
-                        }}
-                    />
-                </div>
-                <h3 className="team-table-header">Recent Potential Pickup Targets</h3>
-                <div className="team-table">
-                    <ReactTable
-                        data={this.state.playerPickupsRecent}
-                        columns={columnNames}
-                        showPagination={false}
-                        minRows={0}
-                        defaultSortDesc={true}
-                        defaultSorted={[{
-                            id: 'overallRank',
-                            desc: false
-                        }]}
-                        SubComponent={row => {
-                            return (
-                                <ReactTable
-                                    data={[row.original]}
-                                    columns={expandedColumnNames}
-                                    showPagination={false}
-                                    defaultPageSize={1}
-                                    className="expandedRow"
-                                />
-                            );
-                        }}
-                    />
                 </div>
             </div>
         )

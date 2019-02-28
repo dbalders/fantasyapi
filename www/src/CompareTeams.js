@@ -17,7 +17,9 @@ export class CompareTeams extends Component {
             compareStatsRecentAvg: [],
             showCompareTable: false,
             teamPlayers: [],
-            tableUpdate: true
+            tableUpdate: true,
+            playerRankingsSeason: [],
+            playerRankingsRecent: []
 
         }
         this.hideCompareTable = this.hideCompareTable.bind(this);
@@ -55,7 +57,22 @@ export class CompareTeams extends Component {
                 label: Cookies.get('teamSelectedLabel')
             };
 
-            this.handleTeamChange(teamSelected)
+            var playerRankingsSeason = JSON.parse(localStorage.getItem('playerRankingsSeason'));
+            var playerRankingsRecent = JSON.parse(localStorage.getItem('playerRankingsRecent'));
+
+            if (!playerRankingsSeason) {
+                playerRankingsSeason = this.props.playerRankingsSeason;
+            }
+            if (!playerRankingsRecent) {
+                playerRankingsRecent = this.props.playerRankingsRecent;
+            }
+
+            this.setState({ 
+                playerRankingsSeason: playerRankingsSeason,
+                playerRankingsRecent: playerRankingsRecent
+            }, function() {
+                this.handleTeamChange(teamSelected)
+            })
         }
     }
 
@@ -66,8 +83,8 @@ export class CompareTeams extends Component {
         var teamStatsSeasonAvg = [];
         var teamStatsRecentAvg = [];
         var teamPlayers = team;
-        var playerRankingsSeason = this.props.playerRankingsSeason;
-        var playerRankingsRecent = this.props.playerRankingsRecent;
+        var playerRankingsSeason = this.state.playerRankingsSeason;
+        var playerRankingsRecent = this.state.playerRankingsRecent;
 
         //for each player on the team, if string similarity > .7 in the player rankings, then add that player to the array
         for (var i = 0; i < teamPlayers.length; i++) {
@@ -171,6 +188,8 @@ export class CompareTeams extends Component {
                             value={teamSelected}
                             onChange={this.handleTeamChange}
                             options={teamSelect}
+                            className='react-select-container'
+                            classNamePrefix='react-select'
                         />
                     </div>
                     <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick={this.hideCompareTable}>
@@ -178,7 +197,7 @@ export class CompareTeams extends Component {
                     </div>
                 </div>
                 <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
-                    <div className="team-avg-table">
+                    <div className={`team-avg-table ${this.props.showRecentRankings ? 'hide' : ''}`}>
                         <ReactTable
                             data={this.state.compareStatsSeasonAvg}
                             columns={this.props.columnNamesAvg}
@@ -186,9 +205,42 @@ export class CompareTeams extends Component {
                             minRows={0}
                         />
                     </div>
-                    <div className="team-table">
+                    <div className={`team-avg-table ${this.props.showRecentRankings ? '' : 'hide'}`}>
+                        <ReactTable
+                            data={this.state.compareStatsRecentAvg}
+                            columns={this.props.columnNamesAvg}
+                            showPagination={false}
+                            minRows={0}
+                        />
+                    </div>
+                    <div className={`team-table ${this.props.showRecentRankings ? 'hide' : ''}`}>
                         <ReactTable
                             data={this.state.compareStatsSeason}
+                            columns={this.props.columnNames}
+                            showPagination={false}
+                            minRows={0}
+                            defaultSortDesc={true}
+                            defaultSorted={[{
+                                id: 'overallRank',
+                                desc: false
+                            }]}
+                            SubComponent={row => {
+                                return (
+                                    <ReactTable
+                                        data={[row.original]}
+                                        columns={this.props.expandedColumnNames}
+                                        showPagination={false}
+                                        defaultPageSize={1}
+                                        className="expandedRow"
+                                    />
+                                );
+                            }}
+                        />
+                    </div>
+
+                    <div className={`team-table ${this.props.showRecentRankings ? '' : 'hide'}`}>
+                        <ReactTable
+                            data={this.state.compareStatsRecent}
                             columns={this.props.columnNames}
                             showPagination={false}
                             minRows={0}

@@ -43,11 +43,11 @@ export class StripeBtn extends Component {
                     espnTeamId: Cookies.get('teamId')
                 };
             }
-            
+
             axios
                 .post("/api/payment", body)
                 .then(response => {
-                    this.setState({'paid': true})
+                    this.setState({ 'paid': true })
                     alert("Payment Success");
                 })
                 .catch(error => {
@@ -55,19 +55,16 @@ export class StripeBtn extends Component {
                 });
         };
 
-        var returnHTML = <div className='hide'></div>;
-        if (!this.state.paid) {
-            returnHTML = <StripeCheckout
-                label="Go Premium" //Component button text
-                name="Business LLC" //Modal Header
-                description="Upgrade to a premium account today."
-                panelLabel="Go Premium" //Submit button in modal
-                amount={999} //Amount in cents $9.99
-                token={onToken}
-                stripeKey={publishableKey}
-                billingAddress={false}
-            />
-        }
+        var returnHTML = <StripeCheckout
+            label="Get Premium" //Component button text
+            name="FantasySportsDotIO" //Modal Header
+            description="Access for 2019 and 2020 seasons."
+            panelLabel="Go Premium" //Submit button in modal
+            amount={500} //Amount in cents $9.99
+            token={onToken}
+            stripeKey={publishableKey}
+            billingAddress={false}
+        />
 
         return returnHTML;
     };

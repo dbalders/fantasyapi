@@ -194,19 +194,6 @@ exports.getRankings = function (req, res) {
                 nbaSeasonPlayers[i].fgMixedRating = fgMixedRating;
                 nbaSeasonPlayers[i].overallRating = overallRating;
             }
-
-            // console.log('ftSeasonAvg ' + ftSeasonAvg)
-            // console.log('ftSeasonStDev' + ftSeasonStDev)
-            // console.log('ftaSeasonAvg ' + ftaSeasonAvg)
-            // console.log('ftaSeasonStDev ' + ftaSeasonStDev)
-
-            // console.log('fgSeasonAvg ' + fgSeasonAvg)
-            // console.log('fgSeasonStDev ' + fgSeasonStDev)
-            // console.log('fgaSeasonAvg ' + fgaSeasonAvg)
-            // console.log('fgaSeasonStDev ' + fgaSeasonStDev)
-
-            // console.log('minSeasonAvg ' + minSeasonAvg);
-            // console.log('minSeasonStDev ' + minSeasonStDev);
         })
 
     }).then(function (data) {

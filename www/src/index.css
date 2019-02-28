@@ -233,6 +233,11 @@ code {
     letter-spacing: .25px;
 }
 
+.nav-title a {
+    text-decoration: none;
+    color: black;
+}
+
 .nav-sign-in {
     margin: auto 15px auto auto;
     border: 0;
@@ -281,7 +286,7 @@ code {
     font-family: Verdana, Geneva, sans-serif;
     font-size: 1.15rem;
     font-weight: 400;
-    background-color: #380585;
+    background-color: #AC8169;
     cursor: pointer;
 }
 
@@ -295,10 +300,11 @@ code {
 .sign-out {
     margin: auto 15px auto 0;
     border: 0;
-    background-color: #477DCA;
+    background-color: #AC8169;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 1.15rem;
     text-decoration: none;
+    font-weight: 400;
 }
 
 .sign-out a {
@@ -313,6 +319,31 @@ code {
 .table-container {
     background: white;
     width: 100%;
+    margin: 25px 0 50px;
+    min-height: 100vh;
+}
+
+.table-info-container {
+    width: 95%;
+    margin: auto;
+}
+
+.table-info-header {
+    display: inline-block;
+    padding: 15px;
+    margin-right: 5px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-weight: 400;
+    background-color: white;
+    border: 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 25px;
+}
+
+.table-info-tables {
+    border: 1px solid;
+    padding: 0 2.5%;
 }
 
 .table-group {
@@ -331,6 +362,11 @@ code {
 .team-table-header {
     margin: 25px auto 0;
     text-align: center;
+}
+
+.trade-table-header {
+    margin: 25px auto 10px;
+    font-weight: 500;
 }
 
 .team-avg-header {
@@ -352,7 +388,7 @@ code {
     padding: 10px;
     text-align: center;
     border-radius: 3px;
-    background: #f4f4f4;
+    /* background: #f4f4f4; */
     cursor: pointer;
     margin-left: 0;
 }
@@ -387,12 +423,90 @@ code {
     font-weight: 600;
 }
 
+/****************************Select CSS Classes***********************/
+
+.react-select__control {
+    border-color: black !important;
+    box-shadow: none !important;
+    cursor: pointer;
+}
+
+.react-select__indicator-separator {
+    background-color: black !important;
+}
+
+.react-select__dropdown-indicator {
+    color: black !important;
+}
+
 /****************************Modal CSS Classes***********************/
 
 .espn-modal-container {
     color: black;
     font-size: 1.5rem;
     height: 100%;
+}
+
+.modal-container {
+    height: 90%;
+}
+
+.modal-info-container {
+    margin: auto;
+    text-align: center;
+    width: 80%;
+    height: 100%;
+    margin-bottom: 25px;
+}
+
+.modal-info-header {
+    margin: 25px 0;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.modal-info-desc {
+    font-weight: 400;
+    letter-spacing: .5px;
+    margin-bottom: auto;
+}
+
+
+
+/****************************Stripe CSS Classes***********************/
+
+.StripeCheckout {
+    background: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    margin-right: 15px;
+    outline: none;
+}
+
+.StripeCheckout span {
+    background-image: none !important;
+    background-color: #27ABE2 !important;
+    text-decoration: none !important;
+    color: white !important;
+    display: inline-block !important;
+    padding: 15px !important;
+    font-family: Verdana, Geneva, sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 400 !important;
+    /* background-color: #AC8169; */
+    cursor: pointer !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    line-height: inherit !important;
+    height: auto !important;
+}
+
+.Header-purchaseDescription {
+    white-space: normal !important;
 }
 
 /****************************Footer CSS Classes***********************/
@@ -497,10 +611,6 @@ code {
 
 .no-margin {
     margin: 0;
-}
-
-.table-container {
-    margin: auto;
 }
 
 /*End Universal CSS Classes*/

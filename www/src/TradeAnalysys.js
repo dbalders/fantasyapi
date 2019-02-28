@@ -803,10 +803,12 @@ export class TradeAnalysis extends Component {
         const columnNames = [{
             Header: 'Rank',
             accessor: rankHeader,
+            minWidth: 32,
             className: "center"
         }, {
             Header: 'Value',
             accessor: ratingHeader,
+            minWidth: 32,
             className: "center"
         }, {
             Header: 'Name',
@@ -816,6 +818,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Points',
             accessor: ptsHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -833,6 +836,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: '3s',
             accessor: threesHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -849,6 +853,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Rebounds',
             accessor: rebHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -865,6 +870,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Assists',
             accessor: astHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -881,6 +887,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Steals',
             accessor: stlHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -897,6 +904,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Blocks',
             accessor: blkHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -913,6 +921,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'FG%',
             accessor: fgHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -929,6 +938,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'FT%',
             accessor: ftHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -945,6 +955,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Turnovers',
             accessor: toHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -964,10 +975,12 @@ export class TradeAnalysis extends Component {
         const columnNamesAvg = [{
             Header: '',
             accessor: 'name',
+            minWidth: 32,
             className: "center"
         }, {
             Header: 'Overall Value',
             accessor: ratingHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -984,6 +997,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Points',
             accessor: ptsHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1000,6 +1014,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: '3s',
             accessor: threesHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1016,6 +1031,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Rebounds',
             accessor: rebHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1032,6 +1048,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Assists',
             accessor: astHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1048,6 +1065,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Steals',
             accessor: stlHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1064,6 +1082,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Blocks',
             accessor: blkHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1080,6 +1099,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'FG%',
             accessor: fgHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1096,6 +1116,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'FT%',
             accessor: ftHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1112,6 +1133,7 @@ export class TradeAnalysis extends Component {
         }, {
             Header: 'Turnovers',
             accessor: toHeader,
+            minWidth: 32,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -1161,135 +1183,17 @@ export class TradeAnalysis extends Component {
         }
 
         return (
-            <div>
-                <div className="flex-vertical flex-one">
-                    <p>Trade Analysis</p>
-                </div>
-                <div className="flex center">
-                    <div className="change-stats-btn" onClick={this.changeBBMStats}>{showStatsText}</div>
-                </div>
-                <div className="flex center">
-                    <div className="change-stats-btn" onClick={this.changeRecentStats}>{showRecentText}</div>
-                </div>
-                <h3>Your Team</h3>
-                <ReactTable
-                    data={teamTradeStatsSeason}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-
-                />
-
-                <h3>Their Team</h3>
-                <ReactTable
-                    data={oppTeamTradeStatsSeason}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-
-                />
-
-                <h3>Improvement</h3>
-                <ReactTable
-                    data={teamTradeImprovement}
-                    columns={columnNamesAvg}
-                    showPagination={false}
-                    minRows={0}
-
-                />
-
-                <ReactTable
-                    key="teamTable"
-                    data={teamStatsSeason}
-                    columns={columnNames}
-                    showPagination={false}
-                    minRows={0}
-                    defaultSortDesc={true}
-                    defaultSorted={[{
-                        id: 'overallRank',
-                        desc: false
-                    }]}
-                    // SubComponent={row => {
-                    //     return (
-                    //         <ReactTable
-                    //             data={[row.original]}
-                    //             columns={expandedColumnNames}
-                    //             showPagination={false}
-                    //             defaultPageSize={1}
-                    //             className="expandedRow"
-                    //         />
-                    //     );
-                    // }}
-                    getTrProps={(state, rowInfo) => {
-                        if (rowInfo && rowInfo.row) {
-                            return {
-                                onClick: (e) => {
-                                    if (this.state.selected.indexOf(rowInfo.original.playerName) >= 0) {
-                                        var selected = this.state.selected;
-                                        selected.splice(selected.indexOf(rowInfo.original.playerName), 1);
-                                        this.setState({ selected: selected });
-                                        localStorage.setItem('selected', JSON.stringify(selected));
-                                        this.removeFromTeamTrade(rowInfo);
-                                    } else {
-                                        var selected = this.state.selected;
-                                        selected.push(rowInfo.original.playerName);
-                                        this.setState({ selected: selected });
-                                        localStorage.setItem('selected', JSON.stringify(selected));
-                                        this.addToTeamTrade(rowInfo);
-                                    }
-
-                                },
-                                className: this.state.selected.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
-                                style: {
-                                    // background: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
-                                    // color: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
-                                }
-                            }
-                        } else {
-                            return {}
-                        }
-                    }}
-
-                />
-                <div className="team-avg-table">
-                    <ReactTable
-                        data={teamStatsSeasonAvg}
-                        columns={columnNamesAvg}
-                        showPagination={false}
-                        minRows={0}
-                    />
-                </div>
-
-                <div className={`table-group ${this.state.showCompareTable ? 'compare-table-group' : ''}`}>
-
-                    <h3 className="team-table-header compare-header">Trade with team</h3>
-                    <div className="flex">
-                        <div className="team-select">
-                            <Select
-                                value={teamSelected}
-                                onChange={this.handleTeamChange}
-                                options={teamSelect}
-                            />
-                        </div>
-                        <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick={this.hideCompareTable}>
-                            Hide Comparison
+            <div className="table-container flex-vertical">
+                <div className="table-info-container flex-vertical">
+                    <div className="table-info-headers flex">
+                        <div className="table-info-header" onClick={this.changeBBMStats}>{showStatsText}</div>
+                        <div className="table-info-header" onClick={this.changeRecentStats}>{showRecentText}</div>
                     </div>
-                    </div>
-                    <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
-                        <div className="team-table">
+                    <div className="table-info-tables">
+                        <div className="table-group">
+                            <h3 className="team-table-header trade-table-header">Trading Away</h3>
                             <ReactTable
-                                key="compareTable"
-                                data={compareStatsSeason}
+                                data={teamTradeStatsSeason}
                                 columns={columnNames}
                                 showPagination={false}
                                 minRows={0}
@@ -1298,46 +1202,169 @@ export class TradeAnalysis extends Component {
                                     id: 'overallRank',
                                     desc: false
                                 }]}
-                                // SubComponent={row => {
-                                //     return (
-                                //         <ReactTable
-                                //             data={[row.original]}
-                                //             columns={expandedColumnNames}
-                                //             showPagination={false}
-                                //             defaultPageSize={1}
-                                //             className="expandedRow"
-                                //         />
-                                //     );
-                                // }}
-                                getTrProps={(state, rowInfo) => {
-                                    if (rowInfo && rowInfo.row) {
-                                        return {
-                                            onClick: (e) => {
-                                                if (this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0) {
-                                                    var selectedOpp = this.state.selectedOpp;
-                                                    selectedOpp.splice(selectedOpp.indexOf(rowInfo.original.playerName), 1);
-                                                    this.setState({ selectedOpp: selectedOpp });
-                                                    localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
-                                                    this.removeFromOppTeamTrade(rowInfo);
-                                                } else {
-                                                    var selectedOpp = this.state.selectedOpp;
-                                                    selectedOpp.push(rowInfo.original.playerName);
-                                                    this.setState({ selectedOpp: selectedOpp });
-                                                    localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
-                                                    this.addToOppTeamTrade(rowInfo);
-                                                }
-                                            },
-                                            className: this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
-                                            style: {
-                                                // background: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
-                                                // color: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
-                                            }
-                                        }
-                                    } else {
-                                        return {}
-                                    }
-                                }}
+
                             />
+
+                            <h3 className="team-table-header trade-table-header">Getting Back</h3>
+                            <ReactTable
+                                data={oppTeamTradeStatsSeason}
+                                columns={columnNames}
+                                showPagination={false}
+                                minRows={0}
+                                defaultSortDesc={true}
+                                defaultSorted={[{
+                                    id: 'overallRank',
+                                    desc: false
+                                }]}
+
+                            />
+
+                            <h3 className="team-table-header trade-table-header">Improvement</h3>
+                            <ReactTable
+                                data={teamTradeImprovement}
+                                columns={columnNamesAvg}
+                                showPagination={false}
+                                minRows={0}
+
+                            />
+
+                            <div className="team-table">
+                                <ReactTable
+                                    key="teamTable"
+                                    data={teamStatsSeason}
+                                    columns={columnNames}
+                                    showPagination={false}
+                                    minRows={0}
+                                    defaultSortDesc={true}
+                                    defaultSorted={[{
+                                        id: 'overallRank',
+                                        desc: false
+                                    }]}
+                                    // SubComponent={row => {
+                                    //     return (
+                                    //         <ReactTable
+                                    //             data={[row.original]}
+                                    //             columns={expandedColumnNames}
+                                    //             showPagination={false}
+                                    //             defaultPageSize={1}
+                                    //             className="expandedRow"
+                                    //         />
+                                    //     );
+                                    // }}
+                                    getTrProps={(state, rowInfo) => {
+                                        if (rowInfo && rowInfo.row) {
+                                            return {
+                                                onClick: (e) => {
+                                                    if (this.state.selected.indexOf(rowInfo.original.playerName) >= 0) {
+                                                        var selected = this.state.selected;
+                                                        selected.splice(selected.indexOf(rowInfo.original.playerName), 1);
+                                                        this.setState({ selected: selected });
+                                                        localStorage.setItem('selected', JSON.stringify(selected));
+                                                        this.removeFromTeamTrade(rowInfo);
+                                                    } else {
+                                                        var selected = this.state.selected;
+                                                        selected.push(rowInfo.original.playerName);
+                                                        this.setState({ selected: selected });
+                                                        localStorage.setItem('selected', JSON.stringify(selected));
+                                                        this.addToTeamTrade(rowInfo);
+                                                    }
+
+                                                },
+                                                className: this.state.selected.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
+                                                style: {
+                                                    // background: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
+                                                    // color: this.state.selected.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
+                                                }
+                                            }
+                                        } else {
+                                            return {}
+                                        }
+                                    }}
+
+                                />
+                            </div>
+                            {/* <div className="team-avg-table">
+                                <ReactTable
+                                    data={teamStatsSeasonAvg}
+                                    columns={columnNamesAvg}
+                                    showPagination={false}
+                                    minRows={0}
+                                />
+                            </div> */}
+
+                            <div className={`team-table`}>
+
+                                <h3 className="team-table-header compare-header">Trading Partner</h3>
+                                <div className="flex">
+                                    <div className="team-select">
+                                        <Select
+                                            value={teamSelected}
+                                            onChange={this.handleTeamChange}
+                                            options={teamSelect}
+                                            className='react-select-container'
+                                            classNamePrefix='react-select'
+                                        />
+                                    </div>
+                                    <div className={`hide-button team-select ${this.state.showCompareTable ? '' : 'hide'}`} onClick={this.hideCompareTable}>
+                                        Hide Comparison
+                                    </div>
+                                </div>
+                                <div className={`team-table ${this.state.showCompareTable ? '' : 'hide'}`}>
+                                    <div className="team-table">
+                                        <ReactTable
+                                            key="compareTable"
+                                            data={compareStatsSeason}
+                                            columns={columnNames}
+                                            showPagination={false}
+                                            minRows={0}
+                                            defaultSortDesc={true}
+                                            defaultSorted={[{
+                                                id: 'overallRank',
+                                                desc: false
+                                            }]}
+                                            // SubComponent={row => {
+                                            //     return (
+                                            //         <ReactTable
+                                            //             data={[row.original]}
+                                            //             columns={expandedColumnNames}
+                                            //             showPagination={false}
+                                            //             defaultPageSize={1}
+                                            //             className="expandedRow"
+                                            //         />
+                                            //     );
+                                            // }}
+                                            getTrProps={(state, rowInfo) => {
+                                                if (rowInfo && rowInfo.row) {
+                                                    return {
+                                                        onClick: (e) => {
+                                                            if (this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0) {
+                                                                var selectedOpp = this.state.selectedOpp;
+                                                                selectedOpp.splice(selectedOpp.indexOf(rowInfo.original.playerName), 1);
+                                                                this.setState({ selectedOpp: selectedOpp });
+                                                                localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
+                                                                this.removeFromOppTeamTrade(rowInfo);
+                                                            } else {
+                                                                var selectedOpp = this.state.selectedOpp;
+                                                                selectedOpp.push(rowInfo.original.playerName);
+                                                                this.setState({ selectedOpp: selectedOpp });
+                                                                localStorage.setItem('selectedOpp', JSON.stringify(selectedOpp));
+                                                                this.addToOppTeamTrade(rowInfo);
+                                                            }
+                                                        },
+                                                        className: this.state.selectedOpp.indexOf(rowInfo.original.playerName) >= 0 ? 'selected' : '',
+                                                        style: {
+                                                            // background: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? '#00afec' : 'white',
+                                                            // color: this.state.selectedOpp.indexOf(rowInfo.original._id) >= 0 ? 'white' : 'black'
+                                                        }
+                                                    }
+                                                } else {
+                                                    return {}
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

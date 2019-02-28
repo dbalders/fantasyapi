@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { callApi } from './CallApi';
 import { StripeBtn } from "./StripeBtn";
+import { StripeModal } from "./StripeModal";
 
 class App extends Component {
     constructor(props) {
@@ -71,14 +72,14 @@ class App extends Component {
             </div>
             <div className="nav-sign-in flex">
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
+                    <StripeModal />
+                </div>
+                <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
                     <Link to="/trade">Trade Analysis</Link>
                 </div>
 
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
                     <a>Refresh Yahoo Data</a>
-                </div>
-                <div className={`nav-refresh ${this.state.isLoggedIn ? 'no-margin' : 'hide'}`}>
-                    <StripeBtn />
                 </div>
                 <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>
                     <a href="/logout">Logout</a>
