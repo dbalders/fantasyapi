@@ -474,7 +474,11 @@ code {
 .modal-info-desc {
     font-weight: 400;
     letter-spacing: .5px;
-    margin-bottom: auto;
+    margin: auto;
+}
+
+.modal-info-text {
+    margin-bottom: 25px;
 }
 
 

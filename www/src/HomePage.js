@@ -104,8 +104,8 @@ export class HomePage extends Component {
                                 onChange={this.handleEspnTeamChange}
                                 options={espnTeamSelect}
                                 placeholder='Select your team'
-                                className='espn-dropdown'
-                                classNamePrefix='espn-dropdown-items'
+                                className='react-select-container'
+                                classNamePrefix='react-select'
                             />
                         </div>
                         <div className={`espn-error ${this.state.espnIdError ? '' : 'hide'}`}>
@@ -197,8 +197,8 @@ export class HomePage extends Component {
                                 onChange={this.handleEspnTeamChange}
                                 options={espnTeamSelect}
                                 placeholder='Select your team'
-                                className='espn-dropdown'
-                                classNamePrefix='espn-dropdown-items'
+                                className='react-select-container'
+                                classNamePrefix='react-select'
                             />
                         </div>
                         <div className={`espn-error ${this.state.espnIdError ? '' : 'hide'}`}>
