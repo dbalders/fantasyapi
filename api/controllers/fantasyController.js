@@ -249,18 +249,44 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
                         })
                     res.cookie('paid', true);
                 } else {
-                    Payment.findOneAndUpdate({
-                        yahooEmail: req.body.yahooEmail
-                    }, {
-                            email: req.body.token.email,
-                            paymentAmount: req.body.amount,
-                            yahooEmail: req.body.yahooEmail,
-                            paid: true,
-                            paymentDate: new Date(),
+                    var yahooEmail = req.body.yahooEmail;
+                    var leagueId = req.body.leagueId;
+                    var teamId = req.body.teamId;
+                    
+                    if (yahooEmail === 'undefined') {
+                        Payment.findOneAndUpdate({
+                            leagues: {
+                                $elemMatch: {
+                                    leagueId: leagueId, 
+                                    teamId: teamId
+                                }
+                            }
                         }, {
-                            upsert: true
-                        }, function(error, response) {
-                        })
+                                email: '',
+                                paymentAmount: req.body.amount,
+                                yahooEmail: req.body.yahooEmail,
+                                paid: true,
+                                paymentDate: new Date(),
+                            }, {
+                                upsert: true
+                            }, function (error, response) {
+                                console.log(response)
+                            })
+                    } else {
+                        Payment.findOneAndUpdate({
+                            yahooEmail: req.body.yahooEmail
+                        }, {
+                                email: req.body.token.email,
+                                paymentAmount: req.body.amount,
+                                yahooEmail: req.body.yahooEmail,
+                                paid: true,
+                                paymentDate: new Date(),
+                            }, {
+                                upsert: true
+                            }, function (error, response) {
+                            })
+                    }
+
                     res.cookie('paid', true);
                 }
             }

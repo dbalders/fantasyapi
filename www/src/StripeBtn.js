@@ -33,7 +33,9 @@ export class StripeBtn extends Component {
                 body = {
                     amount: 500,
                     token: token,
-                    yahooEmail: Cookies.get('yahooEmail')
+                    yahooEmail: Cookies.get('yahooEmail'),
+                    leagueId: Cookies.get('leagueId'),
+                    teamId: Cookies.get('teamId')
                 };
             } else {
                 body = {
