@@ -30,7 +30,8 @@ export class HomePage extends Component {
         this.setState({
             showEspnInput: true,
             espnTeamSelect: teamSelect,
-            espnId: espnId
+            espnId: espnId,
+            espnIdError: null
         })
     }
 
@@ -76,7 +77,7 @@ export class HomePage extends Component {
                     </div>
                 </div>
                 <div className="landing-actions-container flex">
-                    <div id="landing-actions-left" className="landing-actions flex-vertical">
+                    <div className="landing-actions flex-vertical landing-actions-left">
                         <div className="landing-img">
                             <img id="landing-yahoo-img" src="/images/yahoologo.png" />
                         </div>
@@ -87,7 +88,7 @@ export class HomePage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div id="landing-actions-right" className="landing-actions flex-vertical">
+                    <div className="landing-actions flex-vertical landing-actions-right">
                         <div className="landing-img">
                             <img id="landing-espn-img" src="/images/espnlogo.png" />
                         </div>
@@ -169,7 +170,7 @@ export class HomePage extends Component {
                     </div>
                 </div>
                 <div className="landing-actions-container flex">
-                    <div id="landing-actions-left" className="landing-actions flex-vertical">
+                    <div className="landing-actions flex-vertical landing-actions-left">
                         <div className="landing-img">
                             <img id="landing-yahoo-img" src="/images/yahoologo.png" />
                         </div>
@@ -180,7 +181,7 @@ export class HomePage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div id="landing-actions-right" className="landing-actions flex-vertical">
+                    <div className="landing-actions flex-vertical landing-actions-right">
                         <div className="landing-img">
                             <img id="landing-espn-img" src="/images/espnlogo.png" />
                         </div>

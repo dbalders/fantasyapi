@@ -9,6 +9,7 @@
     "js-cookie": "^2.2.0",
     "react": "^16.6.3",
     "react-awesome-modal": "^2.0.5",
+    "react-cookie-consent": "^2.2.1",
     "react-dom": "^16.6.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",

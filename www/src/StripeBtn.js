@@ -24,20 +24,20 @@ export class StripeBtn extends Component {
     }
 
     render() {
-        const publishableKey = "pk_test_J9A4W2CFQsPDfvmWJYDTCnAc";
+        const publishableKey = "pk_live_1hpF0Z605W8TfOsC1SUcV7Bx";
         var body;
 
         const onToken = token => {
             var fantasyPlatform = Cookies.get('fantasyPlatform');
             if (fantasyPlatform === 'yahoo') {
                 body = {
-                    amount: 999,
+                    amount: 500,
                     token: token,
                     yahooEmail: Cookies.get('yahooEmail')
                 };
             } else {
                 body = {
-                    amount: 999,
+                    amount: 500,
                     token: token,
                     espnLeagueId: Cookies.get('leagueId'),
                     espnTeamId: Cookies.get('teamId')
@@ -57,7 +57,7 @@ export class StripeBtn extends Component {
 
         var returnHTML = <StripeCheckout
             label="Get Premium" //Component button text
-            name="FantasySportsDotIO" //Modal Header
+            name="FantasyBasketball.io" //Modal Header
             description="Access for 2019 and 2020 seasons."
             panelLabel="Go Premium" //Submit button in modal
             amount={500} //Amount in cents $9.99

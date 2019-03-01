@@ -386,13 +386,12 @@ exports.getEspnData = function (espnId, res) {
         url: url,
         json: true
     }, function (error, response, body) {
-        if (error)
+        if (error) {
             res.send(error)
+        }
 
         if (body.messages !== undefined) {
-            res.status(500);
-            res.send(body);
-            res.end();
+            res.send(body).end();
             return;
         }
 

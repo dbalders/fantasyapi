@@ -67,10 +67,10 @@ export class CompareTeams extends Component {
                 playerRankingsRecent = this.props.playerRankingsRecent;
             }
 
-            this.setState({ 
+            this.setState({
                 playerRankingsSeason: playerRankingsSeason,
                 playerRankingsRecent: playerRankingsRecent
-            }, function() {
+            }, function () {
                 this.handleTeamChange(teamSelected)
             })
         }
@@ -83,8 +83,16 @@ export class CompareTeams extends Component {
         var teamStatsSeasonAvg = [];
         var teamStatsRecentAvg = [];
         var teamPlayers = team;
-        var playerRankingsSeason = this.state.playerRankingsSeason;
-        var playerRankingsRecent = this.state.playerRankingsRecent;
+        var playerRankingsSeason = [];
+        var playerRankingsRecent = [];
+
+        if ((this.state.playerRankingsSeason.length === 0) || (this.state.playerRankingsRecent.length === 0)) {
+            playerRankingsSeason = JSON.parse(localStorage.getItem('playerRankingsSeason'));
+            playerRankingsRecent = JSON.parse(localStorage.getItem('playerRankingsRecent'));
+        } else {
+            playerRankingsSeason = this.state.playerRankingsSeason;
+            playerRankingsRecent = this.state.playerRankingsRecent;
+        }
 
         //for each player on the team, if string similarity > .7 in the player rankings, then add that player to the array
         for (var i = 0; i < teamPlayers.length; i++) {

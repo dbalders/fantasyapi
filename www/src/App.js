@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { callApi } from './CallApi';
 import { StripeBtn } from "./StripeBtn";
 import { StripeModal } from "./StripeModal";
+import CookieConsent from "react-cookie-consent";
 
 class App extends Component {
     constructor(props) {
@@ -108,6 +109,16 @@ class App extends Component {
                     {navBar}
                     <Route path="/" exact render={() => homePage} />
                     <Route path="/trade/" component={TradeAnalysis} />
+                    <CookieConsent
+                        location="bottom"
+                        buttonText="Accept"
+                        cookieName="cookie-concent"
+                        style={{ background: "#2B373B" }}
+                        buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+                        expires={365}
+                    >
+                        This website uses cookies to enhance the user experience.{" "}
+                    </CookieConsent>
                     {footer}
                 </div>
             </Router>

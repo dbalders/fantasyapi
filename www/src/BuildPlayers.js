@@ -415,12 +415,12 @@ export class BuildPlayers extends Component {
         const columnNames = [{
             Header: 'Rank',
             accessor: rankHeader,
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             Header: 'Value',
             accessor: ratingHeader,
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             Header: 'Name',
@@ -430,7 +430,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: 'Points',
             accessor: ptsHeader,
-            minWidth: 32,
+            minWidth: 60,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -448,7 +448,7 @@ export class BuildPlayers extends Component {
         }, {
             Header: '3s',
             accessor: threesHeader,
-            minWidth: 32,
+            minWidth: 60,
             className: "center",
             getProps: (state, rowInfo, column) => {
                 return {
@@ -466,7 +466,7 @@ export class BuildPlayers extends Component {
             Header: 'Rebounds',
             accessor: rebHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -483,7 +483,7 @@ export class BuildPlayers extends Component {
             Header: 'Assists',
             accessor: astHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -500,7 +500,7 @@ export class BuildPlayers extends Component {
             Header: 'Steals',
             accessor: stlHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -517,7 +517,7 @@ export class BuildPlayers extends Component {
             Header: 'Blocks',
             accessor: blkHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -534,7 +534,7 @@ export class BuildPlayers extends Component {
             Header: 'FG%',
             accessor: fgHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -551,7 +551,7 @@ export class BuildPlayers extends Component {
             Header: 'FT%',
             accessor: ftHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -568,7 +568,7 @@ export class BuildPlayers extends Component {
             Header: 'Turnovers',
             accessor: toHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -588,7 +588,7 @@ export class BuildPlayers extends Component {
             Header: 'Points',
             accessor: ptsHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -605,7 +605,7 @@ export class BuildPlayers extends Component {
             Header: '3s',
             accessor: threesHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -622,7 +622,7 @@ export class BuildPlayers extends Component {
             Header: 'Rebounds',
             accessor: rebHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -639,7 +639,7 @@ export class BuildPlayers extends Component {
             Header: 'Assists',
             accessor: astHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -656,7 +656,7 @@ export class BuildPlayers extends Component {
             Header: 'Steals',
             accessor: stlHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -673,7 +673,7 @@ export class BuildPlayers extends Component {
             Header: 'Blocks',
             accessor: blkHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -690,7 +690,7 @@ export class BuildPlayers extends Component {
             Header: 'FG%',
             accessor: fgHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -707,7 +707,7 @@ export class BuildPlayers extends Component {
             Header: 'FT%',
             accessor: ftHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -724,7 +724,7 @@ export class BuildPlayers extends Component {
             Header: 'Turnovers',
             accessor: toHeader,
             className: "center",
-            minWidth: 32,
+            minWidth: 60,
             getProps: (state, rowInfo, column) => {
                 return {
                     style: {
@@ -745,11 +745,11 @@ export class BuildPlayers extends Component {
             className: "center"
         }, {
             headerClassName: 'hide',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
@@ -760,48 +760,48 @@ export class BuildPlayers extends Component {
             )
         }, {
             headerClassName: 'hide',
-            minWidth: 32,
+            minWidth: 60,
             accessor: 'pts',
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'fG3M',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'reb',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'ast',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'stl',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'blk',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'fgPct',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'ftPct',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }, {
             headerClassName: 'hide',
             accessor: 'tov',
-            minWidth: 32,
+            minWidth: 60,
             className: "center"
         }]
 

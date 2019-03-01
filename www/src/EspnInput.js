@@ -12,19 +12,24 @@ export class EspnInput extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {}
+    componentDidMount() { }
 
     _handleKeyPress = (e) => {
         //When they press enter
         if (e.key === 'Enter') {
             callApi('/api/espn/league/' + this.state.espnId)
                 .then(results => {
-                    //send the league ID over to the server to be added to database
-                    //then send back to the home page for further processing
-                    this.props.showEspnTeamInput(results, this.state.espnId);
+                    if (results.messages !== undefined) {
+                        //If an error comes back, show the error on the home page
+                        this.props.espnIdError(results.messages);
+                    } else {
+                        //send the league ID over to the server to be added to database
+                        //then send back to the home page for further processing
+                        this.props.showEspnTeamInput(results, this.state.espnId);
+                    }
+
                 })
                 .catch(err => {
-                    console.log(err)
                     this.props.espnIdError(err.message);
                 });
         }
