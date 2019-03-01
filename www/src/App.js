@@ -79,7 +79,7 @@ class App extends Component {
                     <Link to="/trade">Trade Analysis</Link>
                 </div>
 
-                <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`} onClick={this.refreshYahooData}>
+                <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'} ${this.state.fantasyPlatform ? '' : 'hide'}`} onClick={this.refreshYahooData}>
                     <a>Refresh Yahoo Data</a>
                 </div>
                 <div className={`sign-out ${this.state.isLoggedIn ? '' : 'hide'}`}>

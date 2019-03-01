@@ -6,6 +6,9 @@ import Select from 'react-select';
 import stringSimilarity from 'string-similarity';
 import { callApi } from './CallApi';
 import { TradeModal } from './TradeModal'
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-135378238-1');
+ReactGA.pageview("/trade");
 
 export class TradeAnalysis extends Component {
     constructor(props) {

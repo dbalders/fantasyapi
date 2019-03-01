@@ -5,6 +5,9 @@ import 'react-table/react-table.css';
 import stringSimilarity from 'string-similarity';
 import { CompareTeams } from './CompareTeams';
 import { callApi } from './CallApi';
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-135378238-1');
+ReactGA.pageview("/?logged-in=true");
 
 export class BuildPlayers extends Component {
     constructor(props) {
