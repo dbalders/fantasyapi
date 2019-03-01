@@ -598,8 +598,21 @@ code {
 
 .espn-modal-container {
     color: black;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     height: 100%;
+}
+
+.espn-modal-container div {
+    margin: auto;
+}
+
+.espn-modal-container a {
+    margin-bottom: 25px;
+}
+
+.espn-modal-league {
+    font-weight: 500;
+    font-style: italic;
 }
 
 .modal-container {
@@ -630,6 +643,59 @@ code {
     margin-bottom: 25px;
 }
 
+@media screen and (max-width: 800px) {
+    .espn-modal-container {
+        font-size: 1rem;
+    }
+
+    .modal-container {
+        height: 100%;
+    }
+
+    .modal-info-container {
+        margin: auto;
+        text-align: center;
+        width: 90%;
+        height: 100%;
+        margin-bottom: 5px;
+    }
+
+    .modal-info-header {
+        margin: 15px 0;
+        font-size: 1.25rem;
+    }
+
+    .modal-info-desc {
+        letter-spacing: auto;
+    }
+
+    .StripeCheckout {
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .espn-modal-container {
+        font-size: .75rem;
+    }
+
+    .modal-info-container {
+        margin: auto;
+        text-align: center;
+        width: 95%;
+        height: 100%;
+        margin-bottom: 5px;
+    }
+
+    .modal-info-header {
+        margin: 5px 0;
+        font-size: 1rem;
+    }
+
+    .modal-info-desc {
+        letter-spacing: auto;
+    }
+}
 
 
 /****************************Stripe CSS Classes***********************/
