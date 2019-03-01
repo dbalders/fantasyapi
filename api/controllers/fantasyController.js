@@ -234,11 +234,13 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
             if (cookieName === "fantasyPlatform") {
                 if (cookieValue === 'espn') {
                     Payment.findOneAndUpdate({
-                        espnLeagueId: req.body.espnLeagueId,
-                        espnTeamId: req.body.espnTeamId
+                        leagues: {
+                            $elemMatch: {
+                                espnLeagueId: req.body.espnLeagueId,
+                                espnTeamId: req.body.espnTeamId
+                            }
+                        }
                     }, {
-                            espnLeagueId: req.body.espnLeagueId,
-                            espnTeamId: req.body.espnTeamId,
                             email: req.body.token.email,
                             paymentAmount: req.body.amount,
                             paid: true,
@@ -252,12 +254,12 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
                     var yahooEmail = req.body.yahooEmail;
                     var leagueId = req.body.leagueId;
                     var teamId = req.body.teamId;
-                    
+
                     if (yahooEmail === 'undefined') {
                         Payment.findOneAndUpdate({
                             leagues: {
                                 $elemMatch: {
-                                    leagueId: leagueId, 
+                                    leagueId: leagueId,
                                     teamId: teamId
                                 }
                             }
@@ -298,16 +300,23 @@ const stripeChargeCallback = (res, req) => (stripeErr, stripeRes) => {
 
 exports.create_espn_user = function (req, res) {
     Payment.findOne({
-        espnLeagueId: req.params.espnLeagueId,
-        espnTeamId: req.params.espnTeamId
+        leagues: {
+            $elemMatch: {
+                espnLeagueId: req.params.espnLeagueId,
+                espnTeamId: req.params.espnTeamId
+            }
+        }
     }, function (error, result) {
         if (error) {
             console.log(error)
         } else {
+            console.log(result)
             if (!result) {
                 Payment.create({
-                    'espnLeagueId': req.params.espnLeagueId,
-                    'espnTeamId': req.params.espnTeamId,
+                    leagues: {
+                        'espnLeagueId': req.params.espnLeagueId,
+                        'espnTeamId': req.params.espnTeamId
+                    },
                     'paid': false
                 })
                 res.cookie('paid', false);
