@@ -44,6 +44,24 @@ code {
     width: 100%;
 }
 
+.site-loading {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.site-loading-text {
+    margin: auto;
+    align-self: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
 .landing-top-background {
     width: 100%;
     background-image: url("/images/basketballcourt.jpg");

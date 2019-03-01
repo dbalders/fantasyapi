@@ -831,8 +831,19 @@ export class BuildPlayers extends Component {
             showRankingsText = 'Show Season Data';
         }
 
+        var loading; 
+        if (this.state.teamStatsSeasonAvg.length > 0) {
+            loading = <span></span>
+        } else {
+            loading = 
+                <div className="site-loading flex">
+                    <div className="site-loading-text">Loading...</div>
+                </div>;
+        }
+
         return (
             <div className="table-container flex-vertical">
+                {loading}
                 <div className="table-info-container flex-vertical">
                     <div className="table-info-headers flex">
                         <div className="table-info-header" onClick={this.changeRankings}>{showRankingsText}</div>
@@ -880,6 +891,14 @@ export class BuildPlayers extends Component {
 
                         <div className={`team-table-container ${this.state.showRecentRankings ? '' : 'hide'}`}>
                             <h3 className="team-table-header">Team Rankings</h3>
+                            <div className="team-avg-table">
+                                <ReactTable
+                                    data={this.state.teamStatsRecentAvg}
+                                    columns={columnNamesAvg}
+                                    showPagination={false}
+                                    minRows={0}
+                                />
+                            </div>
                             <div className="team-table">
                                 <ReactTable
                                     data={this.state.teamStatsRecent}
@@ -902,15 +921,6 @@ export class BuildPlayers extends Component {
                                             />
                                         );
                                     }}
-                                />
-                            </div>
-
-                            <div className="team-avg-table">
-                                <ReactTable
-                                    data={this.state.teamStatsRecentAvg}
-                                    columns={columnNamesAvg}
-                                    showPagination={false}
-                                    minRows={0}
                                 />
                             </div>
                         </div>
