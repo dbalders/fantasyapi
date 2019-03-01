@@ -512,6 +512,10 @@ code {
     font-weight: 600;
 }
 
+.locked {
+    height: 15px;
+}
+
 @media screen and (max-width: 900px) {
     .team-avg-table {
         width: 90%;

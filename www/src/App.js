@@ -60,11 +60,19 @@ class App extends Component {
         var homePage;
         var navBar;
         var footer;
+        var paid = Cookies.get('paid')
+        var lockSymbol;
 
         if (!isLoggedIn) {
             homePage = <HomePage key={this.state.key} />;
         } else {
             homePage = <BuildPlayers key={this.state.key} />;
+        }
+
+        if (String(paid) === 'true') {
+            lockSymbol = <img className="locked" src="/images/unlock.png" />
+        } else {
+            lockSymbol = <img className="locked" src="/images/lock.png" />
         }
 
         navBar = <div className={`navbar flex ${this.state.isLoggedIn ? '' : 'hide'}`}>
@@ -76,7 +84,7 @@ class App extends Component {
                     <StripeModal />
                 </div>
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'}`}>
-                    <Link to="/trade">Trade Analysis</Link>
+                    <Link to="/trade">Trade Analysis {lockSymbol}</Link>
                 </div>
 
                 <div className={`nav-refresh ${this.state.isLoggedIn ? '' : 'hide'} ${this.state.fantasyPlatform ? '' : 'hide'}`} onClick={this.refreshYahooData}>

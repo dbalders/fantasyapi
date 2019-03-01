@@ -51,6 +51,7 @@ export class StripeBtn extends Component {
                 .then(response => {
                     this.setState({ 'paid': true })
                     alert("Payment Success");
+                    window.location.reload();
                 })
                 .catch(error => {
                     alert("Payment Error");
